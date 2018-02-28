@@ -33,7 +33,7 @@ class Detection(models.Model):
     frame_content = models.BinaryField()
     height = models.IntegerField()
     width = models.IntegerField()
-    id = models.IntegerField()
+    d_id = models.IntegerField()
     latitude = models.FloatField()
     longitude = models.FloatField()
     provider = models.CharField(max_length=24)
