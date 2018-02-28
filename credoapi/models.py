@@ -15,15 +15,15 @@ class User(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     email = models.CharField(max_length=255)
     name = models.CharField(max_length=24)
-    registerDate = models.DateTimeField()
+    register_date = models.DateTimeField()
     key = models.CharField(max_length=255)
 
 
 # TODO: do we need this?
 class Device(models.Model):
-    deviceId = models.CharField(max_length=255)
-    deviceModel = models.CharField(max_length=255)
-    androidVersion = models.CharField(max_length=255)
+    device_id = models.CharField(max_length=255)
+    device_model = models.CharField(max_length=255)
+    android_version = models.CharField(max_length=255)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
