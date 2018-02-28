@@ -105,3 +105,6 @@ ENV/
 
 #pipenv
 Pipfile.lock
+
+#django
+db.sqlite3
