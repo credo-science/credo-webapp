@@ -11,6 +11,7 @@ name = "pypi"
 
 [packages]
 
+djangorestframework = "*"
 
 
 [requires]
