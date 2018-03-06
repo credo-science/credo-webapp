@@ -6,4 +6,4 @@ urlpatterns = [
     url(r'^$', views.handle_detection)
 ]
 
-urlpatterns = format_suffix_patterns(urlpatterns)
+# urlpatterns = format_suffix_patterns(urlpatterns)
