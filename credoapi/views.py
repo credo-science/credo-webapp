@@ -5,14 +5,15 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from credoapi.models import Team, User, Device, Detection
-from credoapi.serializers import DetectionSerializer
+from credoapi.serializers import DetectionRequestSerializer
 
 from django.shortcuts import render
 
 
 @api_view(['POST'])
 def handle_detection(request):
-    serializer = DetectionSerializer(data=request.data)
+    print request.data
+    serializer = DetectionRequestSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response("", status=status.HTTP_201_CREATED)
