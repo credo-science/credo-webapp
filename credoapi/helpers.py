@@ -1,4 +1,10 @@
-class InputHeader:
+class Frame(object):
+    def __init__(self, header=None, body=None):
+        self.header = header
+        self.body = body
+
+
+class Header(object):
     def __init__(self, application=None, frame_type=None, protocol=None, time_stamp=None):
         self.application = application
         self.frame_type = frame_type
@@ -6,14 +12,7 @@ class InputHeader:
         self.time_stamp = time_stamp
 
 
-class Body:
-    def __init__(self, detection, device_info, user_info):
-        self.detection = detection
+class Body(object):
+    def __init__(self, device_info=None, user_info=None):
         self.device_info = device_info
         self.user_info = user_info
-
-
-class DetectionRequest:
-    def __init__(self, header, body):
-        self.header = header
-        self.body = body
