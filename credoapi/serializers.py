@@ -124,6 +124,7 @@ class HeaderSerializer(serializers.Serializer):
     def validate_frame_type(self, frame_type_raw):
         if frame_type_raw not in FRAME_TYPES:
             raise serializers.ValidationError("Frame type must be one of types: %s" % ', '.join(FRAME_TYPES))
+        return frame_type_raw
 
     def create(self, validated_data):
         return Header(**validated_data)
@@ -142,7 +143,6 @@ class FrameSerializer(serializers.Serializer):
     body = BodySerializer()
 
     def validate(self, data):
-        print 'validating..'
         print data
         return data
 
@@ -153,5 +153,4 @@ class FrameSerializer(serializers.Serializer):
         instance.header = validated_data.get('header', instance.header)
         instance.body = validated_data.get('body', instance.body)
 
-    # validate if body has all required fields
-    # check if key is provided
+    # TODO: check if key is provided
