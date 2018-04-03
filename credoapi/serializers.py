@@ -138,12 +138,32 @@ class HeaderSerializer(serializers.Serializer):
 
 # Frame
 
+def check_for_fields(validated, required_fields):
+    if not set(required_fields).issubset(set(required_fields)):
+        raise serializers.ValidationError("This frame is missing fields: %s" % ", ".join(required_fields))
+
+
 class FrameSerializer(serializers.Serializer):
     header = HeaderSerializer()
     body = BodySerializer()
 
     def validate(self, data):
-        print data
+        frame_type = data['header']['frame_type']
+        body_keys = data['body'].keys()
+
+        if frame_type == 'detection':
+            check_for_fields(body_keys, ('device_info', 'user_info', 'detection'))
+            check_for_fields(data['body']['user_info'], ('key'))
+        elif frame_type == 'login':
+            check_for_fields(body_keys, ('device_info', 'key_info'))
+        elif frame_type == 'ping':
+            check_for_fields(body_keys, ('device_info', 'user_info'))
+            check_for_fields(data['body']['user_info'], ('key'))
+        elif frame_type == 'register':
+            check_for_fields(body_keys, ('device_info', 'user_info'))
+        else:
+            raise serializers.ValidationError("Frame type must be one of types: %s" % ', '.join(FRAME_TYPES))
+
         return data
 
     def create(self, validated_data):
@@ -152,5 +172,3 @@ class FrameSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         instance.header = validated_data.get('header', instance.header)
         instance.body = validated_data.get('body', instance.body)
-
-    # TODO: check if key is provided
