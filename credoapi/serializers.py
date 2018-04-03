@@ -2,6 +2,8 @@ from rest_framework import serializers
 from credoapi.models import Device, User, Detection, Team
 from credoapi.helpers import Frame, Header, Body, KeyInfo
 
+FRAME_TYPES = ['detection', 'login', 'ping', 'register']
+
 
 class DeviceInfoSerializer(serializers.Serializer):
     deviceId = serializers.CharField(max_length=50)
@@ -119,6 +121,10 @@ class HeaderSerializer(serializers.Serializer):
     protocol = serializers.CharField(max_length=10)
     time_stamp = serializers.IntegerField()
 
+    def validate_frame_type(self, frame_type_raw):
+        if frame_type_raw not in FRAME_TYPES:
+            raise serializers.ValidationError("Frame type must be one of types: %s" % ', '.join(FRAME_TYPES))
+
     def create(self, validated_data):
         return Header(**validated_data)
 
@@ -132,9 +138,13 @@ class HeaderSerializer(serializers.Serializer):
 # Frame
 
 class FrameSerializer(serializers.Serializer):
-    #TODO: add validation of required fields, based on frametype
     header = HeaderSerializer()
     body = BodySerializer()
+
+    def validate(self, data):
+        print 'validating..'
+        print data
+        return data
 
     def create(self, validated_data):
         return Frame(**validated_data)
