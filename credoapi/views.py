@@ -15,7 +15,9 @@ def handle_frame(request):
     # print request.data
     serializer = FrameSerializer(data=request.data)
     if serializer.is_valid():
-        # serializer.save()
-        return Response("", status=status.HTTP_200_OK)
+        serializer.save()
+        print serializer.data
+        return Response(serializer.data, status=status.HTTP_200_OK)
     else:
+        print serializer.errors
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

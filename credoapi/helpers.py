@@ -12,7 +12,14 @@ class Header(object):
         self.time_stamp = time_stamp
 
 
+class KeyInfo(object):
+    def __init__(self, key=None):
+        self.key = key
+
+
 class Body(object):
-    def __init__(self, device_info=None, user_info=None):
+    def __init__(self, device_info=None, user_info=None, key_info=None, detection=None):
         self.device_info = device_info
         self.user_info = user_info
+        self.key_info = key_info
+        self.detection = detection

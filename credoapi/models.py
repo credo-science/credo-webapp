@@ -15,7 +15,6 @@ class User(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     email = models.CharField(max_length=255)
     name = models.CharField(max_length=24)
-    register_date = models.IntegerField()
     key = models.CharField(max_length=255)
 
 
