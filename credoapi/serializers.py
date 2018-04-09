@@ -2,6 +2,8 @@ from rest_framework import serializers
 from credoapi.models import Device, User, Detection, Team
 from credoapi.helpers import Frame, Header, Body, KeyInfo
 
+FRAME_TYPES = ['detection', 'login', 'ping', 'register']
+
 
 class DeviceInfoSerializer(serializers.Serializer):
     deviceId = serializers.CharField(max_length=50)
@@ -119,6 +121,11 @@ class HeaderSerializer(serializers.Serializer):
     protocol = serializers.CharField(max_length=10)
     time_stamp = serializers.IntegerField()
 
+    def validate_frame_type(self, frame_type_raw):
+        if frame_type_raw not in FRAME_TYPES:
+            raise serializers.ValidationError("Frame type must be one of types: %s" % ', '.join(FRAME_TYPES))
+        return frame_type_raw
+
     def create(self, validated_data):
         return Header(**validated_data)
 
@@ -131,10 +138,33 @@ class HeaderSerializer(serializers.Serializer):
 
 # Frame
 
+def check_for_fields(validated, required_fields):
+    if not set(required_fields).issubset(set(required_fields)):
+        raise serializers.ValidationError("This frame is missing fields: %s" % ", ".join(required_fields))
+
+
 class FrameSerializer(serializers.Serializer):
-    #TODO: add validation of required fields, based on frametype
     header = HeaderSerializer()
     body = BodySerializer()
+
+    def validate(self, data):
+        frame_type = data['header']['frame_type']
+        body_keys = data['body'].keys()
+
+        if frame_type == 'detection':
+            check_for_fields(body_keys, ('device_info', 'user_info', 'detection'))
+            check_for_fields(data['body']['user_info'], ('key'))
+        elif frame_type == 'login':
+            check_for_fields(body_keys, ('device_info', 'key_info'))
+        elif frame_type == 'ping':
+            check_for_fields(body_keys, ('device_info', 'user_info'))
+            check_for_fields(data['body']['user_info'], ('key'))
+        elif frame_type == 'register':
+            check_for_fields(body_keys, ('device_info', 'user_info'))
+        else:
+            raise serializers.ValidationError("Frame type must be one of types: %s" % ', '.join(FRAME_TYPES))
+
+        return data
 
     def create(self, validated_data):
         return Frame(**validated_data)
@@ -142,6 +172,3 @@ class FrameSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         instance.header = validated_data.get('header', instance.header)
         instance.body = validated_data.get('body', instance.body)
-
-    # validate if body has all required fields
-    # check if key is provided
