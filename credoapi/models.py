@@ -9,6 +9,9 @@ from django.db import models
 class Team(models.Model):
     name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return "Team %s" % self.name
+
 
 # TODO: integrate with Django's user?
 class User(models.Model):
@@ -17,6 +20,9 @@ class User(models.Model):
     name = models.CharField(max_length=24)
     key = models.CharField(max_length=255)
 
+    def __str__(self):
+        return "User %s (%s)" % (self.name, self.email)
+
 
 # TODO: do we need this?
 class Device(models.Model):
@@ -24,6 +30,9 @@ class Device(models.Model):
     device_model = models.CharField(max_length=255)
     android_version = models.CharField(max_length=255)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "Device %s (%s)" % (self.device_id, self.device_model)
 
 
 class Detection(models.Model):
@@ -39,3 +48,6 @@ class Detection(models.Model):
     timestamp = models.IntegerField()
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "Detection %s" % self.id
