@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Credoweb recent detections</title>
+</head>
+<body>
+{% if detections_recent %}
+    <h3>Recent detections:</h3>
+    <ul>
+    {% for detection in detections_recent %}
+        <li><ul>
+            <li>accuracy: {{ detection.accuracy }}</li>
+            <li>altitude: {{ detection.altitude }}</li>
+            <li>frame_content: {{ detection.frame_content }}</li>
+            <li>height: {{ detection.height }}</li>
+            <li>width: {{ detection.width }}</li>
+            <li>d_id: {{ detection.d_id }}</li>
+            <li>latitude: {{ detection.latitude }}</li>
+            <li>longitude: {{ detection.longitude }}</li>
+            <li>provider: {{ detection.provider }}</li>
+            <li>timestamp: {{ detection.timestamp }}</li>
+        </ul></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No recent detections.</p>
+{% endif %}
+
+</body>
+</html>
