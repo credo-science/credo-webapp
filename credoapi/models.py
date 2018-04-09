@@ -37,3 +37,5 @@ class Detection(models.Model):
     longitude = models.FloatField()
     provider = models.CharField(max_length=24)
     timestamp = models.IntegerField()
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
