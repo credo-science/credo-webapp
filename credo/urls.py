@@ -19,5 +19,5 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^web/', include('credoweb.urls')),
-    url(r'^api/', include('credoapi.urls'))
+    url(r'^', include('credoapi.urls'))
 ]

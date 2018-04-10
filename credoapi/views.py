@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from credoapi.models import Team, User, Device, Detection
 from credoapi.serializers import FrameSerializer
+from credoapi.negotiation import IgnoreClientContentNegotiation
 
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
@@ -14,18 +15,12 @@ import json
 
 
 class FrameHandler(APIView):
+    content_negotiation_class = IgnoreClientContentNegotiation
+
     def get(self, request, format=None):
         return HttpResponseRedirect('/web/')
 
     def post(self, request, format=None):
-        # print request.data
-        try:
-            # json.loads(request.data)
-            print request.data
-        except ValueError, ve:
-            # doesn't look like api request, redirect to /web/
-            return HttpResponseRedirect('/web/')
-
         if len(request.data) == 0:
             # doesn't look like api request, redirect to /web/
             return HttpResponseRedirect('/web/')
