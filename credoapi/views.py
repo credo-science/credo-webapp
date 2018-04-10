@@ -8,11 +8,29 @@ from credoapi.models import Team, User, Device, Detection
 from credoapi.serializers import FrameSerializer
 
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
+
+import json
+
+
+@api_view(['GET'])
+def handle_get_requests(request):
+    return HttpResponseRedirect('/web/')
 
 
 @api_view(['POST'])
 def handle_frame(request):
     # print request.data
+    try:
+        json.loads(request.data)
+    except ValueError, ve:
+        # doesn't look like api request, redirect to /web/
+        return HttpResponseRedirect('/web/')
+
+    if len(request.data) == 0:
+        # doesn't look like api request, redirect to /web/
+        return HttpResponseRedirect('/web/')
+
     serializer = FrameSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
