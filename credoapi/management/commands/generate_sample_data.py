@@ -201,4 +201,6 @@ class Command(BaseCommand):
             self.stdout.write('DB already contains data! Use --force to override this check.')
             return
 
+        self.stdout.write("Generating sample data...")
         self.generate_sample_data()
+        self.stdout.write("Done!")
