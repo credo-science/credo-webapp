@@ -19,7 +19,7 @@ python manage.py generate_sample_data
 python runserver
 ```
 
-API web interface will be available at the displayed URL.
+API web interface will be available at the displayed URL under the `/web/` path.
 
 ## Interacting with the v1 API:
 
