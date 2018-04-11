@@ -5,26 +5,34 @@
     <title>Credoweb recent detections</title>
 </head>
 <body>
-{% if detections_recent %}
+{% if recent_detections %}
     <h3>Recent detections:</h3>
     <ul>
-    {% for detection in detections_recent %}
+    {% for detection in recent_detections %}
         <li><ul>
-            <li>accuracy: {{ detection.accuracy }}</li>
-            <li>altitude: {{ detection.altitude }}</li>
-            <li>frame_content: {{ detection.frame_content }}</li>
-            <li>height: {{ detection.height }}</li>
-            <li>width: {{ detection.width }}</li>
-            <li>d_id: {{ detection.d_id }}</li>
-            <li>latitude: {{ detection.latitude }}</li>
-            <li>longitude: {{ detection.longitude }}</li>
-            <li>provider: {{ detection.provider }}</li>
-            <li>timestamp: {{ detection.timestamp }}</li>
+            <li>date: {{ detection.date }}</li>
+            <li>user: {{ detection.user.name }}</li>
+            <li>team: {{ detection.team }}</li>
+            <li>img: <img style="display:block;" src="data:image/jpeg;base64,{{ detection.img }}"></li>
         </ul></li>
     {% endfor %}
     </ul>
 {% else %}
     <p>No recent detections.</p>
+{% endif %}
+
+{% if top_users %}
+    <h3>Top users:</h3>
+    <ul>
+    {% for user in top_users %}
+        <li><ul>
+            <li>name: {{ user.name }}</li>
+            <li>num_of_detections: {{ user.detection_count }}</li>
+        </ul></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No top users.</p>
 {% endif %}
 
 </body>
