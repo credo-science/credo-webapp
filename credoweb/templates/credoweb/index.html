@@ -5,13 +5,16 @@
     <title>Credoweb recent detections</title>
 </head>
 <body>
+<h2>Number of detections: {{ detections_total }}</h2>
+<h2>Number of users: {{ users_total }}</h2>
+<h2>Number of teams: {{ teams_total }}</h2>
 {% if recent_detections %}
     <h3>Recent detections:</h3>
     <ul>
     {% for detection in recent_detections %}
         <li><ul>
             <li>date: {{ detection.date }}</li>
-            <li>user: {{ detection.user.name }}</li>
+            <li>user: {{ detection.user }}</li>
             <li>team: {{ detection.team }}</li>
             <li>img: <img style="display:block;" src="data:image/jpeg;base64,{{ detection.img }}"></li>
         </ul></li>
