@@ -3,5 +3,6 @@ from credoweb import views
 
 urlpatterns = [
     url(r'^$', views.index),
-    url(r'user/(?P<name>[a-zA-Z0-9]{1,24})/$', views.user)
+    url(r'user/(?P<name>[a-zA-Z0-9]{1,24})/$', views.user),
+    url(r'team/(?P<name>[a-zA-Z0-9]{1,255})/$', views.team)
 ]

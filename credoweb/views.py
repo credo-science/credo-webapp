@@ -35,7 +35,7 @@ def index(request):
 
 def user(request, name=''):
     u = get_object_or_404(User, name=name)
-    user_recent_detections = Detection.objects.filter(user=u).order_by('-timestamp')#[:20]
+    user_recent_detections = Detection.objects.filter(user=u).order_by('-timestamp')[:20]
     user_detection_count = Detection.objects.filter(user=u).count()
     context = {
         'user': {
@@ -50,3 +50,21 @@ def user(request, name=''):
 
     }
     return render(request, 'credoweb/user.html', context)
+
+
+def team(request, name=''):
+    t = get_object_or_404(Team, name=name)
+    team_users = User.objects.filter(team=t).annotate(detection_count=Count('detection'))
+    team_user_count = team_users.count()
+    context = {
+        'team': {
+            'name': t.name,
+            'user_count': team_user_count
+        },
+        'team_users': [{
+            'name': u.name,
+            'detection_count': u.detection_count
+        } for u in team_users]
+
+    }
+    return render(request, 'credoweb/team.html', context)

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Credoweb team {{ team.name }}</title>
+</head>
+<body>
+<h2>Team name: {{ team.name }}</h2>
+{% if team_users %}
+    <h3>Users in team: {{ team.user_count }}</h3>
+    <ul>
+    {% for user in team_users %}
+        <li><ul>
+            <li>User: {{ user.name }}</li>
+            <li>Number of detections: {{ user.detection_count }}</li>
+        </ul></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>There are no users in this team</p>
+{% endif %}
+
+</body>
+</html>
