@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Credoweb {{ user.name }} profile</title>
+</head>
+<body>
+<h2>User: {{ user.name }}</h2>
+<h2>Team: {{ user.team }}</h2>
+<h2>Number of detections: {{ user.detection_count }}</h2>
+{% if user_recent_detections %}
+    <h3>Recent detections:</h3>
+    <ul>
+    {% for detection in user_recent_detections %}
+        <li><ul>
+            <li>date: {{ detection.date }}</li>
+            <li>img: <img style="display:block;" src="data:image/jpeg;base64,{{ detection.img }}"></li>
+        </ul></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>User has no detections</p>
+{% endif %}
+
+</body>
+</html>
