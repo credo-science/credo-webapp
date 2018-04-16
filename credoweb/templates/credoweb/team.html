@@ -11,7 +11,7 @@
     <ul>
     {% for user in team_users %}
         <li><ul>
-            <li>User: {{ user.name }}</li>
+            <li>User: <a href="{% url 'user_page' username=user.name %}">{{ user.display_name }}</a></li>
             <li>Number of detections: {{ user.detection_count }}</li>
         </ul></li>
     {% endfor %}

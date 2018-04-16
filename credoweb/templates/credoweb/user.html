@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Credoweb {{ user.name }} profile</title>
+    <title>Credoweb {{ user.display_name }} profile</title>
 </head>
 <body>
-<h2>User: {{ user.name }}</h2>
-<h2>Team: {{ user.team }}</h2>
+<li>Name: {{ user.display_name }}</li>
+<h2>Team: <a href="{% url 'team_page' name=user.team.name %}">{{ user.team.name }}</a></h2>
 <h2>Number of detections: {{ user.detection_count }}</h2>
 {% if user_recent_detections %}
     <h3>Recent detections:</h3>

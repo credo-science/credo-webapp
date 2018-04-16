@@ -83,6 +83,12 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = 'credoapi.User'
+
+AUTHENTICATION_BACKENDS = (
+    'credoapi.backends.TokenBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

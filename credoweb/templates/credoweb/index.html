@@ -14,8 +14,8 @@
     {% for detection in recent_detections %}
         <li><ul>
             <li>date: {{ detection.date }}</li>
-            <li>user: {{ detection.user }}</li>
-            <li>team: {{ detection.team }}</li>
+            <li>user: <a href="{% url 'user_page' username=detection.user.name %}">{{ detection.user.display_name }}</a></li>
+            <li>team: <a href="{% url 'team_page' name=detection.team.name %}">{{ detection.team.name }}</a></li>
             <li>img: <img style="display:block;" src="data:image/jpeg;base64,{{ detection.img }}"></li>
         </ul></li>
     {% endfor %}
@@ -29,7 +29,7 @@
     <ul>
     {% for user in top_users %}
         <li><ul>
-            <li>name: {{ user.name }}</li>
+            <li>user: <a href="{% url 'user_page' username=user.name %}">{{ user.display_name }}</a></li>
             <li>num_of_detections: {{ user.detection_count }}</li>
         </ul></li>
     {% endfor %}

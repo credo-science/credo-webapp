@@ -165,10 +165,13 @@ class Command(BaseCommand):
         for i in range(user_count):
             users += [User.objects.create(
                 email='user%02d@email.com' % i,
-                name='User%02d' % i,
-                key='aaaa',
+                username='user%02d' % i,
+                display_name='User%02d' % i,
+                key='aaaa%02d' % i,
                 team=choice(teams)
             )]
+            users[i].set_password('password%02d' % i)
+            users[i].save()
 
         for i in range(user_count):
             devices += [Device.objects.create(

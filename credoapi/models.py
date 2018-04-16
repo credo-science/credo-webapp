@@ -1,27 +1,30 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
 # Create your models here.
 
 class Team(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return "Team %s" % self.name
 
 
-# TODO: integrate with Django's user?
-class User(models.Model):
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    email = models.CharField(max_length=255)
-    name = models.CharField(max_length=24)
-    key = models.CharField(max_length=255)
+class User(AbstractUser):
+
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, blank=True, null=True)
+    display_name = models.CharField(max_length=24)
+    key = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
-        return "User %s (%s)" % (self.name, self.email)
+        return "User %s (%s)" % (self.display_name, self.email)
+
+    def get_full_name(self):
+        return self.display_name
 
 
 # TODO: do we need this?
