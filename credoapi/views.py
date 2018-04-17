@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from credoapi.models import Team, User, Device, Detection
-from credoapi.serializers import FrameSerializer, ErrorSerializer
+from credoapi.serializers import InputFrameSerializer, ErrorSerializer
 from credoapi.helpers import Error
 from credoapi.negotiation import IgnoreClientContentNegotiation
 from credoapi.handlers import handle_detection_frame, handle_login_frame, handle_ping_frame, handle_register_frame
@@ -16,7 +16,7 @@ from django.http import HttpResponseRedirect
 import json
 
 
-class FrameHandler(APIView):
+class InputFrameHandler(APIView):
     content_negotiation_class = IgnoreClientContentNegotiation
 
     def get(self, request, format=None):
@@ -32,15 +32,15 @@ class FrameHandler(APIView):
             # doesn't look like api request, redirect to /web/
             return HttpResponseRedirect('/web/')
 
-        serializer = FrameSerializer(data=request.data)
+        serializer = InputFrameSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             frame = serializer.data
             frame_type = frame['header']['frame_type']
 
             try:
-                response = ''
-                
+                response = None
+
                 if frame_type == 'detection':
                     handle_detection_frame(frame)
                 elif frame_type == 'login':

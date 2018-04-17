@@ -1,4 +1,4 @@
-class Frame(object):
+class InputFrame(object):
     def __init__(self, header=None, body=None):
         self.header = header
         self.body = body

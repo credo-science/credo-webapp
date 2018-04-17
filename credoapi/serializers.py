@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from credoapi.models import Device, User, Detection, Team
-from credoapi.helpers import Frame, Header, Body, KeyInfo
+from credoapi.helpers import InputFrame, Header, Body, KeyInfo
 
 FRAME_TYPES = ['detection', 'login', 'ping', 'register']
 
@@ -136,14 +136,14 @@ class HeaderSerializer(serializers.Serializer):
         instance.time_stamp = validated_data.get('time_stamp', instance.time_stamp)
 
 
-# Frame
+# InputFrame
 
 def check_for_fields(validated, required_fields):
     if not set(required_fields).issubset(set(required_fields)):
         raise serializers.ValidationError("This frame is missing fields: %s" % ", ".join(required_fields))
 
 
-class FrameSerializer(serializers.Serializer):
+class InputFrameSerializer(serializers.Serializer):
     header = HeaderSerializer()
     body = BodySerializer()
 
@@ -167,7 +167,7 @@ class FrameSerializer(serializers.Serializer):
         return data
 
     def create(self, validated_data):
-        return Frame(**validated_data)
+        return InputFrame(**validated_data)
 
     def update(self, instance, validated_data):
         instance.header = validated_data.get('header', instance.header)

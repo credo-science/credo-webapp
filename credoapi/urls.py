@@ -3,7 +3,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from credoapi import views
 
 urlpatterns = [
-    url(r'^$', views.FrameHandler.as_view())
+    url(r'^$', views.InputFrameHandler.as_view())
 ]
 
 # urlpatterns = format_suffix_patterns(urlpatterns)
