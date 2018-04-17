@@ -23,3 +23,9 @@ class Body(object):
         self.user_info = user_info
         self.key_info = key_info
         self.detection = detection
+
+
+class Error(object):
+    def __init__(self, error=None, message=None):
+        self.error = error
+        self.message = message

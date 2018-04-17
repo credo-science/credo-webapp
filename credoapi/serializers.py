@@ -172,3 +172,15 @@ class FrameSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         instance.header = validated_data.get('header', instance.header)
         instance.body = validated_data.get('body', instance.body)
+
+
+class ErrorSerializer(serializers.Serializer):
+    error = serializers.CharField(max_length=20)
+    message = serializers.CharField(max_length=255)
+
+    def create(self, validated_data):
+        return Header(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.error = validated_data.get('error', instance.application)
+        instance.message = validated_data.get('message', instance.frame_type)
