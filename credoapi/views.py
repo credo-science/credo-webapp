@@ -44,7 +44,7 @@ class InputFrameHandler(APIView):
                 if frame_type == 'detection':
                     handle_detection_frame(frame)
                 elif frame_type == 'login':
-                    handle_login_frame(frame)
+                    response = handle_login_frame(frame)
                 elif frame_type == 'ping':
                     handle_ping_frame(frame)
                 elif frame_type == 'register':

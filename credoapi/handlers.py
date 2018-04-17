@@ -1,5 +1,6 @@
 
 def handle_register_frame(frame):
+    # throw proper exception on duplicated user
     pass
 
 
