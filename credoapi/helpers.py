@@ -4,9 +4,17 @@ class InputFrame(object):
         self.body = body
 
 
-class Header(object):
+class InputHeader(object):
     def __init__(self, application=None, frame_type=None, protocol=None, time_stamp=None):
         self.application = application
+        self.frame_type = frame_type
+        self.protocol = protocol
+        self.time_stamp = time_stamp
+
+
+class OutputHeader(object):
+    def __init__(self, server=None, frame_type=None, protocol=None, time_stamp=None):
+        self.server = server
         self.frame_type = frame_type
         self.protocol = protocol
         self.time_stamp = time_stamp
