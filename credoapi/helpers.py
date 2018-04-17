@@ -4,6 +4,12 @@ class InputFrame(object):
         self.body = body
 
 
+class OutputFrame(object):
+    def __init__(self, header=None, body=None):
+        self.header = header
+        self.body = body
+
+
 class InputHeader(object):
     def __init__(self, application=None, frame_type=None, protocol=None, time_stamp=None):
         self.application = application
@@ -18,6 +24,14 @@ class OutputHeader(object):
         self.frame_type = frame_type
         self.protocol = protocol
         self.time_stamp = time_stamp
+
+
+class UserInfo(object):
+    def __init__(self, team=None, email=None, name=None, key=None):
+        self.team = team
+        self.email = email
+        self.name = name
+        self.key = key
 
 
 class KeyInfo(object):

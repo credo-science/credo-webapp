@@ -1,8 +1,10 @@
+from credoapi.helpers import OutputFrame, OutputHeader, Body, UserInfo
+from credoapi.serializers import OutputFrameSerializer
+
 
 def handle_register_frame(frame):
     # throw proper exception on duplicated user
-    print frame
-    pass
+    return
 
 
 def handle_login_frame(frame):
