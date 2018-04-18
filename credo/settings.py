@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'credoapi.apps.CredoapiConfig',
+    'credoapiv2.apps.Credoapiv2Config',
     'credoweb.apps.CredowebConfig',
     'django.contrib.admin',
     'django.contrib.auth',
