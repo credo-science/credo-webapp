@@ -9,6 +9,7 @@ from credoapi.serializers import InputFrameSerializer, OutputFrameSerializer, Er
 from credoapi.helpers import Error
 from credoapi.negotiation import IgnoreClientContentNegotiation
 from credoapi.handlers import handle_detection_frame, handle_login_frame, handle_ping_frame, handle_register_frame
+from credoapi.exceptions import RegisterException
 
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
@@ -51,6 +52,9 @@ class InputFrameHandler(APIView):
                     handle_register_frame(frame)
 
                 return Response(response, status=status.HTTP_200_OK)
+            except RegisterException, e:
+                return Response(self.wrap_error('registration problem', str(e)),
+                                status=status.HTTP_400_BAD_REQUEST)
             except Exception, e:
                 return Response(self.wrap_error('internal server error', str(e)),
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)

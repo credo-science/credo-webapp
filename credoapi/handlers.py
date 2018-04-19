@@ -1,6 +1,7 @@
 from credoapi.helpers import OutputFrame, OutputHeader, Body, UserInfo
 from credoapi.serializers import OutputFrameSerializer
 from credoapi.models import User, Team, Device, Detection
+from credoapi.exceptions import RegisterException
 
 from django.db.utils import IntegrityError
 from django.core.mail import send_mail
@@ -49,7 +50,7 @@ def handle_register_frame(frame):
     except IntegrityError as e:
         if 'UNIQUE' in e.message:
             logger.info("Already registered user tried to register! {%s, %s}" % (user_name, user_email))
-            raise Exception("Username or e-mail address is already registered!")
+            raise RegisterException("Username or e-mail address is already registered!")
         else:
             raise e
 
