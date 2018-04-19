@@ -130,3 +130,20 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 EMAIL_HOST = 'kinga.cyf-kr.edu.pl'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+        }
+    },
+    'loggers': {
+        'credoapi': {
+            'handlers': ['console'],
+            'level': 'INFO'
+        }
+    }
+}

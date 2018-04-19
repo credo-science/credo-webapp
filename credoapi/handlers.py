@@ -8,6 +8,10 @@ from django.core.mail import send_mail
 import string
 from random import choice
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 CHARS = string.ascii_letters
 
 
@@ -44,6 +48,7 @@ def handle_register_frame(frame):
         user.save()
     except IntegrityError as e:
         if 'UNIQUE' in e.message:
+            logger.info("Already registered user tried to register! {%s, %s}" % (user_name, user_email))
             raise Exception("Username or e-mail address is already registered!")
         else:
             raise e
@@ -56,6 +61,8 @@ def handle_register_frame(frame):
         [user_email],
         fail_silently=False
     )
+
+    logger.info("Registered new user {%s, %s}" % (user_name, user_email))
 
     return
 
