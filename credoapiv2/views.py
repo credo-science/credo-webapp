@@ -6,10 +6,11 @@ import base64
 from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
-
-from credoapi.backends import TokenBackend
+from rest_framework import status
 
 from credoapi.models import User, Detection, Device
+
+from credoapiv2.authentication import DRFTokenAuthentication
 
 
 class ManageUser(APIView):
@@ -18,7 +19,7 @@ class ManageUser(APIView):
 
 
 class ManageDetection(APIView):
-    authentication_classes = (TokenBackend, )
+    authentication_classes = (DRFTokenAuthentication, )
     parser_classes = (JSONParser,)
 
     def post(self, request, format=None):
@@ -48,4 +49,4 @@ class ManageDetection(APIView):
             }
             return Response(data=data)
         else:
-            return Response()
+            return Response(data={'message': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
