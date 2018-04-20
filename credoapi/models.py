@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+
 # Create your models here.
 
 
@@ -15,7 +16,6 @@ class Team(models.Model):
 
 
 class User(AbstractUser):
-
     team = models.ForeignKey(Team, on_delete=models.CASCADE, blank=True, null=True)
     display_name = models.CharField(max_length=24)
     key = models.CharField(max_length=255, unique=True, blank=False)

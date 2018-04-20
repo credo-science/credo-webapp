@@ -59,7 +59,6 @@ class InputFrameHandler(APIView):
                 return Response(self.wrap_error('login problem', str(e)),
                                 status=status.HTTP_401_UNAUTHORIZED)
             except Exception, e:
-                raise e
                 return Response(self.wrap_error('internal server error', str(e)),
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

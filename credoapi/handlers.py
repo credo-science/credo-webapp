@@ -11,6 +11,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def handle_register_frame(frame):
     # throw proper exception on duplicated user
     user_info = frame['body']['user_info']
