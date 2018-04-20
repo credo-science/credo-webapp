@@ -1,5 +1,5 @@
-from credoapi.helpers import OutputFrame, OutputHeader, Body
-from credoapi.serializers import OutputFrameSerializer
+from credoapi.helpers import OutputFrame, OutputHeader, Body, UserInfo, generate_key
+from credoapi.serializers import OutputFrameSerializer, UserInfoSerializer
 from credoapi.models import User, Team, Device, Detection
 from credoapi.exceptions import RegisterException, LoginException
 
@@ -7,19 +7,9 @@ from django.db.utils import IntegrityError
 from django.core.mail import send_mail
 from django.contrib.auth import authenticate
 
-import string
-from random import choice
-
 import logging
 
 logger = logging.getLogger(__name__)
-
-CHARS = string.ascii_letters
-
-
-def generate_key():
-    return ''.join(choice(CHARS) for x in range(8))
-
 
 def handle_register_frame(frame):
     # throw proper exception on duplicated user
@@ -39,15 +29,14 @@ def handle_register_frame(frame):
         key = generate_key()
 
     try:
-        user = User.objects.create(
+        user = User.objects.create_user(
             team=team,
             display_name=user_name,
             key=key,
+            password=key,
             username=user_name,
             email=user_email
         )
-        user.set_password(key)
-        user.save()
     except IntegrityError as e:
         if 'UNIQUE' in e.message:
             logger.info("Already registered user tried to register! {%s, %s}" % (user_name, user_email))
