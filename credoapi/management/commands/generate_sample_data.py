@@ -159,19 +159,27 @@ class Command(BaseCommand):
         user_count = 10
         detection_count = 100
 
+        if not User.objects.filter(username='admin'):
+            User.objects.create_superuser(
+                email='admin@email.com',
+                username='admin',
+                display_name='Admin',
+                password='adminpassword',
+                key='adminkey1234',
+            )
+
         for i in range(team_count):
             teams += [Team.objects.create(name='team%02d' % i)]
 
         for i in range(user_count):
-            users += [User.objects.create(
+            users += [User.objects.create_user(
                 email='user%02d@email.com' % i,
                 username='user%02d' % i,
                 display_name='User%02d' % i,
+                password='password%02d' % i,
                 key='aaaa%02d' % i,
                 team=choice(teams)
             )]
-            users[i].set_password('password%02d' % i)
-            users[i].save()
 
         for i in range(user_count):
             devices += [Device.objects.create(

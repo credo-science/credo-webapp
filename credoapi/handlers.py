@@ -1,18 +1,10 @@
-from credoapi.helpers import OutputFrame, OutputHeader, Body, UserInfo
+from credoapi.helpers import OutputFrame, OutputHeader, Body, UserInfo, generate_key
 from credoapi.serializers import OutputFrameSerializer
 from credoapi.models import User, Team, Device, Detection
 
 from django.db.utils import IntegrityError
 from django.core.mail import send_mail
 
-import string
-from random import choice
-
-CHARS = string.ascii_letters
-
-
-def generate_key():
-    return ''.join(choice(CHARS) for x in range(8))
 
 
 def handle_register_frame(frame):
@@ -33,15 +25,14 @@ def handle_register_frame(frame):
         key = generate_key()
 
     try:
-        user = User.objects.create(
+        user = User.objects.create_user(
             team=team,
             display_name=user_name,
             key=key,
+            password=key,
             username=user_name,
             email=user_email
         )
-        user.set_password(key)
-        user.save()
     except IntegrityError as e:
         if 'UNIQUE' in e.message:
             raise Exception("Username or e-mail address is already registered!")

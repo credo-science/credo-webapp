@@ -1,3 +1,9 @@
+from random import choice
+import string
+
+CHARS = string.ascii_letters
+
+
 class InputFrame(object):
     def __init__(self, header=None, body=None):
         self.header = header
@@ -51,3 +57,7 @@ class Error(object):
     def __init__(self, error=None, message=None):
         self.error = error
         self.message = message
+
+
+def generate_key():
+    return ''.join(choice(CHARS) for _ in range(8))
