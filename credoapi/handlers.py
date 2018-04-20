@@ -1,10 +1,11 @@
-from credoapi.helpers import OutputFrame, OutputHeader, Body, UserInfo
+from credoapi.helpers import OutputFrame, OutputHeader, Body
 from credoapi.serializers import OutputFrameSerializer
 from credoapi.models import User, Team, Device, Detection
-from credoapi.exceptions import RegisterException
+from credoapi.exceptions import RegisterException, LoginException
 
 from django.db.utils import IntegrityError
 from django.core.mail import send_mail
+from django.contrib.auth import authenticate
 
 import string
 from random import choice
@@ -69,13 +70,22 @@ def handle_register_frame(frame):
 
 
 def handle_login_frame(frame):
-    # user_info = UserInfo('myteam', 'email', 'name', 'key')
-    # body = Body(user_info=user_info)
-    # output_header = OutputHeader('server', 'login', '1.3', 123123123)
-    # output_frame = OutputFrame(output_header, body)
-    # output_frame_serializer = OutputFrameSerializer(output_frame)
-    # return output_frame_serializer.data
-    return ''
+    key = frame['body']['key_info']['key']
+
+    user = authenticate(token=key)
+
+    if user == None:
+        logger.info("Unsuccessful login attempt." % user.display_name)
+        raise LoginException("Wrong username or password!")
+
+    logger.info("User %s logged in." % user.display_name)
+
+    user_info = UserInfoSerializer(user)
+    body = Body(user_info=user_info)
+    output_header = OutputHeader('server', 'login', '1.3')
+    output_frame = OutputFrame(output_header, body)
+    output_frame_serializer = OutputFrameSerializer(output_frame)
+    return output_frame_serializer.data
 
 
 def handle_ping_frame(frame):

@@ -1,3 +1,6 @@
+import time
+
+
 class InputFrame(object):
     def __init__(self, header=None, body=None):
         self.header = header
@@ -23,9 +26,10 @@ class OutputHeader(object):
         self.server = server
         self.frame_type = frame_type
         self.protocol = protocol
-        self.time_stamp = time_stamp
+        self.time_stamp = int(time.time()) if time_stamp is None else time_stamp
 
 
+# Not used
 class UserInfo(object):
     def __init__(self, team=None, email=None, name=None, key=None):
         self.team = team
