@@ -1,5 +1,5 @@
 from credoapi.helpers import OutputFrame, OutputHeader, Body, UserInfo, generate_key
-from credoapi.serializers import OutputFrameSerializer, UserInfoSerializer
+from credoapi.serializers import OutputFrameSerializer, UserInfoSerializer, InputFrameSerializer
 from credoapi.models import User, Team, Device, Detection
 from credoapi.exceptions import RegisterException, LoginException
 
@@ -11,6 +11,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
+# TODO: use serializer.save() instead of reading raw data
 
 def handle_register_frame(frame):
     # throw proper exception on duplicated user
@@ -83,4 +85,16 @@ def handle_ping_frame(frame):
 
 
 def handle_detection_frame(frame):
-    pass
+    key = frame['body']['key_info']['key']
+
+    user = authenticate(token=key)
+
+    if user == None:
+        logger.info("Unsuccessful login attempt." % user.display_name)
+        raise LoginException("Wrong username or password!")
+
+    frame_serializer = InputFrameSerializer(frame)
+    frame = frame_serializer.save()
+    detection = frame.body.detection
+    detection.user = user
+    detection.save()
