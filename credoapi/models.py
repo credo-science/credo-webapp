@@ -20,7 +20,7 @@ class User(AbstractUser):
     display_name = models.CharField(max_length=24)
     key = models.CharField(max_length=255, unique=True, blank=False)
     email = models.EmailField(unique=True, blank=False)
-    email_confirmation_token = models.CharField(max_length=255)
+    email_confirmation_token = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         return "User %s (%s)" % (self.display_name, self.email)

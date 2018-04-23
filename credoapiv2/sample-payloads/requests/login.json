@@ -1,4 +1,6 @@
 {
+  "username": "user01",
+  "password": "password01",
   "device_id": "abcdef",
   "device_model": "galaxy xcover 4",
   "android_version": "26-8.0",

@@ -1,3 +1,8 @@
 {
-  "message": "There is a new version of app available."
+  "message": "There is a new version of app available.",
+  "username": "exampleusername",
+  "display_name": "Grzegorz Brzęczyszczykiewicz",
+  "email": "email@email.com",
+  "team": "CYFRONET",
+  "token": "AAAA1234"
 }

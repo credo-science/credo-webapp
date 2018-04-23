@@ -32,19 +32,14 @@ class ManageUserLogin(APIView):
     post:
     Login user
     """
-    authentication_classes = (DRFTokenAuthentication, )
     parser_classes = (JSONParser,)
 
     def post(self, request, format=None):
-        if request.user.is_authenticated:
-            try:
-                handle_login(request)
-                return Response(status=status.HTTP_200_OK)
-            except LoginException as e:
-                return Response(data={'message': 'Login failed. Reason: ' + e.message},
-                                status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response(data={'message': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+        try:
+            return Response(data=handle_login(request), status=status.HTTP_200_OK)
+        except LoginException as e:
+            return Response(data={'message': 'Login failed. Reason: ' + e.message},
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class ManageDetection(APIView):

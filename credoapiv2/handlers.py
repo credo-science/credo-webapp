@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import base64
 
+from django.contrib.auth import authenticate
 from django.core.mail import send_mail
 from django.db.utils import IntegrityError
 
@@ -43,7 +44,25 @@ def handle_registration(request):
 
 
 def handle_login(request):
-    pass
+    if request.data.get('username'):
+        user = authenticate(username=request.data['username'], password=request.data['password'])
+    elif request.data.get('email'):
+        user = authenticate(username=request.data['username'], password=request.data['password'])
+    else:
+        raise LoginException('Missing credentials.')
+    if not user:
+        raise LoginException('Invalid username/email and password combination or unverified email.')
+    if not user.is_active:
+        raise LoginException('Email not verified.')
+
+    data = {
+        'username': user.username,
+        'display_dame': user.display_name,
+        'email': user.email,
+        'team': user.team.name,
+        'token': user.key
+    }
+    return data
 
 
 def handle_detection(request):
