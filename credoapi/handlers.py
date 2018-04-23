@@ -38,6 +38,16 @@ def handle_register_frame(frame):
             username=user_name,
             email=user_email
         )
+
+        device_info = frame.body.device_info
+
+        device, _ = Device.objects.get_or_create(
+            device_id=device_info.deviceId,
+            device_model=device_info.deviceModel,
+            android_version=device_info.androidVersion,
+            user=user
+        )
+
     except IntegrityError as e:
         if 'UNIQUE' in e.message:
             logger.info("Already registered user tried to register! {%s, %s}" % (user_name, user_email))
@@ -67,6 +77,15 @@ def handle_login_frame(frame):
     if user == None:
         logger.info("Unsuccessful login attempt.")
         raise LoginException("Wrong username or password!")
+
+    device_info = frame.body.device_info
+
+    device, _ = Device.objects.get_or_create(
+        device_id=device_info.deviceId,
+        device_model=device_info.deviceModel,
+        android_version=device_info.androidVersion,
+        user=user
+    )
 
     logger.info("User %s logged in." % user.display_name)
 
