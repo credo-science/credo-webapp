@@ -35,7 +35,6 @@ class OutputHeader(object):
         self.time_stamp = int(time.time()) if time_stamp is None else time_stamp
 
 
-# Not used
 class UserInfo(object):
     def __init__(self, team=None, email=None, name=None, key=None):
         self.team = team
@@ -49,12 +48,41 @@ class KeyInfo(object):
         self.key = key
 
 
+class DeviceInfo(object):
+    def __init(self, device_id=None, device_model=None, android_version=None):
+        self.device_id = device_id
+        self.device_model = device_model
+        android_version = android_version
+
+
+class DetectionInfo(object):
+    def __init__(self,
+                 id=None, accuracy=None, altitude=None, frame_content=None, height=None, width=None, latitude=None,
+                 longitude=None, provider=None, timestamp=None
+                 ):
+        self.id = id
+        self.accuracy = accuracy
+        self.altitude = altitude
+        self.frame_content = frame_content
+        self.height = height
+        self.width = width
+        self.latitude = latitude
+        self.longitude = longitude
+        self.provider = provider
+        self.timestamp = timestamp
+
+
+class OutputBody(object):
+    def __init__(self, device_info=None, user_info=None, key_info=None, detection=None):
+        self.user_info = UserInfo(**user_info)
+
+
 class Body(object):
     def __init__(self, device_info=None, user_info=None, key_info=None, detection=None):
-        self.device_info = device_info
-        self.user_info = user_info
-        self.key_info = key_info
-        self.detection = detection
+        self.device_info = DeviceInfo(**device_info) if device_info else None
+        self.user_info = UserInfo(**user_info) if user_info else None
+        self.key_info = KeyInfo(**key_info) if key_info else None
+        self.detection = DetectionInfo(**detection) if detection else None
 
 
 class Error(object):

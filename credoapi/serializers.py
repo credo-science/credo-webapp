@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from credoapi.models import Device, User, Detection, Team
-from credoapi.helpers import InputFrame, InputHeader, OutputHeader, Body, KeyInfo, Error
+from credoapi.helpers import InputFrame, InputHeader, Body
 
 INPUT_FRAME_TYPES = ['detection', 'login', 'ping', 'register']
 OUTPUT_FRAME_TYPES = ['login']
@@ -36,7 +35,6 @@ class DetectionSerializer(serializers.Serializer):
     timestamp = serializers.IntegerField()
 
 
-
 # Body
 
 class BodySerializer(serializers.Serializer):
@@ -44,6 +42,12 @@ class BodySerializer(serializers.Serializer):
     user_info = UserInfoSerializer(required=False)
     key_info = KeyInfoSerializer(required=False)
     detection = DetectionSerializer(required=False)
+
+
+# Output Body
+
+class OutputBodySerializer(serializers.Serializer):
+    user_info = UserInfoSerializer(required=False)
 
 
 # Header
@@ -58,6 +62,7 @@ class InputHeaderSerializer(serializers.Serializer):
         if frame_type_raw not in INPUT_FRAME_TYPES:
             raise serializers.ValidationError("Frame type must be one of types: %s" % ', '.join(INPUT_FRAME_TYPES))
         return frame_type_raw
+
 
 # OutputHeader
 
@@ -118,7 +123,7 @@ class InputFrameSerializer(serializers.Serializer):
 
 class OutputFrameSerializer(serializers.Serializer):
     header = OutputHeaderSerializer()
-    body = BodySerializer()
+    body = OutputBodySerializer()
 
     def validate(self, data):
         frame_type = data['header']['frame_type']
@@ -130,6 +135,7 @@ class OutputFrameSerializer(serializers.Serializer):
             raise serializers.ValidationError("Frame type must be one of types: %s" % ', '.join(OUTPUT_FRAME_TYPES))
 
         return data
+
 
 class ErrorSerializer(serializers.Serializer):
     error = serializers.CharField(max_length=20)
