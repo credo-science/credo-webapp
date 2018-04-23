@@ -15,16 +15,15 @@ logger = logging.getLogger(__name__)
 # TODO: use serializer.save() instead of reading raw data
 
 def handle_register_frame(frame):
-    user_info = frame['body']['user_info']
-    # device_info = frame['body']['device_info']
+    user_info = frame.body.user_info
 
     # create or get team
-    team_name = user_info['team']
+    team_name = user_info.team
     team, _ = Team.objects.get_or_create(name=team_name)
 
     # create user
-    user_email = user_info['email']
-    user_name = user_info['name']
+    user_email = user_info.email
+    user_name = user_info.name
 
     key = generate_key()
     while User.objects.filter(key=key).exists():
