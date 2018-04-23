@@ -72,17 +72,17 @@ class DetectionInfo(object):
         self.timestamp = timestamp
 
 
-class OutputBody(object):
-    def __init__(self, device_info=None, user_info=None, key_info=None, detection=None):
-        self.user_info = UserInfo(**user_info)
-
-
 class Body(object):
     def __init__(self, device_info=None, user_info=None, key_info=None, detection=None):
         self.device_info = DeviceInfo(**device_info) if device_info else None
         self.user_info = UserInfo(**user_info) if user_info else None
         self.key_info = KeyInfo(**key_info) if key_info else None
         self.detection = DetectionInfo(**detection) if detection else None
+
+
+class OutputBody(object):
+    def __init__(self, user_info=None):
+        self.user_info = user_info
 
 
 class Error(object):

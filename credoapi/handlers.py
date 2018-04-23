@@ -60,7 +60,7 @@ def handle_register_frame(frame):
 
 
 def handle_login_frame(frame):
-    key = frame['body']['key_info']['key']
+    key = frame.body.key_info.key
 
     user = authenticate(token=key)
 
@@ -70,9 +70,9 @@ def handle_login_frame(frame):
 
     logger.info("User %s logged in." % user.display_name)
 
-    user_info = UserInfoSerializer(user)
+    user_info = UserInfo(team=user.team.name, email=user.email, name=user.display_name, key=user.key)
     body = OutputBody(user_info=user_info)
-    output_header = OutputHeader('server', 'login', '1.3')
+    output_header = OutputHeader('2.0', 'login', '1.0')
     output_frame = OutputFrame(output_header, body)
     output_frame_serializer = OutputFrameSerializer(output_frame)
     return output_frame_serializer.data

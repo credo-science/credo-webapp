@@ -60,6 +60,7 @@ class InputFrameHandler(APIView):
             except Exception, e:
                 return Response(self.wrap_error('internal server error', str(e)),
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            # TODO: add logging here
 
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
