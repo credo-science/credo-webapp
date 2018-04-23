@@ -4,6 +4,8 @@ from credoapi.helpers import InputFrame, InputHeader, Body
 INPUT_FRAME_TYPES = ['detection', 'login', 'ping', 'register']
 OUTPUT_FRAME_TYPES = ['login']
 
+# WARNING: serializers for v1 api don't operate on model directly, no data is stored in db
+
 
 class DeviceInfoSerializer(serializers.Serializer):
     deviceId = serializers.CharField(max_length=50)
