@@ -191,11 +191,13 @@ class InputFrameSerializer(serializers.Serializer):
         return data
 
     def create(self, validated_data):
-        return InputFrame(**validated_data)
+        header = InputHeader(validated_data.get('header'))
+        body = Body(validated_data.get('body'))
+        return InputFrame(header=header, body=body)
 
     def update(self, instance, validated_data):
-        instance.header = validated_data.get('header', instance.header)
-        instance.body = validated_data.get('body', instance.body)
+        instance.header = InputHeader(validated_data.get('header', instance.header))
+        instance.body = Body(validated_data.get('body', instance.body))
 
 
 # OutputFrame

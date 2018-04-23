@@ -15,7 +15,6 @@ logger = logging.getLogger(__name__)
 # TODO: use serializer.save() instead of reading raw data
 
 def handle_register_frame(frame):
-    # throw proper exception on duplicated user
     user_info = frame['body']['user_info']
     # device_info = frame['body']['device_info']
 
@@ -85,7 +84,7 @@ def handle_ping_frame(frame):
 
 
 def handle_detection_frame(frame):
-    key = frame['body']['key_info']['key']
+    key = frame['body']['user_info']['key']
 
     user = authenticate(token=key)
 
@@ -93,8 +92,11 @@ def handle_detection_frame(frame):
         logger.info("Unsuccessful login attempt." % user.display_name)
         raise LoginException("Wrong username or password!")
 
-    frame_serializer = InputFrameSerializer(frame)
+    frame_serializer = InputFrameSerializer(data=frame)
+    frame_serializer.is_valid()
     frame = frame_serializer.save()
+    print frame.body
     detection = frame.body.detection
     detection.user = user
+    logger.info("New detection from user: %s" % user.display_name)
     detection.save()
