@@ -3,10 +3,33 @@ from __future__ import unicode_literals
 
 import base64
 
-from credoapi.models import User, Detection, Device
+from django.db.utils import IntegrityError
+
+from credoapi.helpers import generate_key
+from credoapi.models import User, Team, Detection, Device
+
+from credoapiv2.exceptions import CredoAPIException, RegistrationException, LoginException
 
 
 def handle_registration(request):
+    try:
+        key = generate_key()
+        while User.objects.filter(key=key).exists():
+            key = generate_key()
+        User.objects.create_user(
+            team=Team.objects.get_or_create(name=request.data['team'])[0],
+            display_name=request.data['display_name'],
+            key=key,
+            password=key,
+            username=request.data['username'],
+            email=request.data['email']
+        )
+        # TODO: Send email
+    except IntegrityError:
+        RegistrationException("User with given username or email already exists.")
+
+
+def handle_login(request):
     pass
 
 
@@ -30,3 +53,7 @@ def handle_detection(request):
         )[0],
         user=request.user
     )
+
+
+def handle_ping(request):
+    pass

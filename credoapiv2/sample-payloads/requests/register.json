@@ -1,0 +1,12 @@
+{
+  "email": "email@email.com",
+  "username": "exampleusername",
+  "display_name": "Grzegorz Brzęczyszczykiewicz",
+  "password": "correct horse battery staple",
+  "team": "CYFRONET",
+  "language": "pl",
+  "device_id": "abcdef",
+  "device_model": "galaxy xcover 4",
+  "android_version": "26-8.0",
+  "app_version": "1.2.3"
+}

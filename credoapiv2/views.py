@@ -7,12 +7,44 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from credoapiv2.authentication import DRFTokenAuthentication
-from credoapiv2.handlers import handle_detection
+from credoapiv2.exceptions import CredoAPIException, RegistrationException, LoginException
+from credoapiv2.handlers import handle_registration, handle_login, handle_detection, handle_ping
 
 
 class ManageUserRegistration(APIView):
+    """
+    post:
+    Register user
+    """
+    parser_classes = (JSONParser,)
+
     def post(self, request, format=None):
-        return Response(data={'request_data': request.data})
+        try:
+            handle_registration(request)
+            return Response(status=status.HTTP_200_OK)
+        except RegistrationException as e:
+            return Response(data={'message': 'Registration failed. Reason: ' + e.message},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
+class ManageUserLogin(APIView):
+    """
+    post:
+    Login user
+    """
+    authentication_classes = (DRFTokenAuthentication, )
+    parser_classes = (JSONParser,)
+
+    def post(self, request, format=None):
+        if request.user.is_authenticated:
+            try:
+                handle_login(request)
+                return Response(status=status.HTTP_200_OK)
+            except LoginException as e:
+                return Response(data={'message': 'Login failed. Reason: ' + e.message},
+                                status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(data={'message': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class ManageDetection(APIView):
@@ -25,11 +57,31 @@ class ManageDetection(APIView):
 
     def post(self, request, format=None):
         if request.user.is_authenticated:
-            handle_detection(request)
-            data = {
-                'user': request.user.username,
-                'message': 'OK',
-            }
-            return Response(data=data)
+            try:
+                handle_detection(request)
+                return Response(status=status.HTTP_200_OK)
+            except CredoAPIException as e:
+                return Response(data={'message': 'Submitting detection failed. Reason: ' + e.message},
+                                status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(data={'message': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class ManagePing(APIView):
+    """
+    post:
+    Submit ping
+    """
+    authentication_classes = (DRFTokenAuthentication, )
+    parser_classes = (JSONParser,)
+
+    def post(self, request, format=None):
+        if request.user.is_authenticated:
+            try:
+                handle_ping(request)
+                return Response(status=status.HTTP_200_OK)
+            except CredoAPIException as e:
+                return Response(data={'message': 'Ping failed. Reason: ' + e.message},
+                                status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(data={'message': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
