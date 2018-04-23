@@ -35,9 +35,8 @@ class InputFrameHandler(APIView):
 
         serializer = InputFrameSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            frame = serializer.data
-            frame_type = frame['header']['frame_type']
+            frame = serializer.save()
+            frame_type = frame.header.frame_type
 
             try:
                 response = None
