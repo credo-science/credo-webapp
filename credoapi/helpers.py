@@ -52,7 +52,7 @@ class DeviceInfo(object):
     def __init__(self, deviceId=None, deviceModel=None, androidVersion=None):
         self.deviceId = deviceId
         self.deviceModel = deviceModel
-        androidVersion = androidVersion
+        self.androidVersion = androidVersion
 
 
 class DetectionInfo(object):
@@ -77,7 +77,7 @@ class Body(object):
         self.device_info = DeviceInfo(**device_info) if device_info else None
         self.user_info = UserInfo(**user_info) if user_info else None
         self.key_info = KeyInfo(**key_info) if key_info else None
-        self.detection = DetectionInfo(**detection) if detection else None
+        self.detection_info = DetectionInfo(**detection) if detection else None
 
 
 class OutputBody(object):

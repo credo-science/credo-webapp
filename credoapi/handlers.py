@@ -1,7 +1,7 @@
 from credoapi.helpers import OutputFrame, OutputHeader, OutputBody, Body, UserInfo, generate_key
 from credoapi.serializers import OutputFrameSerializer, UserInfoSerializer, InputFrameSerializer
 from credoapi.models import User, Team, Device, Detection
-from credoapi.exceptions import RegisterException, LoginException
+from credoapi.exceptions import RegisterException, LoginException, UnauthorizedException
 
 from django.db.utils import IntegrityError
 from django.core.mail import send_mail
@@ -65,7 +65,7 @@ def handle_login_frame(frame):
     user = authenticate(token=key)
 
     if user == None:
-        logger.info("Unsuccessful login attempt." % user.display_name)
+        logger.info("Unsuccessful login attempt.")
         raise LoginException("Wrong username or password!")
 
     logger.info("User %s logged in." % user.display_name)
@@ -83,19 +83,37 @@ def handle_ping_frame(frame):
 
 
 def handle_detection_frame(frame):
-    key = frame['body']['user_info']['key']
+    key = frame.body.user_info.key
 
     user = authenticate(token=key)
 
     if user == None:
-        logger.info("Unsuccessful login attempt." % user.display_name)
-        raise LoginException("Wrong username or password!")
+        logger.info("Unauthorized detection submission.")
+        raise UnauthorizedException("Wrong username or password!")
 
-    frame_serializer = InputFrameSerializer(data=frame)
-    frame_serializer.is_valid()
-    frame = frame_serializer.save()
-    print frame.body
-    detection = frame.body.detection
-    detection.user = user
-    logger.info("New detection from user: %s" % user.display_name)
-    detection.save()
+    device_info = frame.body.device_info
+
+    device, _ = Device.objects.get_or_create(
+        device_id=device_info.deviceId,
+        device_model=device_info.deviceModel,
+        android_version=device_info.androidVersion,
+        user=user
+    )
+
+    detection_info = frame.body.detection_info
+    detection = Detection.objects.create(
+        accuracy=detection_info.accuracy,
+        altitude=detection_info.altitude,
+        frame_content=detection_info.frame_content,
+        height=detection_info.height,
+        width=detection_info.width,
+        d_id=detection_info.id,
+        latitude=detection_info.latitude,
+        longitude=detection_info.longitude,
+        provider=detection_info.provider,
+        timestamp=detection_info.timestamp,
+        device=device,
+        user=user
+    )
+
+    logger.info("Stored detection for user %s." % user.display_name)

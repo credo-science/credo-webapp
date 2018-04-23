@@ -4,3 +4,7 @@ class RegisterException(Exception):
 
 class LoginException(Exception):
     pass
+
+
+class UnauthorizedException(Exception):
+    pass
