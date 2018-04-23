@@ -4,8 +4,7 @@ from __future__ import unicode_literals
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from credoapi.models import Team, User, Device, Detection
-from credoapi.serializers import InputFrameSerializer, OutputFrameSerializer, ErrorSerializer
+from credoapi.serializers import InputFrameSerializer, ErrorSerializer
 from credoapi.helpers import Error
 from credoapi.negotiation import IgnoreClientContentNegotiation
 from credoapi.handlers import handle_detection_frame, handle_login_frame, handle_ping_frame, handle_register_frame
