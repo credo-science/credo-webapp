@@ -49,10 +49,10 @@ class KeyInfo(object):
 
 
 class DeviceInfo(object):
-    def __init(self, device_id=None, device_model=None, android_version=None):
-        self.device_id = device_id
-        self.device_model = device_model
-        android_version = android_version
+    def __init__(self, deviceId=None, deviceModel=None, androidVersion=None):
+        self.deviceId = deviceId
+        self.deviceModel = deviceModel
+        androidVersion = androidVersion
 
 
 class DetectionInfo(object):
