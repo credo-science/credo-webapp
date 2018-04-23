@@ -3,9 +3,10 @@ from __future__ import unicode_literals
 
 import base64
 
+from django.core.mail import send_mail
 from django.db.utils import IntegrityError
 
-from credoapi.helpers import generate_key
+from credoapi.helpers import generate_key, generate_token
 from credoapi.models import User, Team, Detection, Device
 
 from credoapiv2.exceptions import CredoAPIException, RegistrationException, LoginException
@@ -16,15 +17,27 @@ def handle_registration(request):
         key = generate_key()
         while User.objects.filter(key=key).exists():
             key = generate_key()
-        User.objects.create_user(
+        email_confirmation_token = generate_token()
+        user = User.objects.create_user(
             team=Team.objects.get_or_create(name=request.data['team'])[0],
             display_name=request.data['display_name'],
             key=key,
-            password=key,
+            password=request.data['password'],
             username=request.data['username'],
-            email=request.data['email']
+            email=request.data['email'],
+            is_active=False,
+            email_confirmation_token=email_confirmation_token,
         )
-        # TODO: Send email
+        if user:
+            send_mail(
+                'Credo API registration information',
+                'Hello!\n\nThank you for registering in Credo API Portal, '
+                'please confirm your email by visiting the link below:\n\n  '
+                '<a href="https://credo.science/web/confirm_email/{token}">https://credo.science/web/confirm_email/{token}</a> %s \n\n'
+                'best regards,\nCredo Team'.format(token=email_confirmation_token),
+                'credoapi@credo.science',
+                [user.email],
+            )
     except IntegrityError:
         RegistrationException("User with given username or email already exists.")
 

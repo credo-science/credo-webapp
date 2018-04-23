@@ -76,3 +76,11 @@ def team_page(request, name=''):
 
     }
     return render(request, 'credoweb/team.html', context)
+
+
+def confirm_email(request, token=''):
+    u = get_object_or_404(User, email_confirmation_token=token)
+    u.is_active = True
+    u.save()
+    context = {}
+    return render(request, 'credoweb/confirm_email.html', context)
