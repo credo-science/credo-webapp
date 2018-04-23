@@ -9,6 +9,7 @@ name = "pypi"
 djangorestframework = "*"
 django = "*"
 markdown = "*"
+coreapi = "*"
 
 [requires]
 python_version = "2.7"
