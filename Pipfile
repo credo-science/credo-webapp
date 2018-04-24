@@ -7,7 +7,7 @@ name = "pypi"
 
 [packages]
 djangorestframework = "*"
-django = "*"
+django = "~=1.11"
 markdown = "*"
 coreapi = "*"
 
