@@ -13,7 +13,9 @@ from credoapi.exceptions import RegisterException, LoginException, UnauthorizedE
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 
-import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class InputFrameHandler(APIView):
@@ -60,7 +62,7 @@ class InputFrameHandler(APIView):
                 return Response(self.wrap_error('Unauthorized', str(e)),
                                 status=status.HTTP_401_UNAUTHORIZED)
             except Exception, e:
-                raise e
+                logging.exception("Error processing request")
                 return Response(self.wrap_error('internal server error', str(e)),
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             # TODO: add logging here
