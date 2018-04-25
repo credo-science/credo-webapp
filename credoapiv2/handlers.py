@@ -40,7 +40,7 @@ def handle_registration(request):
                 [user.email],
             )
     except IntegrityError:
-        RegistrationException("User with given username or email already exists.")
+        raise RegistrationException("User with given username or email already exists.")
 
 
 def handle_login(request):
