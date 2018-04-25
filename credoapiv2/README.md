@@ -74,6 +74,8 @@ Submit detection
 
 **Example request:** [detection.json](sample-payloads/requests/detection.json)
 
+**Example response:** [detection_success.json](sample-payloads/responses/detection_success.json)
+
 **On success:** HTTP_2xx
 
 **On failure:** HTTP_4xx/HTTP_5xx (optional message)

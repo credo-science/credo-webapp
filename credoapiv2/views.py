@@ -63,8 +63,8 @@ class ManageDetection(APIView):
     def post(self, request, format=None):
         if request.user.is_authenticated:
             try:
-                handle_detection(request)
-                return Response(status=status.HTTP_200_OK)
+                data = handle_detection(request)
+                return Response(data=data, status=status.HTTP_200_OK)
             except CredoAPIException as e:
                 return Response(data={'message': 'Submitting detection failed. Reason: ' + e.message},
                                 status=status.HTTP_400_BAD_REQUEST)

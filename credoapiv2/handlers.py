@@ -66,25 +66,30 @@ def handle_login(request):
 
 
 def handle_detection(request):
-    Detection.objects.create(
-        accuracy=request.data['accuracy'],
-        altitude=request.data['altitude'],
-        frame_content=base64.b64decode(request.data['frame_content']),
-        height=request.data['height'],
-        width=request.data['height'],
-        d_id=request.data['id'],
-        latitude=request.data['latitude'],
-        longitude=request.data['longitude'],
-        provider=request.data['provider'],
-        timestamp=request.data['timestamp'],
-        device=Device.objects.get_or_create(
-            device_id=request.data['device_id'],
-            device_model=request.data['device_model'],
-            android_version=request.data['android_version'],
+    data = {
+        'ids': []
+    }
+    for d in request.data['detections']:
+        data['ids'].append(Detection.objects.create(
+            accuracy=d['accuracy'],
+            altitude=d['altitude'],
+            frame_content=base64.b64decode(d['frame_content']),
+            height=d['height'],
+            width=d['height'],
+            d_id=d['id'],
+            latitude=d['latitude'],
+            longitude=d['longitude'],
+            provider=d['provider'],
+            timestamp=d['timestamp'],
+            device=Device.objects.get_or_create(
+                device_id=request.data['device_id'],
+                device_model=request.data['device_model'],
+                android_version=request.data['android_version'],
+                user=request.user
+            )[0],
             user=request.user
-        )[0],
-        user=request.user
-    )
+        ).pk)
+    return data
 
 
 def handle_ping(request):
