@@ -47,7 +47,7 @@ def handle_login(request):
     if request.data.get('username'):
         user = authenticate(username=request.data['username'], password=request.data['password'])
     elif request.data.get('email'):
-        user = authenticate(username=request.data['username'], password=request.data['password'])
+        user = authenticate(username=request.data['email'], password=request.data['password'])
     else:
         raise LoginException('Missing credentials.')
     if not user:
