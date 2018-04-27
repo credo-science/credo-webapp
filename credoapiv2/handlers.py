@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate
 from django.core.mail import send_mail
 from django.db.utils import IntegrityError
 
-from credoapi.helpers import generate_key, generate_token
+from credoapi.helpers import generate_token
 from credoapi.models import User, Team, Detection, Device, Ping
 
 from credoapiv2.exceptions import CredoAPIException, RegistrationException, LoginException
@@ -15,9 +15,7 @@ from credoapiv2.exceptions import CredoAPIException, RegistrationException, Logi
 
 def handle_registration(request):
     try:
-        key = generate_key()
-        while User.objects.filter(key=key).exists():
-            key = generate_key()
+        key = generate_token()
         email_confirmation_token = generate_token()
         user = User.objects.create_user(
             team=Team.objects.get_or_create(name=request.data['team'])[0],
