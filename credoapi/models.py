@@ -63,6 +63,7 @@ class Detection(models.Model):
 
 class Ping(models.Model):
     timestamp = models.BigIntegerField(db_index=True)
+    delta_time = models.IntegerField()
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 

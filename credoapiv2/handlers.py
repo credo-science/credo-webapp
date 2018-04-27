@@ -129,6 +129,7 @@ def handle_detection(request):
 def handle_ping(request):
     Ping.objects.create(
         timestamp=request.data['timestamp'],
+        delta_time=request.data['delta_time'],
         device=Device.objects.get_or_create(
             device_id=request.data['device_id'],
             device_model=request.data['device_model'],
