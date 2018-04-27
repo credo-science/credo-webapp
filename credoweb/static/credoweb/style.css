@@ -1,0 +1,281 @@
+* {
+	box-sizing: border-box;
+}
+body {
+	margin: 0px;
+	background: #102037;
+	font-family: 'Lato', sans-serif;
+	font-size: 14px;
+	color: #555;
+	line-height: 1.5em;
+}
+.header {
+	width: 100%;
+	height: 50px;
+	background: white;
+	box-shadow: 0 10px 20px 0 rgba(0, 0, 0, .5);
+}
+td a {
+	color: #08f;
+	text-decoration: none;
+	transition: all .5s;
+}
+td a:hover {
+	color: #ff0065;
+	transition: all .5s;
+}
+.flags{
+	float: right;
+	padding-top: 15px;
+}
+.header ul {
+	list-style-type: none;
+	margin: 0;
+	float: left;
+	padding: 0;
+	overflow: hidden;
+	background: white;
+}
+.content {
+	padding: 15px;
+}
+.header li {
+	float: left;
+}
+.header li a {
+	display: block;
+	color: white;
+	text-align: center;
+	color: black;
+	padding: 13px 10px;
+	text-decoration: none;
+}
+.header li a:hover {
+	background-color: #111;
+	color: white;
+}
+.page {
+	width: 1200px;
+	margin: 0px auto;
+}
+.logo {
+	width: 100%;
+	float: left;
+}
+.left {
+	margin-right: 1%;
+	width: 66%;
+	float: left;
+}
+.right {
+	width: 33%;
+	float: left;
+}
+.box {
+	background-color: #fff;
+	border-radius: 3px;
+	box-shadow: 0 10px 20px 0 rgba(0, 0, 0, .5);
+	float: left;
+	width: 100%;
+}
+.logo-image {
+	width: 250px;
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
+.title {
+	font-size: 20px;
+	line-height: 1.5em;
+	color: #08f;
+	padding: 20px 25px;
+	border-bottom: 1px solid #eee;
+	font-weight: 400;
+}
+.buttons {
+	width: 100%;
+	float: left;
+	box-shadow: 5px 5px 5px rgba(0,0,0,0.15);
+	background: rgba(0,0,0,0.05);
+}
+.buttons ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+
+}
+.buttons li {
+	float: left;
+}
+.buttons li a {
+	display: block;
+	color: white;
+	text-align: center;
+	color: black;
+	padding: 25px 20px;
+	text-decoration: none;
+	background: #eee;
+	border-bottom: 1px solid #08f;
+}
+.buttons li a:hover {
+	background: rgba(0,0,0,0.2);
+}
+.label {
+	background: #ff0065;
+	float: left;
+	color: white;
+	padding-right: 5px;
+	padding-left: 5px;
+	margin-right: 10px;
+	border-radius: 5px;
+	margin-left: 20px;
+}
+.information {
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-bottom: 20px;
+	margin-top: 20px;
+}
+.panel {
+	width: 100%;
+	float: left;
+}
+.panel-users {
+	width: 50%;
+	float: left;
+}
+.panel-users-registerd {
+	width: 50%;
+	float: left;
+}
+
+table {
+	width: 100%;
+	box-shadow: 0px 5px 5px rgba(0,0,0,0.05);
+
+}
+tr:nth-child(2n+1) {
+	background: rgba(0,0,0,0.05);
+}
+th {
+	border-bottom: 2px solid rgba(0,0,0,0.1);
+	font-size: 13px;
+	text-align: left;
+	padding: 5px;
+}
+td {
+	font-size: 13px;
+	border-bottom: 1px solid rgba(0,0,0,0.1);
+	padding: 5px;
+}
+.input {
+	display: block;
+	margin: 0;
+	border: 0;
+	width: 100%;
+	padding: 20px 25px;
+	background: #eee;
+	outline: 0;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #fff;
+	transition: all .5s;
+}
+.submit {
+	display: block;
+	float: right;
+	border: 0;
+	padding: 10px 20px;
+	border-radius: 3px;
+	background: #08f;
+	color: #fff;
+	font-size: 14px;
+	line-height: 1em;
+	letter-spacing: 1px;
+	cursor: pointer;
+	opacity: .75;
+	outline: 0;
+	transition: all .5s;
+}
+.footer {
+	width: 100%;
+	background: rgba(255,255,255,0.1);
+	padding: 5px;
+	float: left;
+	margin-top: 30px;
+	text-align: center;
+	font-size: 12px;
+	color: white;
+}
+.right-info {
+	padding: 20px 25px;
+	border-top: 1px solid #eee;
+	margin-top: 20px;
+}
+.right-submit {
+	overflow: hidden;
+	padding-right: 25px;
+}
+.hide {
+	float: right;
+	color: grey;
+}
+
+
+
+@media screen and (max-width: 1000px) {
+	.page {
+		width: 800px;
+	}
+
+}
+@media screen and (max-width: 800px) {
+	.page {
+		width: 600px;
+	}
+	.left {
+		width: 100%;
+	}
+	.right {
+		width: 100%;
+		margin-top: 10px;
+	}
+	.panel-users {
+		width: 100%;
+	}
+	.panel-users-registerd {
+		width: 100%;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.page {
+		width: 400px;
+	}
+	.left {
+		width: 100%;
+	}
+	.right {
+		width: 100%;
+		margin-top: 10px;
+	}
+	.panel-users {
+		width: 100%;
+	}
+	.panel-users-registerd {
+		width: 100%;
+	}
+	.buttons li {
+		float: left;
+		width: 100%;
+	}
+	.buttons li a {
+		display: block;
+		color: white;
+		text-align: center;
+		color: black;
+		padding: 5px 5px;
+		text-decoration: none;
+		background: #eee;
+		border-bottom: 1px solid #08f;
+	}
+}
