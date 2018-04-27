@@ -84,6 +84,7 @@ def handle_detection(request):
             timestamp=d['timestamp'],
             device=Device.objects.get_or_create(
                 device_id=request.data['device_id'],
+                device_type=request.data['device_type'],
                 device_model=request.data['device_model'],
                 system_version=request.data['system_version'],
                 user=request.user
