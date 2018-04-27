@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 from django.db.utils import IntegrityError
 
 from credoapi.helpers import generate_key, generate_token
-from credoapi.models import User, Team, Detection, Device
+from credoapi.models import User, Team, Detection, Device, Ping
 
 from credoapiv2.exceptions import CredoAPIException, RegistrationException, LoginException
 
@@ -60,6 +60,7 @@ def handle_login(request):
         'display_dame': user.display_name,
         'email': user.email,
         'team': user.team.name,
+        'language': user.language,
         'token': user.key
     }
     return data
@@ -84,13 +85,23 @@ def handle_detection(request):
             device=Device.objects.get_or_create(
                 device_id=request.data['device_id'],
                 device_model=request.data['device_model'],
-                android_version=request.data['android_version'],
+                system_version=request.data['system_version'],
                 user=request.user
             )[0],
-            user=request.user
+            user=request.user,
+            team=request.user.team
         ).pk)
     return data
 
 
 def handle_ping(request):
-    pass
+    Ping.objects.create(
+        timestamp=request.data['timestamp'],
+        device=Device.objects.get_or_create(
+            device_id=request.data['device_id'],
+            device_model=request.data['device_model'],
+            system_version=request.data['system_version'],
+            user=request.user
+        )[0],
+        user=request.user
+    )

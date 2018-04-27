@@ -27,6 +27,6 @@
 	],
 	"device_id": "abcdef",
 	"device_model": "galaxy xcover 4",
-	"android_version": "26-8.0",
+	"system_version": "26-8.0",
 	"app_version": "1.2.3"
 }

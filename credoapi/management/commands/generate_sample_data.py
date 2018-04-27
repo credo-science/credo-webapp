@@ -185,7 +185,7 @@ class Command(BaseCommand):
             devices += [Device.objects.create(
                 device_id=(self.generate_random_string(8)),
                 device_model='galaxy s%d' % i,
-                android_version='23-6.0',
+                system_version='23-6.0',
                 user=users[i]
             )]
 
@@ -202,7 +202,8 @@ class Command(BaseCommand):
                 provider='gps',
                 timestamp=int(time() - 5000 + random() * 10000),
                 device=choice(devices),
-                user=choice(users)
+                user=choice(users),
+                team=choice(teams)
             )
 
     def handle(self, *args, **options):

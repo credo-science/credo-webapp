@@ -24,7 +24,7 @@ def index(request):
                 'display_name': d.user.display_name,
             },
             'team': {
-                'name': d.user.team.name,
+                'name': d.team.name,
             },
             'img': base64.encodestring(d.frame_content)
         } for d in recent_detections],
