@@ -59,6 +59,26 @@ Login user
 
 **On failure:** HTTP_4xx/HTTP_5xx (optional message)
 
+## /api/v2/user/update_info
+Update user info
+
+**Authorization:** token
+
+** Optional fields **
+* `display_name`
+* `team`
+* `language`
+
+**Example requests:**
+* [update_info.json](sample-payloads/requests/update_info.json)
+* [update_info2.json](sample-payloads/requests/update_info2.json)
+
+**Example response:** [update_info_success.json](sample-payloads/responses/update_info_success.json)
+
+**On success:** HTTP_2xx
+
+**On failure:** HTTP_4xx/HTTP_5xx (optional message)
+
 ## /api/v2/start (Not implemented)
 
 **Authorization:** token

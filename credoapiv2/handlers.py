@@ -66,6 +66,37 @@ def handle_login(request):
     return data
 
 
+def handle_update_info(request):
+    user = request.user
+    update_fields = []
+
+    if request.data.get('display_name'):
+        user.display_name = request.data.get('display_name')
+        update_fields.append('display_name')
+
+    if request.data.get('team'):
+        user.team = Team.objects.get_or_create(name=request.data['team'])
+        update_fields.append('team')
+
+    if request.data.get('language'):
+        user.language = request.data.get('language')
+        update_fields.append('language')
+
+    try:
+        user.save(update_fields=update_fields)
+    except IntegrityError:
+        raise CredoAPIException('Invalid parameters')
+
+    data = {
+        'username': user.username,
+        'display_dame': user.display_name,
+        'email': user.email,
+        'team': user.team.name,
+        'language': user.language,
+    }
+    return data
+
+
 def handle_detection(request):
     data = {
         'ids': []

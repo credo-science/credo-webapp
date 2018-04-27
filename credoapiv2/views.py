@@ -8,7 +8,7 @@ from rest_framework import status
 
 from credoapiv2.authentication import DRFTokenAuthentication
 from credoapiv2.exceptions import CredoAPIException, RegistrationException, LoginException
-from credoapiv2.handlers import handle_registration, handle_login, handle_detection, handle_ping
+from credoapiv2.handlers import handle_registration, handle_login, handle_detection, handle_update_info, handle_ping
 
 import logging
 
@@ -50,6 +50,29 @@ class ManageUserLogin(APIView):
         except Exception as e:
             logger.exception(e)
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ManageUserInfo(APIView):
+    """
+    post:
+    Change information about user
+    """
+    authentication_classes = (DRFTokenAuthentication, )
+    parser_classes = (JSONParser,)
+
+    def post(self, request, format=None):
+        if request.user.is_authenticated:
+            try:
+                data = handle_update_info(request)
+                return Response(data=data, status=status.HTTP_200_OK)
+            except CredoAPIException as e:
+                return Response(data={'message': 'Updating user info failed. Reason: ' + e.message},
+                                status=status.HTTP_400_BAD_REQUEST)
+            except Exception as e:
+                logger.exception(e)
+                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response(data={'message': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class ManageDetection(APIView):
