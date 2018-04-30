@@ -18,17 +18,17 @@ def handle_registration(request):
     serializer = RegisterRequestSerializer(data=request.data)
     if not serializer.is_valid():
         raise CredoAPIException(serializer.errors)
-    data = serializer.validated_data
+    vd = serializer.validated_data
     try:
         key = generate_token()
         email_confirmation_token = generate_token()
         user = User.objects.create_user(
-            team=Team.objects.get_or_create(name=data['team'])[0],
-            display_name=data['display_name'],
+            team=Team.objects.get_or_create(name=vd['team'])[0],
+            display_name=vd['display_name'],
             key=key,
-            password=data['password'],
-            username=data['username'],
-            email=data['email'],
+            password=vd['password'],
+            username=vd['username'],
+            email=vd['email'],
             is_active=False,
             email_confirmation_token=email_confirmation_token,
         )
@@ -47,10 +47,14 @@ def handle_registration(request):
 
 
 def handle_login(request):
-    if request.data.get('username'):
-        user = authenticate(username=request.data['username'], password=request.data['password'])
+    serializer = RegisterRequestSerializer(data=request.data)
+    if not serializer.is_valid():
+        raise CredoAPIException(serializer.errors)
+    vd = serializer.validated_data
+    if vd.get('username'):
+        user = authenticate(username=vd['username'], password=vd['password'])
     elif request.data.get('email'):
-        user = authenticate(username=request.data['email'], password=request.data['password'])
+        user = authenticate(username=vd['email'], password=vd['password'])
     else:
         raise LoginException('Missing credentials.')
     if not user:
@@ -70,19 +74,23 @@ def handle_login(request):
 
 
 def handle_update_info(request):
+    serializer = RegisterRequestSerializer(data=request.data)
+    if not serializer.is_valid():
+        raise CredoAPIException(serializer.errors)
+    vd = serializer.validated_data
     user = request.user
     update_fields = []
 
-    if request.data.get('display_name'):
-        user.display_name = request.data.get('display_name')
+    if vd.get('display_name'):
+        user.display_name = vd['display_name']
         update_fields.append('display_name')
 
-    if request.data.get('team'):
-        user.team = Team.objects.get_or_create(name=request.data['team'])
+    if vd.get('team'):
+        user.team = Team.objects.get_or_create(name=vd['team'])
         update_fields.append('team')
 
-    if request.data.get('language'):
-        user.language = request.data.get('language')
+    if vd.get('language'):
+        user.language = vd['language']
         update_fields.append('language')
 
     try:

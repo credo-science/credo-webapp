@@ -9,7 +9,6 @@ from rest_framework import status
 from credoapiv2.authentication import DRFTokenAuthentication
 from credoapiv2.exceptions import CredoAPIException, RegistrationException, LoginException
 from credoapiv2.handlers import handle_registration, handle_login, handle_detection, handle_update_info, handle_ping
-from credoapiv2.serializers import RegisterRequestSerializer
 
 import logging
 
@@ -51,6 +50,9 @@ class ManageUserLogin(APIView):
             return Response(data=handle_login(request), status=status.HTTP_200_OK)
         except LoginException as e:
             return Response(data={'message': 'Login failed. Reason: ' + e.message},
+                            status=status.HTTP_400_BAD_REQUEST)
+        except CredoAPIException as e:
+            return Response(data={'message':  e.message},
                             status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             logger.exception(e)
