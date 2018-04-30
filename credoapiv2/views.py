@@ -16,7 +16,7 @@ logging.basicConfig()
 logger = logging.getLogger("apiv2.views")
 
 
-class ManageUserRegistration(APIView):
+class UserRegistrationView(APIView):
     """
     post:
     Register user
@@ -38,7 +38,7 @@ class ManageUserRegistration(APIView):
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class ManageUserLogin(APIView):
+class UserLoginView(APIView):
     """
     post:
     Login user
@@ -59,7 +59,7 @@ class ManageUserLogin(APIView):
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class ManageUserInfo(APIView):
+class UserInfoView(APIView):
     """
     post:
     Change information about user
@@ -67,7 +67,7 @@ class ManageUserInfo(APIView):
     authentication_classes = (DRFTokenAuthentication, )
     parser_classes = (JSONParser,)
 
-    def post(self, request, format=None):
+    def post(self, request):
         if request.user.is_authenticated:
             try:
                 data = handle_update_info(request)
@@ -82,7 +82,7 @@ class ManageUserInfo(APIView):
             return Response(data={'message': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-class ManageDetection(APIView):
+class DetectionView(APIView):
     """
     post:
     Submit detection
@@ -90,7 +90,7 @@ class ManageDetection(APIView):
     authentication_classes = (DRFTokenAuthentication, )
     parser_classes = (JSONParser,)
 
-    def post(self, request, format=None):
+    def post(self, request):
         if request.user.is_authenticated:
             try:
                 data = handle_detection(request)
@@ -105,7 +105,7 @@ class ManageDetection(APIView):
             return Response(data={'message': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-class ManagePing(APIView):
+class PingView(APIView):
     """
     post:
     Submit ping
@@ -113,7 +113,7 @@ class ManagePing(APIView):
     authentication_classes = (DRFTokenAuthentication, )
     parser_classes = (JSONParser,)
 
-    def post(self, request, format=None):
+    def post(self, request):
         if request.user.is_authenticated:
             try:
                 handle_ping(request)

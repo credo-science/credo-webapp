@@ -20,17 +20,15 @@ def handle_registration(request):
         raise CredoAPIException(serializer.errors)
     vd = serializer.validated_data
     try:
-        key = generate_token()
-        email_confirmation_token = generate_token()
         user = User.objects.create_user(
             team=Team.objects.get_or_create(name=vd['team'])[0],
             display_name=vd['display_name'],
-            key=key,
+            key=generate_token(),
             password=vd['password'],
             username=vd['username'],
             email=vd['email'],
             is_active=False,
-            email_confirmation_token=email_confirmation_token,
+            email_confirmation_token=generate_token(),
         )
         if user:
             send_mail(
@@ -38,7 +36,7 @@ def handle_registration(request):
                 'Hello!\n\nThank you for registering in Credo API Portal, '
                 'please confirm your email by visiting the link below:\n\n  '
                 '<a href="https://credo.science/web/confirm_email/{token}">https://credo.science/web/confirm_email/{token}</a> %s \n\n'
-                'best regards,\nCredo Team'.format(token=email_confirmation_token),
+                'best regards,\nCredo Team'.format(token=user.email_confirmation_token),
                 'credoapi@credo.science',
                 [user.email],
             )

@@ -1,7 +1,5 @@
 from rest_framework import serializers
 
-from credoapi.models import User, Team, Device
-
 
 class GenericRequestSerializer(serializers.Serializer):
     device_id = serializers.CharField(max_length=50)

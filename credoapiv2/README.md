@@ -73,7 +73,7 @@ Login user
 
 **On failure:** HTTP_4xx/HTTP_5xx (optional message)
 
-## /api/v2/user/update_info
+## /api/v2/user/info
 Update user info
 
 **Authorization:** token

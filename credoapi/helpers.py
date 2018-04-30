@@ -1,10 +1,11 @@
 import base64
 import os
-from random import choice
+import random
 import string
 import time
 
 CHARS = string.ascii_letters
+choice = random.SystemRandom().choice
 
 
 class InputFrame(object):
