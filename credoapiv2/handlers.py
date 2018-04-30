@@ -11,14 +11,16 @@ from credoapi.helpers import generate_token
 from credoapi.models import User, Team, Detection, Device, Ping
 
 from credoapiv2.exceptions import CredoAPIException, RegistrationException, LoginException
-from credoapiv2.serializers import RegisterRequestSerializer
+from credoapiv2.serializers import RegisterRequestSerializer, LoginRequestSerializer, InfoRequestSerializer,\
+    DetectionRequestSerializer, PingRequestSerializer
 
 
 def handle_registration(request):
     serializer = RegisterRequestSerializer(data=request.data)
     if not serializer.is_valid():
-        raise CredoAPIException(serializer.errors)
+        raise CredoAPIException(str(serializer.errors))
     vd = serializer.validated_data
+
     try:
         user = User.objects.create_user(
             team=Team.objects.get_or_create(name=vd['team'])[0],
@@ -45,10 +47,11 @@ def handle_registration(request):
 
 
 def handle_login(request):
-    serializer = RegisterRequestSerializer(data=request.data)
+    serializer = LoginRequestSerializer(data=request.data)
     if not serializer.is_valid():
-        raise CredoAPIException(serializer.errors)
+        raise CredoAPIException(str(serializer.errors))
     vd = serializer.validated_data
+
     if vd.get('username'):
         user = authenticate(username=vd['username'], password=vd['password'])
     elif request.data.get('email'):
@@ -72,10 +75,11 @@ def handle_login(request):
 
 
 def handle_update_info(request):
-    serializer = RegisterRequestSerializer(data=request.data)
+    serializer = PingRequestSerializer(data=request.data)
     if not serializer.is_valid():
-        raise CredoAPIException(serializer.errors)
+        raise CredoAPIException(str(serializer.errors))
     vd = serializer.validated_data
+
     user = request.user
     update_fields = []
 
@@ -107,10 +111,14 @@ def handle_update_info(request):
 
 
 def handle_detection(request):
+    serializer = DetectionRequestSerializer(data=request.data)
+    if not serializer.is_valid():
+        raise CredoAPIException(str(serializer.errors))
+    vd = serializer.validated_data
     data = {
         'ids': []
     }
-    for d in request.data['detections']:
+    for d in vd['detections']:
         data['ids'].append(Detection.objects.create(
             accuracy=d['accuracy'],
             altitude=d['altitude'],
@@ -123,10 +131,10 @@ def handle_detection(request):
             provider=d['provider'],
             timestamp=d['timestamp'],
             device=Device.objects.get_or_create(
-                device_id=request.data['device_id'],
-                device_type=request.data['device_type'],
-                device_model=request.data['device_model'],
-                system_version=request.data['system_version'],
+                device_id=vd['device_id'],
+                device_type=vd['device_type'],
+                device_model=vd['device_model'],
+                system_version=vd['system_version'],
                 user=request.user
             )[0],
             user=request.user,
@@ -136,13 +144,18 @@ def handle_detection(request):
 
 
 def handle_ping(request):
+    serializer = InfoRequestSerializer(data=request.data)
+    if not serializer.is_valid():
+        raise CredoAPIException(str(serializer.errors))
+    vd = serializer.validated_data
     Ping.objects.create(
-        timestamp=request.data['timestamp'],
-        delta_time=request.data['delta_time'],
+        timestamp=vd['timestamp'],
+        delta_time=vd['delta_time'],
         device=Device.objects.get_or_create(
-            device_id=request.data['device_id'],
-            device_model=request.data['device_model'],
-            system_version=request.data['system_version'],
+            device_id=vd['device_id'],
+            device_type=vd['device_type'],
+            device_model=vd['device_model'],
+            system_version=vd['system_version'],
             user=request.user
         )[0],
         user=request.user

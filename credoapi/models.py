@@ -33,9 +33,9 @@ class User(AbstractUser):
 # TODO: do we need this?
 class Device(models.Model):
     device_id = models.CharField(max_length=255)
+    device_type = models.CharField(max_length=255, default='phone_android')
     device_model = models.CharField(max_length=255)
     system_version = models.CharField(max_length=255)
-    type = models.CharField(max_length=255, default='phone_android')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):

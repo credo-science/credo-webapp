@@ -28,3 +28,25 @@ class InfoRequestSerializer(GenericRequestSerializer):
     display_name = serializers.CharField(max_length=50, required=False)
     team = serializers.CharField(max_length=50, required=False)
     language = serializers.CharField(max_length=10, required=False)
+
+
+class DetectionSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    accuracy = serializers.FloatField()
+    altitude = serializers.FloatField()
+    frame_content = serializers.CharField(max_length=5000, default="")
+    height = serializers.FloatField()
+    width = serializers.IntegerField()
+    latitude = serializers.FloatField()
+    longitude = serializers.FloatField()
+    provider = serializers.CharField(max_length=20)
+    timestamp = serializers.IntegerField()
+
+
+class DetectionRequestSerializer(GenericRequestSerializer):
+    detections = DetectionSerializer(many=True)
+
+
+class PingRequestSerializer(GenericRequestSerializer):
+    timestamp = serializers.IntegerField()
+    delta_time = serializers.IntegerField()
