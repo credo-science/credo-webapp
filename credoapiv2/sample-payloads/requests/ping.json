@@ -2,6 +2,7 @@
   "timestamp": 1524821575,
   "delta_time": 158,
   "device_id": "abcdef",
+  "device_type": "phone_android",
   "device_model": "galaxy xcover 4",
   "system_version": "26-8.0",
   "app_version": "1.2.3"

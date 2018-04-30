@@ -47,6 +47,7 @@ Register user
 | `team` | Name of the team to join | 50 characters or fewer. |
 | `language` | User language code (ISO 639-1) | 10 characters or fewer. |
 | `device_id` | Device ID | 50 characters or fewer. |
+| `device_type` | Device type | 50 characters or fewer. |
 | `device_model` | Device model | 50 characters or fewer. |
 | `system_version` | System version | 50 characters or fewer. |
 | `app_version` | Application version | 50 characters or fewer. |
