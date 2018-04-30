@@ -38,6 +38,19 @@ Server returns HTTP_401 (optional message)
 ## /api/v2/user/register
 Register user
 
+| Field | Description | Constraint |
+| --- | --- | --- |
+| `email` | User email address | Valid email address. |
+| `username` | Desired username | 50 characters or fewer. Letters, digits and @/./+/-/_ only. |
+| `display_name` | User display name | 50 characters or fewer. |
+| `password` | User password | 128 characters or fewer. |
+| `team` | Name of the team to join | 50 characters or fewer. |
+| `language` | User language code (ISO 639-1) | 10 characters or fewer. |
+| `device_id` | Device ID | 50 characters or fewer. |
+| `device_model` | Device model | 50 characters or fewer. |
+| `system_version` | System version | 50 characters or fewer. |
+| `app_version` | Application version | 50 characters or fewer. |
+
 **Authorization:** none
 
 **Example request:** [register.json](sample-payloads/requests/register.json)

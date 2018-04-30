@@ -11,19 +11,24 @@ from credoapi.helpers import generate_token
 from credoapi.models import User, Team, Detection, Device, Ping
 
 from credoapiv2.exceptions import CredoAPIException, RegistrationException, LoginException
+from credoapiv2.serializers import RegisterRequestSerializer
 
 
 def handle_registration(request):
+    serializer = RegisterRequestSerializer(data=request.data)
+    if not serializer.is_valid():
+        raise CredoAPIException(serializer.errors)
+    data = serializer.validated_data
     try:
         key = generate_token()
         email_confirmation_token = generate_token()
         user = User.objects.create_user(
-            team=Team.objects.get_or_create(name=request.data['team'])[0],
-            display_name=request.data['display_name'],
+            team=Team.objects.get_or_create(name=data['team'])[0],
+            display_name=data['display_name'],
             key=key,
-            password=request.data['password'],
-            username=request.data['username'],
-            email=request.data['email'],
+            password=data['password'],
+            username=data['username'],
+            email=data['email'],
             is_active=False,
             email_confirmation_token=email_confirmation_token,
         )
