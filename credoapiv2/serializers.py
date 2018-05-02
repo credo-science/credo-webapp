@@ -35,7 +35,7 @@ class DetectionSerializer(serializers.Serializer):
     accuracy = serializers.FloatField()
     altitude = serializers.FloatField()
     frame_content = serializers.CharField(max_length=5000, default="")
-    height = serializers.FloatField()
+    height = serializers.IntegerField()
     width = serializers.IntegerField()
     latitude = serializers.FloatField()
     longitude = serializers.FloatField()
