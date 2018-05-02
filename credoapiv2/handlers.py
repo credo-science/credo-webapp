@@ -7,8 +7,8 @@ from django.contrib.auth import authenticate
 from django.core.mail import send_mail
 from django.db.utils import IntegrityError
 
-from credoapi.helpers import generate_token
-from credoapi.models import User, Team, Detection, Device, Ping
+from credocommon.models import User, Team, Detection, Device, Ping
+from credocommon.helpers import generate_token
 
 from credoapiv2.exceptions import CredoAPIException, RegistrationException, LoginException
 from credoapiv2.serializers import RegisterRequestSerializer, LoginRequestSerializer, InfoRequestSerializer,\

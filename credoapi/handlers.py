@@ -1,6 +1,6 @@
 from credoapi.helpers import OutputFrame, OutputHeader, OutputBody, UserInfo, generate_key
 from credoapi.serializers import OutputFrameSerializer
-from credoapi.models import User, Team, Device, Detection
+from credocommon.models import User, Team, Device, Detection
 from credoapi.exceptions import RegisterException, LoginException, UnauthorizedException
 
 from django.db.utils import IntegrityError

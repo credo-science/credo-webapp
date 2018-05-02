@@ -5,7 +5,7 @@ from django.shortcuts import render, get_object_or_404
 
 from django.db.models import Count
 
-from credoapi.models import Team, User, Detection
+from credocommon.models import Team, User, Detection
 
 import base64
 

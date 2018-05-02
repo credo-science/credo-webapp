@@ -1,5 +1,3 @@
-import base64
-import os
 import random
 import string
 import time
@@ -94,7 +92,3 @@ class Error(object):
 
 def generate_key():
     return ''.join(choice(CHARS) for _ in range(8))
-
-
-def generate_token():
-    return base64.b16encode(os.urandom(32)).lower()

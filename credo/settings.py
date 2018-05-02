@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'credoapi.apps.CredoapiConfig',
     'credoapiv2.apps.Credoapiv2Config',
+    'credocommon.apps.CredocommonConfig',
     'credoweb.apps.CredowebConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -84,7 +85,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = 'credoapi.User'
+AUTH_USER_MODEL = 'credocommon.User'
 
 AUTHENTICATION_BACKENDS = (
     'credoapi.backends.TokenBackend',

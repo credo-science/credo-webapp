@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from credoapi.models import User, Team, Detection, Device
+from credocommon.models import User, Team, Detection, Device
 
 from random import choice, random, randint
 from time import time
