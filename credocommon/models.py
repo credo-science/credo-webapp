@@ -18,7 +18,7 @@ class Team(models.Model):
 
 
 class User(AbstractUser):
-    team = models.ForeignKey(Team, on_delete=models.CASCADE, default=lambda: Team.objects.get_or_create(name='')[0])
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
     display_name = models.CharField(max_length=50)
     key = models.CharField(max_length=255, db_index=True, unique=True, blank=False)
     email = models.EmailField(unique=True, blank=False)

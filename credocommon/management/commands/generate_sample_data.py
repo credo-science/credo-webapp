@@ -166,6 +166,7 @@ class Command(BaseCommand):
                 display_name='Admin',
                 password='adminpassword',
                 key='adminkey1234',
+                team=Team.objects.get_or_create(name='')[0]
             )
 
         for i in range(team_count):
