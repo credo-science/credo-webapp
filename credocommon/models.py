@@ -56,6 +56,7 @@ class Detection(models.Model):
     timestamp = models.BigIntegerField(db_index=True)
     time_received = models.BigIntegerField(blank=False)
     source = models.CharField(max_length=50, blank=False, default='unspecified')
+    visible = models.BooleanField(default=True)
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
@@ -65,6 +66,10 @@ class Detection(models.Model):
 
     def save(self, *args, **kwargs):
         self.time_received = int(time.time())
+        if not self.frame_content:
+            self.visible = False
+        else:
+            self.visible = True
         super(Detection, self).save(*args, **kwargs)
 
 

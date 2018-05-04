@@ -11,7 +11,7 @@ import base64
 
 
 def index(request):
-    recent_detections = Detection.objects.all().order_by('-timestamp')[:20]
+    recent_detections = Detection.objects.order_by('-timestamp').filter(visible=True)[:20]
     top_users = User.objects.annotate(detection_count=Count('detection')).order_by('-detection_count')[:5]
     context = {
         'detections_total': Detection.objects.count(),
@@ -39,7 +39,7 @@ def index(request):
 
 def user_page(request, username=''):
     u = get_object_or_404(User, username=username)
-    user_recent_detections = Detection.objects.filter(user=u).order_by('-timestamp')[:20]
+    user_recent_detections = Detection.objects.filter(user=u).order_by('-timestamp').filter(visible=True)[:20]
     user_detection_count = Detection.objects.filter(user=u).count()
     context = {
         'user': {
