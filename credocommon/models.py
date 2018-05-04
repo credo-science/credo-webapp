@@ -54,7 +54,7 @@ class Detection(models.Model):
     longitude = models.FloatField()
     provider = models.CharField(max_length=24)
     timestamp = models.BigIntegerField(db_index=True)
-    time_received = models.BigIntegerField(blank=False, default=int(time.time()))
+    time_received = models.BigIntegerField(blank=False)
     source = models.CharField(max_length=50, blank=False, default='unspecified')
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -62,6 +62,10 @@ class Detection(models.Model):
 
     def __str__(self):
         return "Detection %s" % self.id
+
+    def save(self, *args, **kwargs):
+        self.time_received = int(time.time())
+        super(Detection, self).save(*args, **kwargs)
 
 
 class Ping(models.Model):
