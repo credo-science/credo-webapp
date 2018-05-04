@@ -115,11 +115,9 @@ def handle_detection(request):
     if not serializer.is_valid():
         raise CredoAPIException(str(serializer.errors))
     vd = serializer.validated_data
-    data = {
-        'ids': []
-    }
+    detections = []
     for d in vd['detections']:
-        data['ids'].append(Detection.objects.create(
+        detections.append(Detection.objects.create(
             accuracy=d['accuracy'],
             altitude=d['altitude'],
             frame_content=base64.b64decode(d['frame_content']),
@@ -140,7 +138,13 @@ def handle_detection(request):
             )[0],
             user=request.user,
             team=request.user.team
-        ).pk)
+        ))
+    data = {
+        'detections': [{
+            'id': d.id  # TODO: Should we send more data?
+        } for d in detections]
+    }
+
     return data
 
 
