@@ -14,7 +14,7 @@ class RegisterRequestSerializer(GenericRequestSerializer):
     username = serializers.CharField(max_length=50)
     display_name = serializers.CharField(max_length=50)
     password = serializers.CharField(max_length=128)
-    team = serializers.CharField(max_length=50)
+    team = serializers.CharField(max_length=50, allow_blank=True)
     language = serializers.CharField(max_length=10)
 
 
@@ -26,7 +26,7 @@ class LoginRequestSerializer(GenericRequestSerializer):
 
 class InfoRequestSerializer(GenericRequestSerializer):
     display_name = serializers.CharField(max_length=50, required=False)
-    team = serializers.CharField(max_length=50, required=False)
+    team = serializers.CharField(max_length=50, allow_blank=True, required=False)
     language = serializers.CharField(max_length=10, required=False)
 
 

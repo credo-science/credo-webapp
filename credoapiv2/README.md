@@ -55,7 +55,7 @@ Register user
 | `username` | Desired username | 50 characters or fewer; letters, digits and @/./+/-/_ only |
 | `display_name` | User display name | 50 characters or fewer |
 | `password` | User password | 128 characters or fewer |
-| `team` | Name of the team to join | 50 characters or fewer |
+| `team` | Name of the team to join | 50 characters or fewer, empty string indicates no team |
 | `language` | User language code (ISO 639-1) | 10 characters or fewer |
 
 **Authorization:** none
@@ -93,7 +93,7 @@ Get or update user info
 | Field | Description | Constraint |
 | --- | --- | --- |
 | `display_name` | User display name | 50 characters or fewer |
-| `team` | Name of the team to join | 50 characters or fewer |
+| `team` | Name of the team to join | 50 characters or fewer, empty string indicates no team |
 | `language` | User language code (ISO 639-1) | 10 characters or fewer |
 
 **Required fields:** none

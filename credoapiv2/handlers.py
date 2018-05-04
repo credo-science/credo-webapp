@@ -75,7 +75,7 @@ def handle_login(request):
 
 
 def handle_update_info(request):
-    serializer = PingRequestSerializer(data=request.data)
+    serializer = InfoRequestSerializer(data=request.data)
     if not serializer.is_valid():
         raise CredoAPIException(str(serializer.errors))
     vd = serializer.validated_data
@@ -87,8 +87,8 @@ def handle_update_info(request):
         user.display_name = vd['display_name']
         update_fields.append('display_name')
 
-    if vd.get('team'):
-        user.team = Team.objects.get_or_create(name=vd['team'])
+    if vd.get('team') is not None:
+        user.team = Team.objects.get_or_create(name=vd['team'])[0]
         update_fields.append('team')
 
     if vd.get('language'):
@@ -144,7 +144,7 @@ def handle_detection(request):
 
 
 def handle_ping(request):
-    serializer = InfoRequestSerializer(data=request.data)
+    serializer = PingRequestSerializer(data=request.data)
     if not serializer.is_valid():
         raise CredoAPIException(str(serializer.errors))
     vd = serializer.validated_data
