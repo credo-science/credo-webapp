@@ -130,6 +130,7 @@ def handle_detection(request):
             longitude=d['longitude'],
             provider=d['provider'],
             timestamp=d['timestamp'],
+            source='api_v2',
             device=Device.objects.get_or_create(
                 device_id=vd['device_id'],
                 device_type=vd['device_type'],

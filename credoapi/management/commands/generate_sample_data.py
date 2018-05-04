@@ -201,6 +201,7 @@ class Command(BaseCommand):
                 longitude=45.0 + random() * 10,
                 provider='gps',
                 timestamp=int(time() - 5000 + random() * 10000),
+                source='sample_data_generator',
                 device=choice(devices),
                 user=choice(users),
                 team=choice(teams)

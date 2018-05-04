@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import time
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -16,9 +18,9 @@ class Team(models.Model):
 
 
 class User(AbstractUser):
-    team = models.ForeignKey(Team, on_delete=models.CASCADE, blank=True, null=True)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, default=lambda: Team.objects.get_or_create(name='')[0])
     display_name = models.CharField(max_length=50)
-    key = models.CharField(max_length=255, unique=True, blank=False)
+    key = models.CharField(max_length=255, db_index=True, unique=True, blank=False)
     email = models.EmailField(unique=True, blank=False)
     email_confirmation_token = models.CharField(max_length=255, blank=True)
     language = models.CharField(max_length=10, default='en')  # ISO 639-1
@@ -52,6 +54,8 @@ class Detection(models.Model):
     longitude = models.FloatField()
     provider = models.CharField(max_length=24)
     timestamp = models.BigIntegerField(db_index=True)
+    time_received = models.BigIntegerField(blank=False, default=int(time.time()))
+    source = models.CharField(max_length=50, blank=False, default='unspecified')
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)

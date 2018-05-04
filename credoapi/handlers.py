@@ -131,6 +131,7 @@ def handle_detection_frame(frame):
         longitude=detection_info.longitude,
         provider=detection_info.provider,
         timestamp=detection_info.timestamp,
+        source='api_v1',
         device=device,
         user=user
     )
