@@ -23,5 +23,6 @@ urlpatterns = [
     url(r'^web/', include('credoweb.urls')),
     url(r'^', include('credoapi.urls')),
     url(r'^api/v2/', include('credoapiv2.urls')),
+    url(r'^acra/', include('acra.urls')),
     url(r'^docs/', include_docs_urls(title='CREDO API documentation'))
 ]

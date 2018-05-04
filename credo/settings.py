@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'credoapiv2.apps.Credoapiv2Config',
     'credocommon.apps.CredocommonConfig',
     'credoweb.apps.CredowebConfig',
+    'acra.apps.AcraConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
