@@ -65,7 +65,7 @@ def handle_login(request):
 
     data = {
         'username': user.username,
-        'display_dame': user.display_name,
+        'display_name': user.display_name,
         'email': user.email,
         'team': user.team.name,
         'language': user.language,
@@ -102,7 +102,7 @@ def handle_update_info(request):
 
     data = {
         'username': user.username,
-        'display_dame': user.display_name,
+        'display_name': user.display_name,
         'email': user.email,
         'team': user.team.name,
         'language': user.language,
