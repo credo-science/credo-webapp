@@ -52,16 +52,16 @@ class InputFrameHandler(APIView):
                     handle_register_frame(frame)
 
                 return Response(response, status=status.HTTP_200_OK)
-            except RegisterException, e:
+            except RegisterException as e:
                 return Response(self.wrap_error('Registration problem', str(e)),
                                 status=status.HTTP_400_BAD_REQUEST)
-            except LoginException, e:
+            except LoginException as e:
                 return Response(self.wrap_error('Login problem', str(e)),
                                 status=status.HTTP_401_UNAUTHORIZED)
-            except UnauthorizedException, e:
+            except UnauthorizedException as e:
                 return Response(self.wrap_error('Unauthorized', str(e)),
                                 status=status.HTTP_401_UNAUTHORIZED)
-            except Exception, e:
+            except Exception as e:
                 logging.exception("Error processing request")
                 return Response(self.wrap_error('internal server error', str(e)),
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)

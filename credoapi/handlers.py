@@ -74,7 +74,7 @@ def handle_login_frame(frame):
 
     user = authenticate(token=key)
 
-    if user == None:
+    if user is None:
         logger.info("Unsuccessful login attempt.")
         raise LoginException("Wrong username or password!")
 
@@ -106,7 +106,7 @@ def handle_detection_frame(frame):
 
     user = authenticate(token=key)
 
-    if user == None:
+    if user is None:
         logger.info("Unauthorized detection submission.")
         raise UnauthorizedException("Wrong username or password!")
 

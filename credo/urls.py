@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
+from django.conf import settings
 from django.contrib import admin
 
 from rest_framework.documentation import include_docs_urls
@@ -26,3 +27,7 @@ urlpatterns = [
     url(r'^acra/', include('acra.urls')),
     url(r'^docs/', include_docs_urls(title='CREDO API documentation'))
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [url(r'__debug__/', include(debug_toolbar.urls))] + urlpatterns
