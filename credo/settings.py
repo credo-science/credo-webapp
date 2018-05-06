@@ -94,6 +94,7 @@ AUTH_USER_MODEL = 'credocommon.User'
 
 AUTHENTICATION_BACKENDS = (
     'credoapi.backends.TokenBackend',
+    'credocommon.backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
