@@ -11,7 +11,7 @@ import base64
 
 
 def index(request):
-    recent_detections = Detection.objects.order_by('-timestamp').filter(visible=True)[:20]
+    recent_detections = Detection.objects.order_by('-timestamp').filter(visible=True).select_related('user', 'team')[:20]
     top_users = User.objects.annotate(detection_count=Count('detection')).order_by('-detection_count')[:5]
     context = {
         'detections_total': Detection.objects.count(),
