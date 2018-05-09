@@ -65,7 +65,7 @@ class Detection(models.Model):
         return "Detection %s" % self.id
 
     def save(self, *args, **kwargs):
-        self.time_received = int(time.time())
+        self.time_received = int(time.time() * 1000)
         if not self.frame_content:
             self.visible = False
         else:
