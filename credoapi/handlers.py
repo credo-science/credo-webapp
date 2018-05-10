@@ -125,8 +125,17 @@ def handle_ping_frame(frame):
 
 def handle_detection_frame(frame):
     key = frame.body.user_info.key
+    user_info = frame.body.user_info
 
     user = authenticate(token=key)
+
+    # create or get team
+    team_name = user_info.team
+    team, _ = Team.objects.get_or_create(name=team_name)
+
+    if not team == user.team:
+        user.team = team
+        user.save()
 
     if user is None:
         logger.info("Unauthorized detection submission.")
@@ -155,7 +164,8 @@ def handle_detection_frame(frame):
         timestamp=detection_info.timestamp,
         source='api_v1',
         device=device,
-        user=user
+        user=user,
+        team = user.team
     )
 
     logger.info("Stored detection for user %s." % user.display_name)
