@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+	<head>
+       {% load static %}
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+		<link href="{% static "credoweb/style.css" %}" rel="stylesheet">
+		{% block title %}<title>api.credo.science</title>{% endblock %}
+
+	</head>
+
+	<body>
+
+		<!-- HEADER SECTION -->
+		<div class="header">
+			<div class="page">
+				<!-- HEADER MENU SECTION -->
+				<ul>
+					<li><a href="">Home</a></li>
+					<li><a href="">Help</a></li>
+				</ul>
+				<!-- END HEADER MENU SECTION -->
+
+				<!-- HEADER FLAGS SECTION -->
+                <!--
+				<div class="flags">
+					<img src="https://api.credo.science/media/images/flags/pl.png">
+				</div>
+				-->
+				<!-- END HEADER FLAGS SECTION -->
+			</div>
+		</div>
+		<!-- END HEADER SECTION -->
+
+
+		<!-- PAGE SECTION -->
+		<div class="page">
+
+			<!--LOGO SECTION -->
+			<div class="logo">
+				<img src="{% static "credoweb/credo-logo.png" %}" class="logo-image">
+			</div>
+			<!--END LOGO SECTION -->
+
+			<div class="left">
+				<div class="box">
+
+					<div class="title"> Api.credo.science </div>
+
+					<div class="information">
+							<div class="label">BETA 1.7</div>
+							This is beta, so please be forgiving if not all features work properly. Report issues/ideas/wishes on forum!
+					</div>
+
+					<div class="buttons">
+						<ul>
+							<li><a href="">Detections ( {{ detections_total }} ) </a></li>
+							<li><a href="">Users ( {{ users_total }} )</a></li>
+							<li><a href="">Teams ( {{ teams_total }} )</a></li>
+							<li><a href="">Maps</a></li>
+						</ul>
+					</div>
+
+ 					{% block content %}
+
+					<div class="panel">
+						<div class="panel-users">
+							<div class="title"> <i class="fas fa-chart-bar"></i> top 5 users</div>
+
+              {% if top_users %}
+
+								<table width="100%">
+									<tr>
+										<th> <i class="fas fa-sort"></i> Login</th>
+										<th> <i class="fas fa-sort"></i> Detections</th>
+									</tr>
+									{% for user in top_users %}
+									<tr>
+										<td><a href="{% url 'user_page' username=user.name %}">{{ user.display_name }}</a></td>
+										<td>{{ user.detection_count }}</td>
+									</tr>
+									{% endfor %}
+								</table>
+
+               {% endif %}
+
+
+						</div>
+
+						<div class="panel-users-registerd">
+							<div class="title"> <i class="fas fa-chart-bar"></i>5 registered users</div>
+
+							<table width="100%">
+								<tr>
+									<th> <i class="fas fa-sort"></i> Login</th>
+									<th> <i class="fas fa-sort"></i> Detections</th>
+								</tr>
+								<tr>
+									<td>  <a href="index.php?page=user&id=121"> kilo </a> </td>
+									<td> 116,661</td>
+								</tr>
+								<tr>
+									<td>  <a href="index.php?page=user&id=121"> kilo </a> </td>
+									<td> 116,661</td>
+								</tr>
+								<tr>
+									<td>  <a href="index.php?page=user&id=121"> kilo </a> </td>
+									<td> 116,661</td>
+								</tr>
+								<tr>
+									<td>  <a href="index.php?page=user&id=121"> kilo </a> </td>
+									<td> 116,661</td>
+								</tr>
+								<tr>
+									<td>  <a href="index.php?page=user&id=121"> kilo </a> </td>
+									<td> 116,661</td>
+								</tr>
+							</table>
+
+						</div>
+					</div>
+
+					<div class="panel">
+						<div class="title"> <i class="fas fa-chart-bar"></i> Last 20 detections </div>
+            {% if recent_detections %}
+						<table>
+							<tr>
+								<th> <i class="fas fa-sort"></i> date </th>
+								<th> <i class="fas fa-sort"></i> login</th>
+								<th> <i class="fas fa-sort"></i> team</th>
+								<th> <i class="fas fa-sort"></i> img</th>
+							</tr>
+              {% for detection in recent_detections %}
+							<tr>
+								<td width="30%"> 2 hours ago  </td>
+								<td><a href="{% url 'user_page' username=detection.user.name %}">{{ detection.user.display_name }}</a></td>
+								<td><a href="{% url 'team_page' name=detection.team.name %}">{{ detection.team.name }}</a></td>
+								<td width="50px" align="center"><img style="display:block; width:30px;height:30px;" src="data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABHNCSVQICAgIfAhkiAAAAQRJREFU
+								OI2tlEGShSAMRLvBKnfexMN4Eq/tyhtAZvGHVAjEcaYmVS4U8mi6BeacBf9YKRxI4dDfgLXW7l3k
+								3UaSVyMi+uiklEBymDNbMNkmANpIUieVUjoIyW4BW4xCsQqi5lktFmAbfwMZgDPDvUK73ahEpE/5
+								KUnrWxQKyQ/QBmEBVt22bTiOA/u+K7xBrV3JA/yKALCuK87zxH3fuK5ruqh+aylbgA/I2hF52HqW
+								tyfgTepdKCSHn3umMHpXhm325zdSaGHeii7laPuRmpnXC5ABlEFF36wHCiIV5Dw4VTh8fLgLyRTC
+								DDB/P59qXjawSPO2ACiPiXdSvLJa648Xqx//AgEbnuRqs6w3AAAAAElFTkSuQmCC
+								" class="big_img"></td>
+							</tr>
+							{% endfor %}
+            {% endif %}
+						</table>
+
+					</div>
+				</div>
+
+				{% endblock %}
+
+			</div>
+
+			<!-- LOGIN SECTION -->
+			<div class="right">
+				<div class="box">
+
+					{% block login %}
+
+					<div class="title"> Login area </div>
+
+					<form method="post" action="">
+
+						<input name="email_login" class="input" placeholder="Email" type="text">
+						<input name="passowrd_login" class="input"  placeholder="Password" type="text">
+						<div class="right-submit">
+							<input type="submit" class="submit" value="Sign In">
+						</div>
+						<div class="right-info">
+
+							<b> How does it work? </b> <br/>
+							Sign up now and use api for free
+
+						</div>
+
+					</form>
+
+				    </div>
+				    {% endblock %}
+			</div>
+			<!--END LOGIN SECTION -->
+
+		</div>
+		<!-- END PAGE SECTION -->
+
+		<!-- FOOTER SECTION -->
+		<div class="footer">
+			Copyright by Credo.science team
+		</div>
+		<!-- END FOOTER SECTION -->
+
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	</body>
+</html>
