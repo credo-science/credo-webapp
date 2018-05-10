@@ -102,7 +102,7 @@ def handle_ping_frame(frame):
     user = authenticate(token=key)
 
     if user is None:
-        logger.info("Unauthorized detection submission.")
+        logger.info("Unauthorized ping.")
         raise UnauthorizedException("Wrong username or password!")
 
     device_info = frame.body.device_info
@@ -120,7 +120,7 @@ def handle_ping_frame(frame):
         device=device
     )
 
-    logger.info("Stored detection for user %s." % user.display_name)
+    logger.info("Stored ping for user %s." % user.display_name)
 
 
 def handle_detection_frame(frame):
