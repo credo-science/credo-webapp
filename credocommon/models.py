@@ -6,8 +6,12 @@ import time
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from credocommon.helpers import generate_token
+
 
 # Create your models here.
+def get_default_team():
+    return Team.objects.get_or_create(name='')[0]
 
 
 class Team(models.Model):
@@ -20,13 +24,20 @@ class Team(models.Model):
 class User(AbstractUser):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     display_name = models.CharField(max_length=50)
-    key = models.CharField(max_length=255, db_index=True, unique=True, blank=False)
+    key = models.CharField(max_length=255, db_index=True, unique=True, blank=False, default=generate_token)
     email = models.EmailField(unique=True, blank=False)
     email_confirmation_token = models.CharField(max_length=255, blank=True)
     language = models.CharField(max_length=10, default='en')  # ISO 639-1
 
     def __str__(self):
         return "User %s (%s)" % (self.display_name, self.email)
+
+    def save(self, *args, **kwargs):
+        if not self.display_name:
+            self.display_name = self.username
+        if self.is_superuser:
+            self.team = get_default_team()
+        super(User, self).save(*args, **kwargs)
 
     def get_full_name(self):
         return self.display_name
