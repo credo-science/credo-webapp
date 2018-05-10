@@ -55,13 +55,13 @@ def handle_register_frame(frame):
             raise e
 
     # send email with key
-    # send_mail(
-    #     "Credo API registration information",
-    #     "Hello!\n\nThank you for registering in Credo API Portal, your generated access token is: %s please use it for login operation in the mobile app. \n\nbest regards,\nCredo Team" % key,
-    #     'credoapi@credo.science',
-    #     [user_email],
-    #     fail_silently=False
-    # )
+    send_mail(
+        "Credo API registration information",
+        "Hello!\n\nThank you for registering in Credo API Portal, your generated access token is: %s please use it for login operation in the mobile app. \n\nbest regards,\nCredo Team" % key,
+        'credoapi@credo.science',
+        [user_email],
+        fail_silently=False
+    )
 
     logger.info("Registered new user {%s, %s}" % (user_name, user_email))
 
