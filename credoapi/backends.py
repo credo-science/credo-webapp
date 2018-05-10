@@ -18,7 +18,10 @@ class TokenBackend(object):
     def authenticate(token=None):
         if token:
             try:
-                return User.objects.get(key=token)
+                user = User.objects.get(key=token)
+                if user.is_active:
+                    return user
+                return None
             except User.DoesNotExist:
                 return None
 

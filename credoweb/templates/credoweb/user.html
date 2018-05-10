@@ -5,7 +5,7 @@
     <title>Credoweb {{ user.display_name }} profile</title>
 </head>
 <body>
-<li>Name: {{ user.display_name }}</li>
+<h2>Name: {{ user.display_name }}</h2>
 <h2>Team: <a href="{% url 'team_page' name=user.team.name %}">{{ user.team.name }}</a></h2>
 <h2>Number of detections: {{ user.detection_count }}</h2>
 {% if user_recent_detections %}

@@ -4,6 +4,7 @@ from credoapi.helpers import InputFrame, InputHeader, Body
 INPUT_FRAME_TYPES = ['detection', 'login', 'ping', 'register']
 OUTPUT_FRAME_TYPES = ['login']
 
+
 # WARNING: serializers for v1 api don't operate on model directly, no data is stored in db
 
 
@@ -28,7 +29,7 @@ class DetectionSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     accuracy = serializers.FloatField()
     altitude = serializers.FloatField()
-    frame_content = serializers.CharField(max_length=5000)
+    frame_content = serializers.CharField(max_length=5000, required=False)
     height = serializers.FloatField()
     width = serializers.IntegerField()
     latitude = serializers.FloatField()

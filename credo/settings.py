@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 """
 Django settings for credo project.
 
@@ -20,12 +21,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 's&8vuuw2%e2ael_rx8a9(ucl5$mx(r80+j+!m!j@y6m2+*s4zb'
+
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 's&8vuuw2%e2ael_rx8a9(ucl5$mx(r80+j+!m!j@y6m2+*s4zb')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
+INTERNAL_IPS = ('127.0.0.1', )
 
 
 # Application definition
@@ -33,17 +37,21 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'credoapi.apps.CredoapiConfig',
     'credoapiv2.apps.Credoapiv2Config',
+    'credocommon.apps.CredocommonConfig',
     'credoweb.apps.CredowebConfig',
+    'acra.apps.AcraConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar',
     'rest_framework'
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -77,17 +85,31 @@ WSGI_APPLICATION = 'credo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if os.environ.get('DJANGO_DB_HOST'):
+    DATABASES = {
+        'default': {
+            'NAME': 'credo',
+            'ENGINE': 'mysql.connector.django',
+            'USER': os.environ.get('DJANGO_DB_USER'),
+            'PASSWORD': os.environ.get('DJANGO_DB_PASSWORD'),
+            'HOST': os.environ.get('DJANGO_DB_HOST'),
+            'PORT': int(os.environ.get('DJANGO_DB_PORT'))
+        }
     }
-}
 
-AUTH_USER_MODEL = 'credoapi.User'
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+
+AUTH_USER_MODEL = 'credocommon.User'
 
 AUTHENTICATION_BACKENDS = (
     'credoapi.backends.TokenBackend',
+    'credocommon.backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -129,7 +151,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-EMAIL_HOST = 'kinga.cyf-kr.edu.pl'
+EMAIL_HOST = os.environ.get('DJANGO_EMAIL_HOST', 'localhost')
 
 LOGGING = {
     'version': 1,

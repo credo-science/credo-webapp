@@ -7,27 +7,30 @@ from django.contrib.auth import authenticate
 from django.core.mail import send_mail
 from django.db.utils import IntegrityError
 
-from credoapi.helpers import generate_key, generate_token
-from credoapi.models import User, Team, Detection, Device
+from credocommon.models import User, Team, Detection, Device, Ping
+from credocommon.helpers import generate_token
 
 from credoapiv2.exceptions import CredoAPIException, RegistrationException, LoginException
+from credoapiv2.serializers import RegisterRequestSerializer, LoginRequestSerializer, InfoRequestSerializer,\
+    DetectionRequestSerializer, PingRequestSerializer
 
 
 def handle_registration(request):
+    serializer = RegisterRequestSerializer(data=request.data)
+    if not serializer.is_valid():
+        raise CredoAPIException(str(serializer.errors))
+    vd = serializer.validated_data
+
     try:
-        key = generate_key()
-        while User.objects.filter(key=key).exists():
-            key = generate_key()
-        email_confirmation_token = generate_token()
         user = User.objects.create_user(
-            team=Team.objects.get_or_create(name=request.data['team'])[0],
-            display_name=request.data['display_name'],
-            key=key,
-            password=request.data['password'],
-            username=request.data['username'],
-            email=request.data['email'],
+            team=Team.objects.get_or_create(name=vd['team'])[0],
+            display_name=vd['display_name'],
+            key=generate_token(),
+            password=vd['password'],
+            username=vd['username'],
+            email=vd['email'],
             is_active=False,
-            email_confirmation_token=email_confirmation_token,
+            email_confirmation_token=generate_token(),
         )
         if user:
             send_mail(
@@ -35,7 +38,7 @@ def handle_registration(request):
                 'Hello!\n\nThank you for registering in Credo API Portal, '
                 'please confirm your email by visiting the link below:\n\n  '
                 '<a href="https://credo.science/web/confirm_email/{token}">https://credo.science/web/confirm_email/{token}</a> %s \n\n'
-                'best regards,\nCredo Team'.format(token=email_confirmation_token),
+                'best regards,\nCredo Team'.format(token=user.email_confirmation_token),
                 'credoapi@credo.science',
                 [user.email],
             )
@@ -44,10 +47,15 @@ def handle_registration(request):
 
 
 def handle_login(request):
-    if request.data.get('username'):
-        user = authenticate(username=request.data['username'], password=request.data['password'])
+    serializer = LoginRequestSerializer(data=request.data)
+    if not serializer.is_valid():
+        raise CredoAPIException(str(serializer.errors))
+    vd = serializer.validated_data
+
+    if vd.get('username'):
+        user = authenticate(username=vd['username'], password=vd['password'])
     elif request.data.get('email'):
-        user = authenticate(username=request.data['email'], password=request.data['password'])
+        user = authenticate(email=vd['email'], password=vd['password'])
     else:
         raise LoginException('Missing credentials.')
     if not user:
@@ -57,20 +65,59 @@ def handle_login(request):
 
     data = {
         'username': user.username,
-        'display_dame': user.display_name,
+        'display_name': user.display_name,
         'email': user.email,
         'team': user.team.name,
+        'language': user.language,
         'token': user.key
     }
     return data
 
 
-def handle_detection(request):
+def handle_update_info(request):
+    serializer = InfoRequestSerializer(data=request.data)
+    if not serializer.is_valid():
+        raise CredoAPIException(str(serializer.errors))
+    vd = serializer.validated_data
+
+    user = request.user
+    update_fields = []
+
+    if vd.get('display_name'):
+        user.display_name = vd['display_name']
+        update_fields.append('display_name')
+
+    if vd.get('team') is not None:
+        user.team = Team.objects.get_or_create(name=vd['team'])[0]
+        update_fields.append('team')
+
+    if vd.get('language'):
+        user.language = vd['language']
+        update_fields.append('language')
+
+    try:
+        user.save(update_fields=update_fields)
+    except IntegrityError:
+        raise CredoAPIException('Invalid parameters')
+
     data = {
-        'ids': []
+        'username': user.username,
+        'display_name': user.display_name,
+        'email': user.email,
+        'team': user.team.name,
+        'language': user.language,
     }
-    for d in request.data['detections']:
-        data['ids'].append(Detection.objects.create(
+    return data
+
+
+def handle_detection(request):
+    serializer = DetectionRequestSerializer(data=request.data)
+    if not serializer.is_valid():
+        raise CredoAPIException(str(serializer.errors))
+    vd = serializer.validated_data
+    detections = []
+    for d in vd['detections']:
+        detections.append(Detection.objects.create(
             accuracy=d['accuracy'],
             altitude=d['altitude'],
             frame_content=base64.b64decode(d['frame_content']),
@@ -81,16 +128,40 @@ def handle_detection(request):
             longitude=d['longitude'],
             provider=d['provider'],
             timestamp=d['timestamp'],
+            source='api_v2',
             device=Device.objects.get_or_create(
-                device_id=request.data['device_id'],
-                device_model=request.data['device_model'],
-                android_version=request.data['android_version'],
+                device_id=vd['device_id'],
+                device_type=vd['device_type'],
+                device_model=vd['device_model'],
+                system_version=vd['system_version'],
                 user=request.user
             )[0],
-            user=request.user
-        ).pk)
+            user=request.user,
+            team=request.user.team
+        ))
+    data = {
+        'detections': [{
+            'id': d.id  # TODO: Should we send more data?
+        } for d in detections]
+    }
+
     return data
 
 
 def handle_ping(request):
-    pass
+    serializer = PingRequestSerializer(data=request.data)
+    if not serializer.is_valid():
+        raise CredoAPIException(str(serializer.errors))
+    vd = serializer.validated_data
+    Ping.objects.create(
+        timestamp=vd['timestamp'],
+        delta_time=vd['delta_time'],
+        device=Device.objects.get_or_create(
+            device_id=vd['device_id'],
+            device_type=vd['device_type'],
+            device_model=vd['device_model'],
+            system_version=vd['system_version'],
+            user=request.user
+        )[0],
+        user=request.user
+    )

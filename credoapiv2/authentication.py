@@ -21,6 +21,9 @@ class DRFTokenAuthentication(authentication.BaseAuthentication):
 
         if token:
             try:
-                return User.objects.get(key=token), None
+                user = User.objects.get(key=token)
+                if user.is_active:
+                    return user, None
+                return None
             except User.DoesNotExist:
                 return None

@@ -1,6 +1,6 @@
 from credoapi.helpers import OutputFrame, OutputHeader, OutputBody, UserInfo, generate_key
 from credoapi.serializers import OutputFrameSerializer
-from credoapi.models import User, Team, Device, Detection
+from credocommon.models import User, Team, Device, Detection, Ping
 from credoapi.exceptions import RegisterException, LoginException, UnauthorizedException
 
 from django.db.utils import IntegrityError
@@ -8,11 +8,10 @@ from django.core.mail import send_mail
 from django.contrib.auth import authenticate
 
 import logging
+import time
 
 logger = logging.getLogger(__name__)
 
-
-# TODO: use serializer.save() instead of reading raw data
 
 def handle_register_frame(frame):
     user_info = frame.body.user_info
@@ -44,7 +43,7 @@ def handle_register_frame(frame):
         device, _ = Device.objects.get_or_create(
             device_id=device_info.deviceId,
             device_model=device_info.deviceModel,
-            android_version=device_info.androidVersion,
+            system_version=device_info.androidVersion,
             user=user
         )
 
@@ -74,7 +73,7 @@ def handle_login_frame(frame):
 
     user = authenticate(token=key)
 
-    if user == None:
+    if user is None:
         logger.info("Unsuccessful login attempt.")
         raise LoginException("Wrong username or password!")
 
@@ -83,7 +82,7 @@ def handle_login_frame(frame):
     device, _ = Device.objects.get_or_create(
         device_id=device_info.deviceId,
         device_model=device_info.deviceModel,
-        android_version=device_info.androidVersion,
+        system_version=device_info.androidVersion,
         user=user
     )
 
@@ -98,15 +97,47 @@ def handle_login_frame(frame):
 
 
 def handle_ping_frame(frame):
-    pass
-
-
-def handle_detection_frame(frame):
     key = frame.body.user_info.key
 
     user = authenticate(token=key)
 
-    if user == None:
+    if user is None:
+        logger.info("Unauthorized ping.")
+        raise UnauthorizedException("Wrong username or password!")
+
+    device_info = frame.body.device_info
+
+    device, _ = Device.objects.get_or_create(
+        device_id=device_info.deviceId,
+        device_model=device_info.deviceModel,
+        system_version=device_info.androidVersion,
+        user=user
+    )
+
+    ping = Ping.objects.create(
+        timestamp=int(time.time() * 1000),
+        user=user,
+        device=device
+    )
+
+    logger.info("Stored ping for user %s." % user.display_name)
+
+
+def handle_detection_frame(frame):
+    key = frame.body.user_info.key
+    user_info = frame.body.user_info
+
+    user = authenticate(token=key)
+
+    # create or get team
+    team_name = user_info.team
+    team, _ = Team.objects.get_or_create(name=team_name)
+
+    if not team == user.team:
+        user.team = team
+        user.save()
+
+    if user is None:
         logger.info("Unauthorized detection submission.")
         raise UnauthorizedException("Wrong username or password!")
 
@@ -115,7 +146,7 @@ def handle_detection_frame(frame):
     device, _ = Device.objects.get_or_create(
         device_id=device_info.deviceId,
         device_model=device_info.deviceModel,
-        android_version=device_info.androidVersion,
+        system_version=device_info.androidVersion,
         user=user
     )
 
@@ -131,8 +162,10 @@ def handle_detection_frame(frame):
         longitude=detection_info.longitude,
         provider=detection_info.provider,
         timestamp=detection_info.timestamp,
+        source='api_v1',
         device=device,
-        user=user
+        user=user,
+        team = user.team
     )
 
     logger.info("Stored detection for user %s." % user.display_name)

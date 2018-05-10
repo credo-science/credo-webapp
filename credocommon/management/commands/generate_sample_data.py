@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from credoapi.models import User, Team, Detection, Device
+from credocommon.models import User, Team, Detection, Device
 
 from random import choice, random, randint
 from time import time
@@ -166,6 +166,7 @@ class Command(BaseCommand):
                 display_name='Admin',
                 password='adminpassword',
                 key='adminkey1234',
+                team=Team.objects.get_or_create(name='')[0]
             )
 
         for i in range(team_count):
@@ -185,7 +186,7 @@ class Command(BaseCommand):
             devices += [Device.objects.create(
                 device_id=(self.generate_random_string(8)),
                 device_model='galaxy s%d' % i,
-                android_version='23-6.0',
+                system_version='23-6.0',
                 user=users[i]
             )]
 
@@ -200,9 +201,11 @@ class Command(BaseCommand):
                 latitude=15.0 + random() * 10,
                 longitude=45.0 + random() * 10,
                 provider='gps',
-                timestamp=int(time() - 5000 + random() * 10000),
+                timestamp=int(time() * 1000 - 5000 + random() * 10000),
+                source='sample_data_generator',
                 device=choice(devices),
-                user=choice(users)
+                user=choice(users),
+                team=choice(teams)
             )
 
     def handle(self, *args, **options):

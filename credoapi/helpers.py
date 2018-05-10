@@ -1,10 +1,9 @@
-import base64
-import os
-from random import choice
+import random
 import string
 import time
 
 CHARS = string.ascii_letters
+choice = random.SystemRandom().choice
 
 
 class InputFrame(object):
@@ -93,7 +92,3 @@ class Error(object):
 
 def generate_key():
     return ''.join(choice(CHARS) for _ in range(8))
-
-
-def generate_token():
-    return base64.b16encode(os.urandom(32)).lower()

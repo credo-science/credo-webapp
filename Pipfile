@@ -7,9 +7,10 @@ name = "pypi"
 
 [packages]
 djangorestframework = "*"
+django-debug-toolbar = "*"
 django = "~=1.11"
 markdown = "*"
 coreapi = "*"
-
+mysql-connector-python = "*"
 [requires]
 python_version = "2.7"
