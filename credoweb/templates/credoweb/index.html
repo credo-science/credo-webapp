@@ -1,42 +1,96 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Credoweb recent detections</title>
-</head>
-<body>
-<h2>Number of detections: {{ detections_total }}</h2>
-<h2>Number of users: {{ users_total }}</h2>
-<h2>Number of teams: {{ teams_total }}</h2>
-{% if recent_detections %}
-    <h3>Recent detections:</h3>
-    <ul>
-    {% for detection in recent_detections %}
-        <li><ul>
-            <li>date: {{ detection.date }}</li>
-            <li>user: <a href="{% url 'user_page' username=detection.user.name %}">{{ detection.user.display_name }}</a></li>
-            <li>team: <a href="{% url 'team_page' name=detection.team.name %}">{{ detection.team.name }}</a></li>
-            <li>img: <img style="display:block;" src="data:image/jpeg;base64,{{ detection.img }}"></li>
-        </ul></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No recent detections.</p>
-{% endif %}
+{% extends "credoweb/base.html" %}
 
-{% if top_users %}
-    <h3>Top users:</h3>
-    <ul>
-    {% for user in top_users %}
-        <li><ul>
-            <li>user: <a href="{% url 'user_page' username=user.name %}">{{ user.display_name }}</a></li>
-            <li>num_of_detections: {{ user.detection_count }}</li>
-        </ul></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No top users.</p>
-{% endif %}
+{% block content %}
 
-</body>
-</html>
+<div class="box">
+
+    <div class="title"> Api.credo.science</div>
+
+    <div class="information">
+        <div class="label">BETA</div>
+        We are still in beta mode, join us to help finish all features!
+    </div>
+
+    <div class="buttons">
+        <ul>
+            <li><a href="">Detections ( {{ detections_total }} ) </a></li>
+            <li><a href="">Users ( {{ users_total }} )</a></li>
+            <li><a href="">Teams ( {{ teams_total }} )</a></li>
+            <li><a href="">Maps</a></li>
+        </ul>
+    </div>
+
+
+    <div class="panel">
+        <div class="panel-users">
+            <div class="title"><i class="fas fa-chart-bar"></i> top 5 users</div>
+
+            {% if top_users %}
+
+            <table width="100%">
+                <tr>
+                    <th><i class="fas fa-sort"></i> Login</th>
+                    <th><i class="fas fa-sort"></i> Detections</th>
+                </tr>
+
+                {% for user in top_users %}
+
+                <tr>
+                    <td><a href="{% url 'user_page' username=user.name %}">{{ user.display_name }}</a></td>
+                    <td>{{ user.detection_count }}</td>
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+            {% endif %}
+
+        </div>
+
+        <div class="panel-users-registerd">
+            <div class="title"><i class="fas fa-chart-bar"></i>5 registered users</div>
+            <table width="100%">
+                <tr>
+                    <th><i class="fas fa-sort"></i> Login</th>
+                    <th><i class="fas fa-sort"></i> Detections</th>
+                </tr>
+                <tr>
+                    <td><a href="index.php?page=user&id=121"> kilo </a></td>
+                    <td> 116,661</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="title"><i class="fas fa-chart-bar"></i> Last 20 detections</div>
+        {% if recent_detections %}
+        <table>
+            <tr>
+                <th><i class="fas fa-sort"></i> date</th>
+                <th><i class="fas fa-sort"></i> login</th>
+                <th><i class="fas fa-sort"></i> team</th>
+                <th><i class="fas fa-sort"></i> img</th>
+            </tr>
+            {% for detection in recent_detections %}
+            <tr>
+                <td width="30%"> 2 hours ago</td>
+                <td><a href="{% url 'user_page' username=detection.user.name %}">{{ detection.user.display_name }}</a>
+                </td>
+                <td><a href="{% url 'team_page' name=detection.team.name %}">{{ detection.team.name }}</a></td>
+                <td width="50px" align="center"><img style="display:block; width:30px;height:30px;"
+                                                     src="data:image/jpeg;base64,{{ detection.img }}" class="big_img">
+                </td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+        </table>
+
+    </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
