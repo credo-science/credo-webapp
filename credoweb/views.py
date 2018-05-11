@@ -9,6 +9,8 @@ from credocommon.models import Team, User, Detection
 
 import base64
 
+import time
+
 
 def index(request):
     recent_detections = Detection.objects.order_by('-timestamp').filter(visible=True).select_related('user', 'team')[:20]
@@ -19,7 +21,7 @@ def index(request):
         'users_total': User.objects.count(),
         'teams_total': Team.objects.count(),
         'recent_detections': [{
-            'date': d.timestamp,
+            'date': time.strftime("%Y-%m-%d %H:%M:%S",time.gmtime(d.timestamp/1000)),
             'user': {
                 'name': d.user.username,
                 'display_name': d.user.display_name,
@@ -57,7 +59,7 @@ def user_page(request, username=''):
             'detection_count': user_detection_count
         },
         'user_recent_detections': [{
-            'date': d.timestamp,
+            'date': time.strftime("%Y-%m-%d %H:%M:%S",time.gmtime(d.timestamp/1000)),
             'img': base64.encodestring(d.frame_content)
         } for d in user_recent_detections]
 

@@ -1,26 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Credoweb {{ user.display_name }} profile</title>
-</head>
-<body>
-<h2>Name: {{ user.display_name }}</h2>
-<h2>Team: <a href="{% url 'team_page' name=user.team.name %}">{{ user.team.name }}</a></h2>
-<h2>Number of detections: {{ user.detection_count }}</h2>
-{% if user_recent_detections %}
-    <h3>Recent detections:</h3>
-    <ul>
-    {% for detection in user_recent_detections %}
-        <li><ul>
-            <li>date: {{ detection.date }}</li>
-            <li>img: <img style="display:block;" src="data:image/jpeg;base64,{{ detection.img }}"></li>
-        </ul></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>User has no detections</p>
-{% endif %}
+{% extends "credoweb/base.html" %}
 
-</body>
-</html>
+{% block content %}
+
+<div class="box">
+
+    <div class="title"> {{ user.display_name }} </div>
+
+    <h4 align="center">Team: <a href="{% url 'team_page' name=user.team.name %}">{{ user.team.name }}</a></h4>
+    <h4 align="center">Number of detections: {{ user.detection_count }}</h4>
+
+    <div class="panel">
+        <div class="title"><i class="fas fa-chart-bar"></i> Last 20 detections</div>
+        {% if user_recent_detections %}
+        <table>
+            <tr>
+                <th><i class="fas fa-sort"></i> date</th>
+                <th><i class="fas fa-sort"></i> img</th>
+            </tr>
+            {% for detection in user_recent_detections %}
+            <tr>
+                <td width="30%"> {{ detection.date }} </td>
+                <td width="50px" align="center"><img style="display:block; width:30px;height:30px;"
+                                                     src="data:image/jpeg;base64,{{ detection.img }}" class="big_img">
+                </td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}
