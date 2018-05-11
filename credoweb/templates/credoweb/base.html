@@ -45,29 +45,9 @@
 			<!--END LOGO SECTION -->
 
 			<div class="left">
-				<div class="box">
-
-					<div class="title"> Api.credo.science </div>
-
-					<div class="information">
-							<div class="label">BETA</div>
-							We are still in beta mode, join us to help finish all features!
-					</div>
-
-					<div class="buttons">
-						<ul>
-							<li><a href="">Detections ( {{ detections_total }} ) </a></li>
-							<li><a href="">Users ( {{ users_total }} )</a></li>
-							<li><a href="">Teams ( {{ teams_total }} )</a></li>
-							<li><a href="">Maps</a></li>
-						</ul>
-					</div>
-
- 					{% block content %}
+				{% block content %}
 
 				{% endblock %}
-
-			</div>
 
 			<!-- LOGIN SECTION -->
 			<div class="right">
