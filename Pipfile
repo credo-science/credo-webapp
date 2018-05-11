@@ -12,5 +12,6 @@ django = "~=1.11"
 markdown = "*"
 coreapi = "*"
 mysqlclient = "*"
+Pillow = "*"
 [requires]
 python_version = "2.7"
