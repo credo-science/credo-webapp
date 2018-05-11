@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate
 
 import logging
 import time
+import base64
 
 logger = logging.getLogger(__name__)
 
@@ -157,7 +158,7 @@ def handle_detection_frame(frame):
     detection = Detection.objects.create(
         accuracy=detection_info.accuracy,
         altitude=detection_info.altitude,
-        frame_content=detection_info.frame_content,
+        frame_content=bytearray(base64.decodestring(detection_info.frame_content)),
         height=detection_info.height,
         width=detection_info.width,
         d_id=detection_info.id,
