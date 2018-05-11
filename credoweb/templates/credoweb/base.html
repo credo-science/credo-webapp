@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+	<head>
+       {% load static %}
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+		<link href="{% static "credoweb/style.css" %}" rel="stylesheet">
+		{% block title %}<title>api.credo.science</title>{% endblock %}
+
+	</head>
+
+	<body>
+
+		<!-- HEADER SECTION -->
+		<div class="header">
+			<div class="page">
+				<!-- HEADER MENU SECTION -->
+				<ul>
+					<li><a href="">Home</a></li>
+					<li><a href="">Help</a></li>
+				</ul>
+				<!-- END HEADER MENU SECTION -->
+
+				<!-- HEADER FLAGS SECTION -->
+                <!--
+				<div class="flags">
+					<img src="https://api.credo.science/media/images/flags/pl.png">
+				</div>
+				-->
+				<!-- END HEADER FLAGS SECTION -->
+			</div>
+		</div>
+		<!-- END HEADER SECTION -->
+
+
+		<!-- PAGE SECTION -->
+		<div class="page">
+
+			<!--LOGO SECTION -->
+			<div class="logo">
+				<img src="{% static "credoweb/credo-logo.png" %}" class="logo-image">
+			</div>
+			<!--END LOGO SECTION -->
+
+			<div class="left">
+				{% block content %}
+
+				{% endblock %}
+
+			<!-- LOGIN SECTION -->
+			<div class="right">
+				<div class="box">
+
+					{% block login %}
+
+					<div class="title"> Login area </div>
+
+					<form method="post" action="">
+
+						<input name="email_login" class="input" placeholder="Email" type="text">
+						<input name="passowrd_login" class="input"  placeholder="Password" type="text">
+						<div class="right-submit">
+							<input type="submit" class="submit" value="Sign In">
+						</div>
+						<div class="right-info">
+
+							<b> How does it work? </b> <br/>
+							Sign up now and use api for free
+
+						</div>
+
+					</form>
+
+				    </div>
+				    {% endblock %}
+			</div>
+			<!--END LOGIN SECTION -->
+
+		</div>
+		<!-- END PAGE SECTION -->
+
+		<!-- FOOTER SECTION -->
+		<div class="footer">
+			Copyright by CREDO team.
+		</div>
+		<!-- END FOOTER SECTION -->
+
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	</body>
+</html>
