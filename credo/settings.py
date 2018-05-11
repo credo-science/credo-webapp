@@ -89,7 +89,7 @@ if os.environ.get('DJANGO_DB_HOST'):
     DATABASES = {
         'default': {
             'NAME': 'credo',
-            'ENGINE': 'mysql.connector.django',
+            'ENGINE': 'django.db.backends.mysql',
             'USER': os.environ.get('DJANGO_DB_USER'),
             'PASSWORD': os.environ.get('DJANGO_DB_PASSWORD'),
             'HOST': os.environ.get('DJANGO_DB_HOST'),
