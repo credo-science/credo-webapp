@@ -11,6 +11,7 @@ django-debug-toolbar = "*"
 django = "~=1.11"
 markdown = "*"
 coreapi = "*"
-mysql-connector-python = "*"
+mysqlclient = "*"
+Pillow = "*"
 [requires]
 python_version = "2.7"
