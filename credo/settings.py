@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 's&8vuuw2%e2ael_rx8a9(ucl5$mx(r80+j+!m!j@y6m2+*s4zb')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
+DEBUG = 'True'
 
 ALLOWED_HOSTS = ['*']
 
@@ -85,25 +85,13 @@ WSGI_APPLICATION = 'credo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-if os.environ.get('DJANGO_DB_HOST'):
-    DATABASES = {
-        'default': {
-            'NAME': 'credo',
-            'ENGINE': 'django.db.backends.mysql',
-            'USER': os.environ.get('DJANGO_DB_USER'),
-            'PASSWORD': os.environ.get('DJANGO_DB_PASSWORD'),
-            'HOST': os.environ.get('DJANGO_DB_HOST'),
-            'PORT': int(os.environ.get('DJANGO_DB_PORT'))
-        }
-    }
 
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
+}
 
 AUTH_USER_MODEL = 'credocommon.User'
 
@@ -169,3 +157,8 @@ LOGGING = {
         }
     }
 }
+
+try:
+    from local_settings import *
+except ImportError:
+    pass
