@@ -13,6 +13,7 @@ import base64
 def index(request):
     recent_detections = Detection.objects.order_by('-timestamp').filter(visible=True).select_related('user', 'team')[:20]
     top_users = User.objects.annotate(detection_count=Count('detection')).order_by('-detection_count')[:5]
+    recent_users = User.objects.annotate(detection_count=Count('detection')).order_by('-id')[:5]
     context = {
         'detections_total': Detection.objects.count(),
         'users_total': User.objects.count(),
@@ -32,7 +33,12 @@ def index(request):
             'name': u.username,
             'display_name': u.display_name,
             'detection_count': u.detection_count
-        } for u in top_users]
+        } for u in top_users],
+        'recent_users': [{
+            'name': u.username,
+            'display_name': u.display_name,
+            'detection_count': u.detection_count
+        } for u in recent_users]
     }
     return render(request, 'credoweb/index.html', context)
 

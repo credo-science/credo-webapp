@@ -22,10 +22,11 @@
 
 
     <div class="panel">
+
+        {% if top_users %}
+
         <div class="panel-users">
             <div class="title"><i class="fas fa-chart-bar"></i> top 5 users</div>
-
-            {% if top_users %}
 
             <table width="100%">
                 <tr>
@@ -43,10 +44,11 @@
                 {% endfor %}
 
             </table>
-
-            {% endif %}
-
         </div>
+
+        {% endif %}
+
+        {% if recent_users %}
 
         <div class="panel-users-registerd">
             <div class="title"><i class="fas fa-chart-bar"></i>5 registered users</div>
@@ -55,12 +57,21 @@
                     <th><i class="fas fa-sort"></i> Login</th>
                     <th><i class="fas fa-sort"></i> Detections</th>
                 </tr>
+
+                {% for user in recent_users %}
+
                 <tr>
-                    <td><a href="index.php?page=user&id=121"> kilo </a></td>
-                    <td> 116,661</td>
+                    <td><a href="{% url 'user_page' username=user.name %}">{{ user.display_name }}</a></td>
+                    <td>{{ user.detection_count }}</td>
                 </tr>
+
+                {% endfor %}
+
             </table>
         </div>
+
+        {% endif %}
+
     </div>
 
     <div class="panel">
