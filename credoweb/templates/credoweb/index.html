@@ -59,13 +59,7 @@
             <td width="30%"> 2 hours ago</td>
             <td><a href="{% url 'user_page' username=detection.user.name %}">{{ detection.user.display_name }}</a></td>
             <td><a href="{% url 'team_page' name=detection.team.name %}">{{ detection.team.name }}</a></td>
-            <td width="50px" align="center"><img style="display:block; width:30px;height:30px;" src="data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABHNCSVQICAgIfAhkiAAAAQRJREFU
-								OI2tlEGShSAMRLvBKnfexMN4Eq/tyhtAZvGHVAjEcaYmVS4U8mi6BeacBf9YKRxI4dDfgLXW7l3k
-								3UaSVyMi+uiklEBymDNbMNkmANpIUieVUjoIyW4BW4xCsQqi5lktFmAbfwMZgDPDvUK73ahEpE/5
-								KUnrWxQKyQ/QBmEBVt22bTiOA/u+K7xBrV3JA/yKALCuK87zxH3fuK5ruqh+aylbgA/I2hF52HqW
-								tyfgTepdKCSHn3umMHpXhm325zdSaGHeii7laPuRmpnXC5ABlEFF36wHCiIV5Dw4VTh8fLgLyRTC
-								DDB/P59qXjawSPO2ACiPiXdSvLJa648Xqx//AgEbnuRqs6w3AAAAAElFTkSuQmCC
-								" class="big_img"></td>
+            <td width="50px" align="center"><img style="display:block; width:30px;height:30px;" src="data:image/jpeg;base64,{{ detection.img }}" class="big_img"></td>
         </tr>
         {% endfor %}
         {% endif %}
