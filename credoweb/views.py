@@ -21,7 +21,7 @@ def index(request):
         'users_total': User.objects.count(),
         'teams_total': Team.objects.count(),
         'recent_detections': [{
-            'date': time.strftime("%Y-%m-%d %H:%M:%S",time.gmtime(d.timestamp/1000)),
+            'date': time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(d.timestamp/1000)),
             'user': {
                 'name': d.user.username,
                 'display_name': d.user.display_name,
@@ -59,7 +59,7 @@ def user_page(request, username=''):
             'detection_count': user_detection_count
         },
         'user_recent_detections': [{
-            'date': time.strftime("%Y-%m-%d %H:%M:%S",time.gmtime(d.timestamp/1000)),
+            'date': time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(d.timestamp/1000)),
             'img': base64.encodestring(d.frame_content)
         } for d in user_recent_detections]
 
