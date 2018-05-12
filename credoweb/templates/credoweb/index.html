@@ -1,5 +1,7 @@
 {% extends "credoweb/base.html" %}
 
+{% load cache %}
+
 {% block content %}
 
 <div class="box">
@@ -13,19 +15,18 @@
 
     <div class="buttons">
         <ul>
-            <li><a href="">Detections ( {{ detections_total }} ) </a></li>
-            <li><a href="">Users ( {{ users_total }} )</a></li>
-            <li><a href="">Teams ( {{ teams_total }} )</a></li>
+            <li><a href="">Detections ( {{ global_stats.detections_total }} ) </a></li>
+            <li><a href="">Users ( {{ global_stats.users_total }} )</a></li>
+            <li><a href="">Teams ( {{ global_stats.teams_total }} )</a></li>
             <li><a href="">Maps</a></li>
         </ul>
     </div>
 
 
     <div class="panel">
-
-        {% if top_users %}
-
+        {% cache 3600 top_users_data %}
         <div class="panel-users">
+            {{ time }}
             <div class="title"><i class="fas fa-chart-bar"></i> top 5 users</div>
 
             <table width="100%">
@@ -45,12 +46,12 @@
 
             </table>
         </div>
+        {% endcache %}
 
-        {% endif %}
 
-        {% if recent_users %}
-
+        {% cache 300 recent_users_data %}
         <div class="panel-users-registerd">
+            {{ time }}
             <div class="title"><i class="fas fa-chart-bar"></i>5 registered users</div>
             <table width="100%">
                 <tr>
@@ -69,14 +70,15 @@
 
             </table>
         </div>
-
-        {% endif %}
+        {% endcache %}
 
     </div>
 
+
+    {% cache 60 recent_detections_data %}
     <div class="panel">
+        {{ time }}
         <div class="title"><i class="fas fa-chart-bar"></i> Last 20 detections</div>
-        {% if recent_detections %}
         <table>
             <tr>
                 <th><i class="fas fa-sort"></i> date</th>
@@ -95,10 +97,10 @@
                 </td>
             </tr>
             {% endfor %}
-            {% endif %}
         </table>
 
     </div>
+    {% endcache %}
 
     </div>
 

@@ -1,46 +1,23 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render, get_object_or_404
+import base64
+import time
 
 from django.db.models import Count
+from django.shortcuts import render, get_object_or_404
 
 from credocommon.models import Team, User, Detection
-
-import base64
-
-import time
+from credoweb.helpers import get_global_stats, get_recent_detections, get_top_users, get_recent_users
 
 
 def index(request):
-    recent_detections = Detection.objects.order_by('-timestamp').filter(visible=True).select_related('user', 'team')[:20]
-    top_users = User.objects.annotate(detection_count=Count('detection')).order_by('-detection_count')[:5]
-    recent_users = User.objects.annotate(detection_count=Count('detection')).order_by('-id')[:5]
     context = {
-        'detections_total': Detection.objects.count(),
-        'users_total': User.objects.count(),
-        'teams_total': Team.objects.count(),
-        'recent_detections': [{
-            'date': time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(d.timestamp/1000)),
-            'user': {
-                'name': d.user.username,
-                'display_name': d.user.display_name,
-            },
-            'team': {
-                'name': d.team.name,
-            },
-            'img': base64.encodestring(d.frame_content)
-        } for d in recent_detections],
-        'top_users': [{
-            'name': u.username,
-            'display_name': u.display_name,
-            'detection_count': u.detection_count
-        } for u in top_users],
-        'recent_users': [{
-            'name': u.username,
-            'display_name': u.display_name,
-            'detection_count': u.detection_count
-        } for u in recent_users]
+        'global_stats': get_global_stats(),
+        'time': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
+        'recent_detections': get_recent_detections,
+        'top_users': get_top_users,
+        'recent_users': get_recent_users
     }
     return render(request, 'credoweb/index.html', context)
 

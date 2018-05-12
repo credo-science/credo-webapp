@@ -93,6 +93,12 @@ DATABASES = {
     }
 }
 
+CACHES = {
+   'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache'
+   }
+}
+
 AUTH_USER_MODEL = 'credocommon.User'
 
 AUTHENTICATION_BACKENDS = (

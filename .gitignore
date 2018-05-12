@@ -108,3 +108,4 @@ Pipfile.lock
 
 #django
 db.sqlite3
+django_cache/
