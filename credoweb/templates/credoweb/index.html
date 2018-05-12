@@ -26,7 +26,7 @@
     <div class="panel">
         {% cache 3600 top_users_data %}
         <div class="panel-users">
-            {{ time }}
+            <!-- {{ time }} -->
             <div class="title"><i class="fas fa-chart-bar"></i> top 5 users</div>
 
             <table width="100%">
@@ -51,7 +51,7 @@
 
         {% cache 300 recent_users_data %}
         <div class="panel-users-registerd">
-            {{ time }}
+            <!-- {{ time }} -->
             <div class="title"><i class="fas fa-chart-bar"></i>5 registered users</div>
             <table width="100%">
                 <tr>
@@ -77,7 +77,7 @@
 
     {% cache 60 recent_detections_data %}
     <div class="panel">
-        {{ time }}
+        <!-- {{ time }} -->
         <div class="title"><i class="fas fa-chart-bar"></i> Last 20 detections</div>
         <table>
             <tr>

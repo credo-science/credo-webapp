@@ -36,8 +36,8 @@ def handle_registration(request):
             send_mail(
                 'Credo API registration information',
                 'Hello!\n\nThank you for registering in Credo API Portal, '
-                'please confirm your email by visiting the link below:\n\n  '
-                '<a href="https://credo.science/web/confirm_email/{token}">https://credo.science/web/confirm_email/{token}</a> %s \n\n'
+                'please confirm your email by visiting the link below:\n\n'
+                'https://api.credo.science/web/confirm_email/{token}\n\n'
                 'best regards,\nCredo Team'.format(token=user.email_confirmation_token),
                 'credoapi@credo.science',
                 [user.email],

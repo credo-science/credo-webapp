@@ -26,7 +26,7 @@ class UserRegistrationView(APIView):
     def post(self, request):
         try:
             handle_registration(request)
-            return Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_200_OK, data={'message': 'Please check your email for activation link.'})
         except RegistrationException as e:
             return Response(data={'message': 'Registration failed. Reason: ' + e.message},
                             status=status.HTTP_400_BAD_REQUEST)
