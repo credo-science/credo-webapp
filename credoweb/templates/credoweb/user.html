@@ -10,14 +10,13 @@
     <h4 align="center">Number of detections: {{ user.detection_count }}</h4>
 
     <div class="panel">
-        <div class="title"><i class="fas fa-chart-bar"></i> Last 20 detections</div>
-        {% if user_recent_detections %}
+        <div class="title"><i class="fas fa-chart-bar"></i>User detections</div>
         <table>
             <tr>
                 <th><i class="fas fa-sort"></i> date</th>
                 <th><i class="fas fa-sort"></i> img</th>
             </tr>
-            {% for detection in user_recent_detections %}
+            {% for detection in user_detections_page.detections %}
             <tr>
                 <td width="30%"> {{ detection.date }} </td>
                 <td width="50px" align="center"><img style="display:block; width:30px;height:30px;"
@@ -25,9 +24,14 @@
                 </td>
             </tr>
             {% endfor %}
-            {% endif %}
         </table>
+        {% if user_detections_page.has_previous %}
+            <a href="{% url 'user_page_paginated' username=user.name page=page_previous %}">Previous</a>
+        {% endif %}
 
+        {% if user_detections_page.has_next %}
+            <a href="{% url 'user_page_paginated' username=user.name page=page_next %}">Next</a>
+        {% endif %}
     </div>
 
 </div>

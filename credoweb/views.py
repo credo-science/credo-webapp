@@ -8,7 +8,8 @@ from django.db.models import Count
 from django.shortcuts import render, get_object_or_404
 
 from credocommon.models import Team, User, Detection
-from credoweb.helpers import get_global_stats, get_recent_detections, get_top_users, get_recent_users
+from credoweb.helpers import get_global_stats, get_recent_detections, get_top_users, get_recent_users,\
+    get_user_detections_page
 
 
 def index(request):
@@ -22,9 +23,10 @@ def index(request):
     return render(request, 'credoweb/index.html', context)
 
 
-def user_page(request, username=''):
+def user_page(request, username='', page=1):
+    page = int(page)
     u = get_object_or_404(User, username=username)
-    user_recent_detections = Detection.objects.filter(user=u).order_by('-timestamp').filter(visible=True)[:20]
+    user_detections_page = get_user_detections_page(u, page)
     user_detection_count = Detection.objects.filter(user=u).count()
     context = {
         'user': {
@@ -35,11 +37,9 @@ def user_page(request, username=''):
             },
             'detection_count': user_detection_count
         },
-        'user_recent_detections': [{
-            'date': time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(d.timestamp/1000)),
-            'img': base64.encodestring(d.frame_content)
-        } for d in user_recent_detections]
-
+        'user_detections_page':  user_detections_page,
+        'page_next': page + 1,
+        'page_previous': page - 1,
     }
     return render(request, 'credoweb/user.html', context)
 

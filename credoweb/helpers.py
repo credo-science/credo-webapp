@@ -5,6 +5,7 @@ import base64
 import time
 
 from django.core.cache import cache
+from django.core.paginator import Paginator
 from django.db.models import Count
 
 from credocommon.models import Team, User, Detection
@@ -46,3 +47,21 @@ def get_recent_users():
             'display_name': u.display_name,
             'detection_count': u.detection_count
             } for u in User.objects.annotate(detection_count=Count('detection')).order_by('-id')[:5]]
+
+
+def get_user_detections_page(user, page):
+    data = cache.get('user_{}_recent_detections_{}'.format(user.id, page))
+    if not data:
+        p = Paginator(Detection.objects.filter(user=user).order_by('-timestamp').filter(visible=True), 20).page(page)
+        data = {
+            'has_next': p.has_next(),
+            'has_previous': p.has_previous(),
+            'page_number': page,
+            'detections': [{
+                'date': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(d.timestamp / 1000)),
+                'img': base64.encodestring(d.frame_content)
+            } for d in p.object_list]
+        }
+        cache.set('user_{}_recent_detections_{}'.format(user.id, page), data)
+    return data
+
