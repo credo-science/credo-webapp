@@ -221,6 +221,10 @@ td {
 	color: grey;
 }
 
+#image_view {
+    padding: 0px;
+}
+
 .fixed {
 	position: fixed;
 
