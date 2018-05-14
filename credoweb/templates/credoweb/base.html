@@ -49,9 +49,19 @@
 
 				{% endblock %}
 
-            {% comment %}
-			<!-- LOGIN SECTION -->
 			<div class="right">
+
+                <div id="image_view" class="fixed" style="display: none;">
+                    <div style="margin-top: 10px">
+                        <div class="content">
+                            <center><h4>Image view</h4></center>
+                            <img src="" width="80%" id="new_img"/>
+                        </div>
+                    </div>
+                </div>
+
+			<!-- LOGIN SECTION -->
+            {% comment %}
 				<div class="box">
 
 					{% block login %}
@@ -90,5 +100,6 @@
 		<!-- END FOOTER SECTION -->
 
 		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script src="{% static "credoweb/scripts.js" %}"></script>
 	</body>
 </html>
