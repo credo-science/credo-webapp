@@ -12,7 +12,8 @@ def generate_token():
 
 
 def validate_image(image):
-    return rate_brightness(image) > 0.5
+    brightness = rate_brightness(image)
+    return brightness > 0.3
 
 
 def rate_brightness(image):
