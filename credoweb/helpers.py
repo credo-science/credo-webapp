@@ -38,7 +38,7 @@ def get_top_users():
             'name': u.username,
             'display_name': u.display_name,
             'detection_count': u.detection_count
-            } for u in User.objects.annotate(detection_count=Count('detection', filter=Q(detection__visible=True))).order_by('-detection_count')[:5]]
+            } for u in User.objects.filter(detection__visible=True).annotate(detection_count=Count('detection')).order_by('-detection_count')[:5]]
 
 
 def get_recent_users():
