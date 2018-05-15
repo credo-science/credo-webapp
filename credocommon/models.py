@@ -77,9 +77,6 @@ class Detection(models.Model):
 
     def save(self, *args, **kwargs):
         self.time_received = int(time.time() * 1000)
-        # make sure detections without image data are not visible
-        if not self.frame_content:
-            self.visible = False
         super(Detection, self).save(*args, **kwargs)
 
 

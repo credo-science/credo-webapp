@@ -8,10 +8,10 @@ from django.core.mail import send_mail
 from django.db.utils import IntegrityError
 
 from credocommon.models import User, Team, Detection, Device, Ping
-from credocommon.helpers import generate_token
+from credocommon.helpers import generate_token, validate_image
 
 from credoapiv2.exceptions import CredoAPIException, RegistrationException, LoginException
-from credoapiv2.serializers import RegisterRequestSerializer, LoginRequestSerializer, InfoRequestSerializer,\
+from credoapiv2.serializers import RegisterRequestSerializer, LoginRequestSerializer, InfoRequestSerializer, \
     DetectionRequestSerializer, PingRequestSerializer
 
 
@@ -117,10 +117,16 @@ def handle_detection(request):
     vd = serializer.validated_data
     detections = []
     for d in vd['detections']:
+
+        frame_content = base64.b64decode(d['frame_content'])
+        visible = True
+        if (not frame_content) or validate_image(frame_content):
+            visible = False
+
         detections.append(Detection.objects.create(
             accuracy=d['accuracy'],
             altitude=d['altitude'],
-            frame_content=base64.b64decode(d['frame_content']),
+            frame_content=frame_content,
             height=d['height'],
             width=d['height'],
             d_id=d['id'],
@@ -137,7 +143,8 @@ def handle_detection(request):
                 user=request.user
             )[0],
             user=request.user,
-            team=request.user.team
+            team=request.user.team,
+            visible=visible
         ))
     data = {
         'detections': [{
