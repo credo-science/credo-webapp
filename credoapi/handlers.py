@@ -159,7 +159,7 @@ def handle_detection_frame(frame):
     decoded_image = None
     visible = False
 
-    if detection_info.frame_content is not None:
+    if detection_info.frame_content:
         decoded_image = base64.decodestring(detection_info.frame_content)
         if validate_image(decoded_image):
             visible = False
