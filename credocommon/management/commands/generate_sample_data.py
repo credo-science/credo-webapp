@@ -194,7 +194,7 @@ class Command(BaseCommand):
             Detection.objects.create(
                 accuracy=1.0,
                 altitude=100.0 + random() * 100,
-                frame_content=bytearray(base64.decodestring(PARTICLE_IMG)),
+                frame_content=base64.decodestring(PARTICLE_IMG),
                 height=100,
                 width=100,
                 d_id=randint(0, 10000),
