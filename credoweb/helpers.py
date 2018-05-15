@@ -6,14 +6,14 @@ import time
 
 from django.core.cache import cache
 from django.core.paginator import Paginator
-from django.db.models import Count
+from django.db.models import Count, Q
 
 from credocommon.models import Team, User, Detection
 
 
 def get_global_stats():
     return cache.get_or_set('global_stats', lambda: {
-        'detections_total': Detection.objects.count(),
+        'detections_total': Detection.objects.filter(visible=True).count(),
         'users_total': User.objects.count(),
         'teams_total': Team.objects.count(),
     })
@@ -38,7 +38,7 @@ def get_top_users():
             'name': u.username,
             'display_name': u.display_name,
             'detection_count': u.detection_count
-            } for u in User.objects.annotate(detection_count=Count('detection')).order_by('-detection_count')[:5]]
+            } for u in User.objects.annotate(detection_count=Count('detection', filter=Q(detection__visible=True))).order_by('-detection_count')[:5]]
 
 
 def get_recent_users():
