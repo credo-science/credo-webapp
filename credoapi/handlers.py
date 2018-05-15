@@ -1,6 +1,7 @@
 from credoapi.helpers import OutputFrame, OutputHeader, OutputBody, UserInfo, generate_key
 from credoapi.serializers import OutputFrameSerializer
 from credocommon.models import User, Team, Device, Detection, Ping
+from credocommon.helpers import validate_image
 from credoapi.exceptions import RegisterException, LoginException, UnauthorizedException
 
 from django.db.utils import IntegrityError
@@ -155,10 +156,20 @@ def handle_detection_frame(frame):
     )
 
     detection_info = frame.body.detection_info
+    decoded_image = None
+    visible = False
+
+    if detection_info.frame_content is not None:
+        decoded_image = base64.decodestring(detection_info.frame_content)
+        if validate_image(decoded_image):
+            visible = False
+        else:
+            visible = True
+
     detection = Detection.objects.create(
         accuracy=detection_info.accuracy,
         altitude=detection_info.altitude,
-        frame_content=bytearray(base64.decodestring(detection_info.frame_content)),
+        frame_content=bytearray(decoded_image) if decoded_image is not None else None,
         height=detection_info.height,
         width=detection_info.width,
         d_id=detection_info.id,
@@ -169,7 +180,8 @@ def handle_detection_frame(frame):
         source='api_v1',
         device=device,
         user=user,
-        team = user.team
+        team=user.team,
+        visible=visible
     )
 
     logger.info("Stored detection for user %s." % user.display_name)
