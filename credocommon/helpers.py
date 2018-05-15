@@ -12,9 +12,9 @@ def generate_token():
 
 
 def validate_image(image):
-    return rate_brightness(image) > 0.3
+    return rate_brightness(image) > 0.5
 
 
 def rate_brightness(image):
     img = Image.open(io.BytesIO(image))
-    return sum(ImageStat.Stat(img).mean) / 3. / 255.
+    return sum(ImageStat.Stat(img).mean[0:3]) / 3. / 255.
