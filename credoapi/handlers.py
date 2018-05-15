@@ -169,7 +169,7 @@ def handle_detection_frame(frame):
     detection = Detection.objects.create(
         accuracy=detection_info.accuracy,
         altitude=detection_info.altitude,
-        frame_content=bytearray(decoded_image) if decoded_image is not None else None,
+        frame_content=decoded_image,
         height=detection_info.height,
         width=detection_info.width,
         d_id=detection_info.id,
@@ -184,4 +184,4 @@ def handle_detection_frame(frame):
         visible=visible
     )
 
-    logger.info("Stored detection for user %s." % user.display_name)
+    logger.info("Stored detection for user %s, visibility: %s." % (user.display_name, visible))
