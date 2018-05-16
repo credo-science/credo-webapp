@@ -12,7 +12,8 @@ from credocommon.helpers import generate_token, validate_image
 
 from credoapiv2.exceptions import CredoAPIException, RegistrationException, LoginException
 from credoapiv2.serializers import RegisterRequestSerializer, LoginRequestSerializer, InfoRequestSerializer, \
-    DetectionRequestSerializer, PingRequestSerializer
+    DetectionRequestSerializer, PingRequestSerializer, DataExportRequestSerializer, ExportDetectionSerializer, \
+    ExportPingSerializer
 
 import logging
 
@@ -202,3 +203,23 @@ def handle_ping(request):
         user=request.user
     )
     logger.info('Stored ping for user {}'.format(request.user))
+
+
+def handle_data_export(request):
+    serializer = DataExportRequestSerializer(data=request.data)
+    if not serializer.is_valid():
+        raise CredoAPIException(str(serializer.errors))
+    vd = serializer.validated_data
+    data = None
+    if vd['data_type'] == 'detection':
+        detections = Detection.objects.filter(timestamp__gt=vd['since'])[:vd['limit']]
+        data = {
+            'detections': [ExportDetectionSerializer(d).data for d in detections]
+        }
+    elif vd['data_type'] == 'ping':
+        pings = Ping.objects.filter(timestamp__gt=vd['since'])[:vd['limit']]
+        data = {
+            'pings': [ExportPingSerializer(p).data for p in pings]
+        }
+    logger.info('Exporting data by request from {}, type {}, since {}, limit {}'.format(request.user, vd['data_type'], vd['since'], vd['limit']))
+    return data
