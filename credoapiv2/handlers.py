@@ -26,18 +26,36 @@ def handle_registration(request):
     vd = serializer.validated_data
 
     try:
-        user = User.objects.create_user(
-            team=Team.objects.get_or_create(name=vd['team'])[0],
-            display_name=vd['display_name'],
-            key=generate_token(),
-            password=vd['password'],
-            username=vd['username'],
-            email=vd['email'],
-            is_active=False,
-            email_confirmation_token=generate_token(),
-        )
-        if user:
-            logger.info('Sending registration email to {}'.format(user.email))
+        u = User.objects.get(email=vd['email'])
+        if not u.is_active:
+            user = u
+            user.team = Team.objects.get_or_create(name=vd['team'])[0],
+            user.display_name = vd['display_name'],
+            user.key = generate_token()
+            user.username = vd['username']
+            user.email_confirmation_token = generate_token()
+            user.set_password(vd['password'])
+            user.save()
+            logger.info('Updating user info and resending activation email to user {}'.format(user))
+    except User.DoesNotExist:
+        try:
+            user = User.objects.create_user(
+                team=Team.objects.get_or_create(name=vd['team'])[0],
+                display_name=vd['display_name'],
+                key=generate_token(),
+                password=vd['password'],
+                username=vd['username'],
+                email=vd['email'],
+                is_active=False,
+                email_confirmation_token=generate_token(),
+            )
+        except IntegrityError:
+            logger.warning('User registration failed, IntegrityError', vd)
+            raise RegistrationException("User with given username or email already exists.")
+
+    if user:
+        logger.info('Sending registration email to {}'.format(user.email))
+        try:
             send_mail(
                 'Credo API registration information',
                 'Hello!\n\nThank you for registering in Credo API Portal, '
@@ -47,9 +65,8 @@ def handle_registration(request):
                 'credoapi@credo.science',
                 [user.email],
             )
-    except IntegrityError:
-        logger.warning('User registration failed, IntegrityError', vd)
-        raise RegistrationException("User with given username or email already exists.")
+        except Exception as e:
+            logger.exception('Failed to send confirmation email for user {} ({})'.format(user, user.email))
 
 
 def handle_login(request):
