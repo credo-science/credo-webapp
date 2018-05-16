@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from rest_framework import serializers
 
 
@@ -50,3 +52,10 @@ class DetectionRequestSerializer(GenericRequestSerializer):
 class PingRequestSerializer(GenericRequestSerializer):
     timestamp = serializers.IntegerField()
     delta_time = serializers.IntegerField()
+
+
+class DataExportRequestSerializer(GenericRequestSerializer):
+    since = serializers.IntegerField()
+    limit = serializers.IntegerField(max_value=10000)
+    data_type = serializers.ChoiceField(choices=('detections', 'pings'))
+    filtered = serializers.BooleanField(default=True)
