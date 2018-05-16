@@ -8,7 +8,7 @@ from rest_framework import status
 
 from credoapiv2.authentication import DRFTokenAuthentication
 from credoapiv2.exceptions import CredoAPIException, RegistrationException, LoginException
-from credoapiv2.handlers import handle_registration, handle_login, handle_detection, handle_update_info, handle_ping
+from credoapiv2.handlers import handle_registration, handle_login, handle_detection, handle_update_info, handle_ping, handle_data_export
 
 import logging
 
@@ -119,6 +119,28 @@ class PingView(APIView):
                 return Response(status=status.HTTP_200_OK)
             except CredoAPIException as e:
                 return Response(data={'message': 'Ping failed. Reason: ' + e.message},
+                                status=status.HTTP_400_BAD_REQUEST)
+            except Exception as e:
+                logger.exception(e)
+                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response(data={'message': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class DataExportView(APIView):
+    """
+    post:
+    Export data
+    """
+    authentication_classes = (DRFTokenAuthentication, )
+    parser_classes = (JSONParser,)
+
+    def post(self, request):
+        if request.user.is_authenticated and request.user.is_staff:
+            try:
+                return Response(data=handle_data_export(request), status=status.HTTP_200_OK)
+            except CredoAPIException as e:
+                return Response(data={'message': 'Data export failed. Reason: ' + e.message},
                                 status=status.HTTP_400_BAD_REQUEST)
             except Exception as e:
                 logger.exception(e)
