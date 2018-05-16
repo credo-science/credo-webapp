@@ -119,7 +119,7 @@ def user_page(request, username='', page=1):
 
 def team_page(request, name=''):
     t = get_object_or_404(Team, name=name)
-    team_users = User.objects.filter(team=t).filter(detection__visible=True).annotate(detection_count=Count('detection'))
+    team_users = t.user_set.filter(detection__visible=True).annotate(detection_count=Count('detection'))
     team_user_count = team_users.count()
     context = {
         'team': {
