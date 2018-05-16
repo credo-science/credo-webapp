@@ -62,7 +62,7 @@ def team_list(request, page=1):
             'page_number': page,
             'teams': [{
                 'name': t.name,
-                'user_count': len(t.user_set.all()),
+                'user_count': t.user_set.count(),
                 'detection_count': t.detection_count,
             } for t in p.object_list],
         }
