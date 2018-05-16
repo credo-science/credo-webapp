@@ -70,5 +70,5 @@ class PingRequestSerializer(GenericRequestSerializer):
 
 class DataExportRequestSerializer(serializers.Serializer):
     since = serializers.IntegerField()
-    limit = serializers.IntegerField(max_value=10000)
+    limit = serializers.IntegerField(max_value=50000)
     data_type = serializers.ChoiceField(choices=('detection', 'ping'))

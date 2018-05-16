@@ -221,5 +221,5 @@ def handle_data_export(request):
         data = {
             'pings': [ExportPingSerializer(p).data for p in pings]
         }
-    logger.info('Exporting data to {}'.format(request.user))
+    logger.info('Exporting data by request from {}, type {}, since {}, limit {}'.format(request.user, vd['data_type'], vd['since'], vd['limit']))
     return data

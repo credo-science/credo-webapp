@@ -167,3 +167,20 @@ Submit detection
 **On success:** HTTP_2xx
 
 **On failure:** HTTP_4xx/HTTP_5xx (optional message)
+
+## /api/v2/data_export
+
+
+| Field | Description | Constraint |
+| --- | --- | --- |
+| `since` | Timestamp marking the beginning of exported data | Integer |
+| `limit` | Limit number of entities in response, 50k is max | Integer |
+| `data_type` | Type of exported resource, can be 'detection' or 'ping' | String |
+
+**Authorization:** token
+
+**Example request:** [ping.json](sample-payloads/requests/ping.json)
+
+**On success:** HTTP_2xx
+
+**On failure:** HTTP_4xx/HTTP_5xx (optional message)
