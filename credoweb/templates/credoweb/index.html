@@ -16,7 +16,7 @@
     <div class="buttons">
         <ul>
             <li><a href="">Detections ( {{ global_stats.detections_total }} ) </a></li>
-            <li><a href="">Users ( {{ global_stats.users_total }} )</a></li>
+            <li><a href="{% url 'user_list' %}">Users ( {{ global_stats.users_total }} )</a></li>
             <li><a href="">Teams ( {{ global_stats.teams_total }} )</a></li>
             <li><a href="">Maps</a></li>
         </ul>
