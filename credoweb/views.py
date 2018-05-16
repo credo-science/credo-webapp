@@ -46,6 +46,28 @@ def user_list(request, page=1):
         cache.set('user_list_{}'.format(page), context)
     return render(request, 'credoweb/user_list.html', context)
 
+
+def team_list(request, page=1):
+    page = int(page)
+    context = cache.get('team_list_{}'.format(page))
+    if not context:
+        p = Paginator(Team.objects.annotate(detection_count=Count('detection')).order_by(
+            '-detection_count'), 20).page(page)
+        context = {
+            'has_next': p.has_next(),
+            'has_previous': p.has_previous(),
+            'page_next': page + 1,
+            'page_previous': page - 1,
+            'page_number': page,
+            'teams': [{
+                'name': t.name,
+                'user_count': len(t.user_set.all()),
+                'detection_count': t.detection_count,
+            } for t in p.object_list],
+        }
+        cache.set('team_list_{}'.format(page), context)
+    return render(request, 'credoweb/team_list.html', context)
+
 def user_page(request, username='', page=1):
     page = int(page)
     u = get_object_or_404(User, username=username)

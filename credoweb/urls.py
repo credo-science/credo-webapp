@@ -8,6 +8,8 @@ urlpatterns = [
     url(r'user/(?P<username>.{1,50})/(?P<page>\w+)$', views.user_page, name='user_page_paginated'),
     url(r'user_list/$', views.user_list, name='user_list'),
     url(r'user_list/(?P<page>\w+)/$', views.user_list, name='user_list'),
+    url(r'team_list/$', views.team_list, name='team_list'),
+    url(r'team_list/(?P<page>\w+)/$', views.team_list, name='team_list'),
     url(r'team/(?P<name>.{0,50})/$', views.team_page, name='team_page'),
     url(r'confirm_email/(?P<token>[a-z0-9]{64})/$', views.confirm_email, name='confirm_email'),
     url('^', include('django.contrib.auth.urls'))

@@ -1,0 +1,33 @@
+{% extends "credoweb/base.html" %}
+
+{% block content %}
+
+<div class="box">
+
+    <div class="panel">
+        <div class="title"><i class="fas fa-chart-bar"></i> Teams </div>
+        <table>
+            <tr>
+                <th><i class="fas fa-sort"></i> team </th>
+                <th><i class="fas fa-sort"></i> number of members </th>
+                <th><i class="fas fa-sort"></i> number of detections </th>
+            </tr>
+            {% for team in teams %}
+            <tr>
+                <td align="center"> <a href="{% url 'team_page' name=team.name %}">{{ team.name }}</a> </td>
+                <td align="center"> {{ team.user_count }} </td>
+                <td align="center"> {{ team.detection_count }} </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% if has_previous %}
+            <a href="{% url 'team_list' page=page_previous %}">Previous</a>
+        {% endif %}
+        {% if has_next %}
+            <a href="{% url 'team_list' page=page_next %}">Next</a>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}
