@@ -29,8 +29,9 @@ def user_list(request, page=1):
     page = int(page)
     context = cache.get('user_list_{}'.format(page))
     if not context:
-        p = Paginator(User.objects.annotate(detection_count=Count('detection')).order_by('-detection_count'), 20).page(
-            page)
+        p = Paginator(
+            User.objects.filter(detection__visible=True).annotate(detection_count=Count('detection')).order_by(
+                '-detection_count'), 20).page(page)
         context = {
             'has_next': p.has_next(),
             'has_previous': p.has_previous(),
@@ -51,8 +52,8 @@ def team_list(request, page=1):
     page = int(page)
     context = cache.get('team_list_{}'.format(page))
     if not context:
-        p = Paginator(Team.objects.annotate(detection_count=Count('detection')).exclude(name__isnull=True).exclude(
-            name__exact='').order_by('-detection_count'), 20).page(page)
+        p = Paginator(Team.objects.filter(detection__visible=True).annotate(detection_count=Count('detection')).exclude(
+            name__isnull=True).exclude(name__exact='').order_by('-detection_count'), 20).page(page)
         context = {
             'has_next': p.has_next(),
             'has_previous': p.has_previous(),
