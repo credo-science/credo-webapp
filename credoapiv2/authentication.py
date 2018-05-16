@@ -31,4 +31,5 @@ class DRFTokenAuthentication(authentication.BaseAuthentication):
                     return user, None
                 return None
             except User.DoesNotExist:
+                logger.info('Failed authentication for token {}'.format(token))
                 return None
