@@ -14,6 +14,10 @@ from credoapiv2.exceptions import CredoAPIException, RegistrationException, Logi
 from credoapiv2.serializers import RegisterRequestSerializer, LoginRequestSerializer, InfoRequestSerializer, \
     DetectionRequestSerializer, PingRequestSerializer
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def handle_registration(request):
     serializer = RegisterRequestSerializer(data=request.data)
@@ -33,6 +37,7 @@ def handle_registration(request):
             email_confirmation_token=generate_token(),
         )
         if user:
+            logging.info('Sending registration email to {}'.format(user.email))
             send_mail(
                 'Credo API registration information',
                 'Hello!\n\nThank you for registering in Credo API Portal, '
@@ -43,6 +48,7 @@ def handle_registration(request):
                 [user.email],
             )
     except IntegrityError:
+        logging.warning('User registration failed, IntegrityError', vd)
         raise RegistrationException("User with given username or email already exists.")
 
 
@@ -97,6 +103,7 @@ def handle_update_info(request):
 
     try:
         user.save(update_fields=update_fields)
+        logging.info('Updated info for user {}'.format(user))
     except IntegrityError:
         raise CredoAPIException('Invalid parameters')
 
@@ -151,7 +158,7 @@ def handle_detection(request):
             'id': d.id  # TODO: Should we send more data?
         } for d in detections]
     }
-
+    logging.info('Stored {} detections for user {}'.format(len(detections), request.user))
     return data
 
 
@@ -172,3 +179,4 @@ def handle_ping(request):
         )[0],
         user=request.user
     )
+    logging.info('Stored ping for user {}'.format(request.user))

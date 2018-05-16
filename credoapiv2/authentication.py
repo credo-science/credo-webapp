@@ -6,6 +6,10 @@ from django.contrib.auth import get_user_model
 from rest_framework import authentication
 from rest_framework import exceptions
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 User = get_user_model()
 
 
@@ -23,6 +27,7 @@ class DRFTokenAuthentication(authentication.BaseAuthentication):
             try:
                 user = User.objects.get(key=token)
                 if user.is_active:
+                    logger.info('Authenticated user {}'.format(user))
                     return user, None
                 return None
             except User.DoesNotExist:

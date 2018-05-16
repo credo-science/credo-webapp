@@ -160,6 +160,10 @@ LOGGING = {
         'credoapi': {
             'handlers': ['console'],
             'level': 'INFO'
+        },
+        'credoapiv2': {
+            'handlers': ['console'],
+            'level': 'INFO'
         }
     }
 }

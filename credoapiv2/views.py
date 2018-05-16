@@ -12,8 +12,7 @@ from credoapiv2.handlers import handle_registration, handle_login, handle_detect
 
 import logging
 
-logging.basicConfig()
-logger = logging.getLogger("apiv2.views")
+logger = logging.getLogger(__name__)
 
 
 class UserRegistrationView(APIView):
