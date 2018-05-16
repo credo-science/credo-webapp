@@ -1,0 +1,38 @@
+{% extends "credoweb/base.html" %}
+
+{% block content %}
+
+<div class="box">
+
+    <div class="panel">
+        <div class="title"><i class="fas fa-chart-bar"></i> Teams </div>
+        <table>
+            <tr>
+                <th><i class="fas fa-sort"></i> date</th>
+                <th><i class="fas fa-sort"></i> login</th>
+                <th><i class="fas fa-sort"></i> team</th>
+                <th><i class="fas fa-sort"></i> img</th>
+            </tr>
+            {% for detection in detections %}
+            <tr>
+                <td width="30%"> {{ detection.date }} </td>
+                <td><a href="{% url 'user_page' username=detection.user.name %}">{{ detection.user.display_name }}</a>
+                </td>
+                <td><a href="{% url 'team_page' name=detection.team.name %}">{{ detection.team.name }}</a></td>
+                <td width="50px" align="center"><img style="display:block; width:30px;height:30px;"
+                                                     src="data:image/jpeg;base64,{{ detection.img }}" class="big_img">
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% if has_previous %}
+            <a href="{% url 'detection_list' page=page_previous %}">Previous</a>
+        {% endif %}
+        {% if has_next %}
+            <a href="{% url 'detection_list' page=page_next %}">Next</a>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

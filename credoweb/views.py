@@ -25,6 +25,35 @@ def index(request):
     }
     return render(request, 'credoweb/index.html', context)
 
+
+def detection_list(request, page=1):
+    page = int(page)
+    context = cache.get('detection_list{}'.format(page))
+    if not context:
+        p = Paginator(
+            Detection.objects.order_by('-timestamp').filter(visible=True).select_related('user', 'team'), 20).page(page)
+        context = {
+            'has_next': p.has_next(),
+            'has_previous': p.has_previous(),
+            'page_next': page + 1,
+            'page_previous': page - 1,
+            'page_number': page,
+            'detections': [{
+                'date': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(d.timestamp / 1000)),
+                'user': {
+                    'name': d.user.username,
+                    'display_name': d.user.display_name,
+                },
+                'team': {
+                    'name': d.team.name,
+                },
+                'img': base64.encodestring(d.frame_content)
+            } for d in p.object_list],
+        }
+        cache.set('detection_list{}'.format(page), context)
+    return render(request, 'credoweb/detection_list.html', context)
+
+
 def user_list(request, page=1):
     page = int(page)
     context = cache.get('user_list_{}'.format(page))

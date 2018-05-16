@@ -15,10 +15,10 @@
 
     <div class="buttons">
         <ul>
-            <li><a href="">Detections ( {{ global_stats.detections_total }} ) </a></li>
+            <li><a href="{% url 'detection_list' %}">Detections ( {{ global_stats.detections_total }} ) </a></li>
             <li><a href="{% url 'user_list' %}">Users ( {{ global_stats.users_total }} )</a></li>
             <li><a href="{% url 'team_list' %}">Teams ( {{ global_stats.teams_total }} )</a></li>
-            <li><a href="">Maps</a></li>
+            <!-- <li><a href="">Maps</a></li> -->
         </ul>
     </div>
 
