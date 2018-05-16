@@ -27,7 +27,7 @@ def user_page(request, username='', page=1):
     page = int(page)
     u = get_object_or_404(User, username=username)
     user_detections_page = get_user_detections_page(u, page)
-    user_detection_count = Detection.objects.filter(user=u).count()
+    user_detection_count = Detection.objects.filter(visible=True).filter(user=u).count()
     context = {
         'user': {
             'name': u.username,
@@ -38,15 +38,13 @@ def user_page(request, username='', page=1):
             'detection_count': user_detection_count
         },
         'user_detections_page':  user_detections_page,
-        'page_next': page + 1,
-        'page_previous': page - 1,
     }
     return render(request, 'credoweb/user.html', context)
 
 
 def team_page(request, name=''):
     t = get_object_or_404(Team, name=name)
-    team_users = User.objects.filter(team=t).annotate(detection_count=Count('detection'))
+    team_users = User.objects.filter(team=t).filter(detection__visible=True).annotate(detection_count=Count('detection'))
     team_user_count = team_users.count()
     context = {
         'team': {
