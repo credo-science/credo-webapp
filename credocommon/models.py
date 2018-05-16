@@ -35,8 +35,6 @@ class User(AbstractUser):
     def save(self, *args, **kwargs):
         if not self.display_name:
             self.display_name = self.username
-        if self.is_superuser:
-            self.team = get_default_team()
         super(User, self).save(*args, **kwargs)
 
     def get_full_name(self):
