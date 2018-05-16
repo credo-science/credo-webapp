@@ -210,13 +210,13 @@ def handle_data_export(request):
         raise CredoAPIException(str(serializer.errors))
     vd = serializer.validated_data
     data = None
-    if vd['data_type'] == 'detections':
-        detections = Detection.objects.filter(timestamp_gt=vd['since'])
-        if vd['filtered']:
-            detections = detections.filter(visible=True)
-        detections = detections[:vd['limit']]
-        data = {
-            'detections': [dict(d) for d in detections]
-        }
+    # if vd['data_type'] == 'detections':
+    #     detections = Detection.objects.filter(timestamp_gt=vd['since'])
+    #     if vd['filtered']:
+    #         detections = detections.filter(visible=True)
+    #     detections = detections[:vd['limit']]
+    #     data = {
+    #         'detections': [dict(d) for d in detections]
+    #     }
     logger.info('Exporting data to {}'.format(request.user))
     return data

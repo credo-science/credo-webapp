@@ -54,8 +54,8 @@ class PingRequestSerializer(GenericRequestSerializer):
     delta_time = serializers.IntegerField()
 
 
-class DataExportRequestSerializer(GenericRequestSerializer):
+class DataExportRequestSerializer(serializers.Serializer):
     since = serializers.IntegerField()
     limit = serializers.IntegerField(max_value=10000)
-    data_type = serializers.ChoiceField(choices=('detections', 'pings'))
+    data_type = serializers.ChoiceField(choices=('detection', 'ping'))
     filtered = serializers.BooleanField(default=True)

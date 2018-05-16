@@ -206,7 +206,8 @@ class Command(BaseCommand):
                 source='sample_data_generator',
                 device=choice(devices),
                 user=choice(users),
-                team=choice(teams)
+                team=choice(teams),
+                visible=choice([True, False])
             )
 
         for i in range(ping_count):

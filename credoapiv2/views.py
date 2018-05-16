@@ -136,7 +136,8 @@ class DataExportView(APIView):
     parser_classes = (JSONParser,)
 
     def post(self, request):
-        if request.user.is_authenticated and request.user.is_staff:
+        # if request.user.is_authenticated and request.user.is_staff:
+        if request.user.is_authenticated:
             try:
                 return Response(data=handle_data_export(request), status=status.HTTP_200_OK)
             except CredoAPIException as e:
