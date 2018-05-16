@@ -2,6 +2,8 @@ from __future__ import unicode_literals
 
 from rest_framework import serializers
 
+from credocommon.models import Detection, Ping
+
 
 class GenericRequestSerializer(serializers.Serializer):
     device_id = serializers.CharField(max_length=50)
@@ -49,6 +51,18 @@ class DetectionRequestSerializer(GenericRequestSerializer):
     detections = DetectionSerializer(many=True)
 
 
+class ExportDetectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = Detection
+
+
+class ExportPingSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = Ping
+
+
 class PingRequestSerializer(GenericRequestSerializer):
     timestamp = serializers.IntegerField()
     delta_time = serializers.IntegerField()
@@ -58,4 +72,3 @@ class DataExportRequestSerializer(serializers.Serializer):
     since = serializers.IntegerField()
     limit = serializers.IntegerField(max_value=10000)
     data_type = serializers.ChoiceField(choices=('detection', 'ping'))
-    filtered = serializers.BooleanField(default=True)
