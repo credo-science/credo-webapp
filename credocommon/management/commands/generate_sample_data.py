@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from credocommon.models import User, Team, Detection, Device
+from credocommon.models import User, Team, Detection, Device, Ping
 
 from random import choice, random, randint
 from time import time
@@ -158,6 +158,7 @@ class Command(BaseCommand):
         team_count = 3
         user_count = 10
         detection_count = 100
+        ping_count = 100
 
         if not User.objects.filter(username='admin'):
             User.objects.create_superuser(
@@ -206,6 +207,14 @@ class Command(BaseCommand):
                 device=choice(devices),
                 user=choice(users),
                 team=choice(teams)
+            )
+
+        for i in range(ping_count):
+            Ping.objects.create(
+                timestamp=int(time() * 1000 - 5000 + random() * 10000),
+                delta_time=int(random() * 100),
+                user=choice(users),
+                device=choice(devices)
             )
 
     def handle(self, *args, **options):
