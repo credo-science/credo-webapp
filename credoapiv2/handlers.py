@@ -25,12 +25,14 @@ def handle_registration(request):
         raise CredoAPIException(str(serializer.errors))
     vd = serializer.validated_data
 
+    user = None
+
     try:
         u = User.objects.get(email=vd['email'])
         if not u.is_active:
             user = u
-            user.team = Team.objects.get_or_create(name=vd['team'])[0],
-            user.display_name = vd['display_name'],
+            user.team = Team.objects.get_or_create(name=vd['team'])[0]
+            user.display_name = vd['display_name']
             user.key = generate_token()
             user.username = vd['username']
             user.email_confirmation_token = generate_token()
@@ -38,6 +40,9 @@ def handle_registration(request):
             user.save()
             logger.info('Updating user info and resending activation email to user {}'.format(user))
     except User.DoesNotExist:
+        pass
+
+    if not user:
         try:
             user = User.objects.create_user(
                 team=Team.objects.get_or_create(name=vd['team'])[0],
