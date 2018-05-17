@@ -6,11 +6,17 @@
 
 <div class="box">
 
-    <div class="title"> api.credo.science</div>
+    <div class="title"> api.credo.science </div>
 
     <div class="information">
-        <div class="label">BETA</div>
-        We are still in beta mode, join us to help finish all features!
+        <div class="label">Quantum Gravity Previewer</div>
+        <p>
+            Join and follow the first CREDO online experiment: <a
+                href="https://credo2.cyfronet.pl/redmine/projects/time/wiki/Wiki">Quantum Gravity Previewer</a> (for
+            CREDO members only, minimum requirement to become a member: like the official <a
+                href="https://www.facebook.com/credo.science/">CREDO FB profile</a>, then request membership by
+            e-mail/FB).
+        </p>
     </div>
 
     <div class="buttons">
@@ -88,7 +94,7 @@
             </tr>
             {% for detection in recent_detections %}
             <tr>
-                <td width="30%"> {{ detection.date }} </td>
+                <td width="30%"> {{ detection.date }}</td>
                 <td><a href="{% url 'user_page' username=detection.user.name %}">{{ detection.user.display_name }}</a>
                 </td>
                 <td><a href="{% url 'team_page' name=detection.team.name %}">{{ detection.team.name }}</a></td>
@@ -102,7 +108,7 @@
     </div>
     {% endcache %}
 
-    </div>
+</div>
 
 </div>
 
