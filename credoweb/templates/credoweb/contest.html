@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+	<head>
+       {% load static %}
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+		<link href="{% static "credoweb/style.css" %}" rel="stylesheet">
+		{% block title %}<title>api.credo.science</title>{% endblock %}
+
+	</head>
+<body style="margin:50px">
+	<div>
+ 			<div class="logo">
+				<img src="{% static "credoweb/credo-logo.png" %}" class="logo-image">
+			</div>
+                <div id="image_view" class="fixed" style="display: none;">
+                    <div style="margin-top: 5px">
+                        <div class="content">
+                            <center><span style="margin: 5px;">Image view <i id="close_img_view" class="far fa-window-close"></i></span></center>
+                            <img src="" width="100%" id="new_img"/>
+                        </div>
+                    </div>
+                </div>
+<div class="box">
+
+    <div class="title">Contest</div>
+
+
+
+    <div class="panel">
+        <div class="panel-users">
+            <div class="title"><i class="fas fa-chart-bar"></i> Top users</div>
+
+            <table width="100%">
+                <tr>
+                    <th><i class="fas fa-sort"></i> Name</th>
+                    <th><i class="fas fa-sort"></i> Detections</th>
+                </tr>
+
+                {% for user in top_users %}
+
+                <tr>
+                    <td><a href="{% url 'user_page' username=user.name %}">{{ user.display_name }}</a></td>
+                    <td>{{ user.detection_count }}</td>
+                </tr>
+
+                {% endfor %}
+
+            </table>
+        </div>
+
+        <div class="panel-users">
+            <div class="title"><i class="fas fa-chart-bar"></i> Top teams</div>
+            <table width="100%">
+                <tr>
+                    <th><i class="fas fa-sort"></i> Name</th>
+                    <th><i class="fas fa-sort"></i> Detections</th>
+                </tr>
+
+                {% for team in top_teams %}
+
+                <tr>
+                    <td><a href="{% url 'team_page' name=team.name %}">{{ team.name }}</a></td>
+                    <td>{{ team.detection_count }}</td>
+                </tr>
+
+                {% endfor %}
+
+            </table>
+        </div>
+
+    </div>
+
+    <div class="panel">
+        <div class="title"><i class="fas fa-chart-bar"></i> Detections</div>
+        <table>
+            <tr>
+                <th><i class="fas fa-sort"></i> time</th>
+                <th><i class="fas fa-sort"></i> name</th>
+                <th><i class="fas fa-sort"></i> team</th>
+                <th><i class="fas fa-sort"></i> img</th>
+            </tr>
+            {% for detection in recent_detections %}
+            <tr>
+                <td width="30%"> {{ detection.date }}</td>
+                <td><a href="{% url 'user_page' username=detection.user.name %}">{{ detection.user.display_name }}</a>
+                </td>
+                <td><a href="{% url 'team_page' name=detection.team.name %}">{{ detection.team.name }}</a></td>
+                <td width="50px" align="center"><img style="display:block; width:30px;height:30px;"
+                                                     src="data:image/png;base64,{{ detection.img }}" class="big_img">
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+
+
+</div>
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script src="{% static "credoweb/scripts.js" %}"></script>
+</body>
+</html>

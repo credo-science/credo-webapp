@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import base64
+from datetime import datetime
 import time
 
 from django.db.models import Count
@@ -12,7 +13,6 @@ from django.core.cache import cache
 from credocommon.models import Team, User, Detection
 from credoweb.helpers import get_global_stats, get_recent_detections, get_top_users, get_recent_users,\
     get_user_detections_page
-
 
 
 def index(request):
@@ -137,3 +137,47 @@ def confirm_email(request, token=''):
     u.save()
     context = {}
     return render(request, 'credoweb/confirm_email.html', context)
+
+
+def contest(request):
+    time_start = datetime.now()
+    start = datetime.strptime(request.GET['start'], '%H:%M')
+    time_start = time_start.replace(hour=start.hour, minute=start.minute, second=0, microsecond=0)
+    start = (time.mktime(time_start.timetuple()) + 60 * 60 * 2) * 1000  # UTC+2
+    duration = int(request.GET['duration']) * 60 * 1000  # From minutes to milliseconds
+
+    recent_detections = [{
+            'date': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(d.timestamp/1000)),
+            'user': {
+                'name': d.user.username,
+                'display_name': d.user.display_name,
+            },
+            'team': {
+                'name': d.team.name,
+            },
+            'img': base64.encodestring(d.frame_content)
+            } for d in Detection.objects.order_by('-timestamp')
+                                                    .filter(visible=True).filter(timestamp__gt=start)
+                                                    .filter(timestamp__lt=(start + duration))
+                                                    .select_related('user', 'team')]
+    top_users = [{
+            'name': u.username,
+            'display_name': u.display_name,
+            'detection_count': u.detection_count
+            } for u in User.objects.filter(detection__visible=True).filter(detection__timestamp__gt=start)
+                                            .filter(detection__timestamp__lt=(start + duration))
+                                            .annotate(detection_count=Count('detection')).order_by('-detection_count')[:5]]
+
+    top_teams = [{
+            'name': t.name,
+            'detection_count': t.detection_count
+            } for t in Team.objects.filter(detection__visible=True).filter(detection__timestamp__gt=start)
+                                            .filter(detection__timestamp__lt=(start + duration))
+                                            .annotate(detection_count=Count('detection')).order_by('-detection_count')[:5]]
+
+    context = {
+        'recent_detections': recent_detections,
+        'top_users': top_users,
+        'top_teams': top_teams
+    }
+    return render(request, 'credoweb/contest.html', context)
