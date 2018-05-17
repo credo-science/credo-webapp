@@ -157,7 +157,7 @@ class Command(BaseCommand):
         users = []
         team_count = 3
         user_count = 10
-        detection_count = 100
+        detection_count = 1000
         ping_count = 100
 
         if not User.objects.filter(username='admin'):

@@ -212,12 +212,12 @@ def handle_data_export(request):
     vd = serializer.validated_data
     data = None
     if vd['data_type'] == 'detection':
-        detections = Detection.objects.filter(timestamp__gt=vd['since'])[:vd['limit']]
+        detections = Detection.objects.filter(timestamp__gt=vd['since']).order_by('timestamp')[:vd['limit']]
         data = {
             'detections': [ExportDetectionSerializer(d).data for d in detections]
         }
     elif vd['data_type'] == 'ping':
-        pings = Ping.objects.filter(timestamp__gt=vd['since'])[:vd['limit']]
+        pings = Ping.objects.filter(timestamp__gt=vd['since']).order_by('timestamp')[:vd['limit']]
         data = {
             'pings': [ExportPingSerializer(p).data for p in pings]
         }
