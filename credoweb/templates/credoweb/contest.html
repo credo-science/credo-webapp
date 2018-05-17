@@ -10,7 +10,7 @@
 		{% block title %}<title>api.credo.science</title>{% endblock %}
 
 	</head>
-<body style="margin:50px">
+<body style="margin:50px; margin-top: 0">
 	<div>
  			<div class="logo">
 				<img src="{% static "credoweb/credo-logo.png" %}" class="logo-image">
@@ -60,7 +60,6 @@
                 </tr>
 
                 {% for team in top_teams %}
-
                 <tr>
                     <td><a href="{% url 'team_page' name=team.0 %}">{{ team.0 }}</a></td>
                     <td>{{ team.1 }}</td>

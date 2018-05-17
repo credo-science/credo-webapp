@@ -155,7 +155,8 @@ def contest(request):
     for d in Detection.objects.order_by('-timestamp').filter(visible=True).filter(timestamp__gt=start)\
             .filter(timestamp__lt=(start + duration)).select_related('user', 'team'):
         uc[d.user.display_name] += 1
-        tc[d.team.name] += 1
+        if d.team.name:
+            tc[d.team.name] += 1
         recent_detections.append({
             'date': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(d.timestamp / 1000)),
             'user': {
