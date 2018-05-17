@@ -75,7 +75,7 @@
     </div>
 
 
-    {% cache 60 recent_detections_data %}
+    {% cache 120 recent_detections_data %}
     <div class="panel">
         <!-- {{ time }} -->
         <div class="title"><i class="fas fa-chart-bar"></i> Last 20 detections</div>
@@ -93,7 +93,7 @@
                 </td>
                 <td><a href="{% url 'team_page' name=detection.team.name %}">{{ detection.team.name }}</a></td>
                 <td width="50px" align="center"><img style="display:block; width:30px;height:30px;"
-                                                     src="data:image/jpeg;base64,{{ detection.img }}" class="big_img">
+                                                     src="data:image/png;base64,{{ detection.img }}" class="big_img">
                 </td>
             </tr>
             {% endfor %}

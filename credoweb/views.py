@@ -35,8 +35,6 @@ def detection_list(request, page=1):
         context = {
             'has_next': p.has_next(),
             'has_previous': p.has_previous(),
-            'page_next': page + 1,
-            'page_previous': page - 1,
             'page_number': page,
             'detections': [{
                 'date': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(d.timestamp / 1000)),
@@ -64,8 +62,6 @@ def user_list(request, page=1):
         context = {
             'has_next': p.has_next(),
             'has_previous': p.has_previous(),
-            'page_next': page + 1,
-            'page_previous': page - 1,
             'page_number': page,
             'users': [{
                 'name': u.username,
@@ -86,8 +82,6 @@ def team_list(request, page=1):
         context = {
             'has_next': p.has_next(),
             'has_previous': p.has_previous(),
-            'page_next': page + 1,
-            'page_previous': page - 1,
             'page_number': page,
             'teams': [{
                 'name': t.name,
@@ -97,6 +91,7 @@ def team_list(request, page=1):
         }
         cache.set('team_list_{}'.format(page), context)
     return render(request, 'credoweb/team_list.html', context)
+
 
 def user_page(request, username='', page=1):
     page = int(page)
