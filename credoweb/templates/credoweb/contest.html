@@ -42,8 +42,8 @@
                 {% for user in top_users %}
 
                 <tr>
-                    <td><a href="#">{{ user[0] }}</a></td>
-                    <td>{{ user[1] }}</td>
+                    <td><a href="#">{{ user.0 }}</a></td>
+                    <td>{{ user.1 }}</td>
                 </tr>
 
                 {% endfor %}
@@ -62,8 +62,8 @@
                 {% for team in top_teams %}
 
                 <tr>
-                    <td><a href="{% url 'team_page' name=team[0] %}">team[0]</a></td>
-                    <td>{{ team[1] }}</td>
+                    <td><a href="{% url 'team_page' name=team.0 %}">{{ team.0 }}</a></td>
+                    <td>{{ team.1 }}</td>
                 </tr>
 
                 {% endfor %}
