@@ -142,7 +142,7 @@ def confirm_email(request, token=''):
 
 def contest(request):
     time_start = datetime.now()
-    start = datetime.strptime(request.GET['start'], '%H:%M')
+    start = datetime.strptime(request.GET['start'], '%Y-%m-%dT%H:%M')
     time_start = time_start.replace(hour=start.hour, minute=start.minute, second=0, microsecond=0)
     start = (time.mktime(time_start.timetuple())) * 1000
     duration = int(request.GET['duration']) * 60 * 1000  # From minutes to milliseconds
@@ -174,7 +174,7 @@ def contest(request):
     top_teams = tc.most_common(5)
 
     context = {
-        'recent_detections': recent_detections,
+        'recent_detections': recent_detections[:int(request.GET['limit'])],
         'top_users': top_users,
         'top_teams': top_teams
     }
