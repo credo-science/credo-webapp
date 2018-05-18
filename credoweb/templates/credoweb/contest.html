@@ -1,104 +1,113 @@
-<!doctype html>
-<html lang="en">
-	<head>
-       {% load static %}
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
-		<link href="{% static "credoweb/style.css" %}" rel="stylesheet">
-		{% block title %}<title>api.credo.science</title>{% endblock %}
+{% extends "credoweb/base.html" %}
 
-	</head>
-<body style="margin:50px; margin-top: 0">
-	<div>
- 			<div class="logo">
-				<img src="{% static "credoweb/credo-logo.png" %}" class="logo-image">
-			</div>
-                <div id="image_view" class="fixed" style="display: none;">
-                    <div style="margin-top: 5px">
-                        <div class="content">
-                            <center><span style="margin: 5px;">Image view <i id="close_img_view" class="far fa-window-close"></i></span></center>
-                            <img src="" width="100%" id="new_img"/>
-                        </div>
-                    </div>
-                </div>
-<div class="box">
+{% block content %}
 
-    <div class="title">Contest</div>
+    <div class="box">
 
+        <div class="title">Contest</div>
+        <div class="information">
+            <b>1st World Championships in Particle Hunting with Smartphones, May 18-19, 2018, worldwide</b><br/>
+            <br/>
+            Rules:<br/>
+            <br/>
+            1. Organizer: CREDO Collaboration | Krakow group<br/>
+            2. Competition starts: May 18th, 16:20 CEST; Competition ends: May 19th, 16:20 CEST<br/>
+            3. Only team competition! Minimum number of players in team: 2.<br/>
+            4. You can change your team whenever you want, particles detected by your device are asigned to the score of
+            the team you belong at the moment of detection.<br/>
+            5. Be warned that artifacts (unphysical detections) may appear (e.g. electronics background)! For this
+            reason the Organizer reserve the right to verify detections, and remove from the statistics if needed. The
+            verification process will be fully transparent and the Championships participants will have chance to
+            appeal.<br/>
+            <br/>
+            Tips:<br/>
+            0. <a href="https://play.google.com/store/apps/details?id=science.credo.mobiledetector">Update the
+            app!</a><br/>
+            1. Your detections should look e.g. like these:<br/>
+            <ul>
+                <li>https://api.credo.science/web/user/Piotr_Homola/</li>
+                <li>https://api.credo.science/web/user/Przemek/</li>
+                <li>https://api.credo.science/web/user/ph-huawei-p9/</li>
+            </ul>
+            2. For physical reasons we are suspicious about detections more often than 10/1hr, within a longer time
+            period. We will be removing such detections unless the user inform us about the physical size of the sensor
+            matrix in his/her camera. Larger cameras can detect particles more frequently.<br/>
+            3. Remember to have fun!<br/>
+            4. Remember you are helping science!<br/>
+            5. The current world record in team particle hunting with smartphones, category "within 1 hour": 12. It is
+            hold by the IFJ team, collected during the particle hunters match IFJ - Gimnazjum Rzezawa on 16.11.2017.
+            Time to beat IFJ!
+            <br/>
+        </div>
+        <div class="panel">
+            <div class="panel-users">
+                <div class="title"><i class="fas fa-chart-bar"></i> Top users</div>
 
+                <table width="100%">
+                    <tr>
+                        <th><i class="fas fa-sort"></i> Name</th>
+                        <th><i class="fas fa-sort"></i> Detections</th>
+                    </tr>
 
-    <div class="panel">
-        <div class="panel-users">
-            <div class="title"><i class="fas fa-chart-bar"></i> Top users</div>
+                    {% for user in top_users %}
 
-            <table width="100%">
-                <tr>
-                    <th><i class="fas fa-sort"></i> Name</th>
-                    <th><i class="fas fa-sort"></i> Detections</th>
-                </tr>
+                    <tr>
+                        <td><a href="#">{{ user.0 }}</a></td>
+                        <td>{{ user.1 }}</td>
+                    </tr>
 
-                {% for user in top_users %}
+                    {% endfor %}
 
-                <tr>
-                    <td><a href="#">{{ user.0 }}</a></td>
-                    <td>{{ user.1 }}</td>
-                </tr>
+                </table>
+            </div>
 
-                {% endfor %}
+            <div class="panel-users">
+                <div class="title"><i class="fas fa-chart-bar"></i> Top teams</div>
+                <table width="100%">
+                    <tr>
+                        <th><i class="fas fa-sort"></i> Name</th>
+                        <th><i class="fas fa-sort"></i> Detections</th>
+                    </tr>
 
-            </table>
+                    {% for team in top_teams %}
+                    <tr>
+                        <td><a href="{% url 'team_page' name=team.0 %}">{{ team.0 }}</a></td>
+                        <td>{{ team.1 }}</td>
+                    </tr>
+
+                    {% endfor %}
+
+                </table>
+            </div>
+
         </div>
 
-        <div class="panel-users">
-            <div class="title"><i class="fas fa-chart-bar"></i> Top teams</div>
-            <table width="100%">
+        <div class="panel">
+            <div class="title"><i class="fas fa-chart-bar"></i> Detections</div>
+            <table>
                 <tr>
-                    <th><i class="fas fa-sort"></i> Name</th>
-                    <th><i class="fas fa-sort"></i> Detections</th>
+                    <th><i class="fas fa-sort"></i> time</th>
+                    <th><i class="fas fa-sort"></i> name</th>
+                    <th><i class="fas fa-sort"></i> team</th>
+                    <th><i class="fas fa-sort"></i> img</th>
                 </tr>
-
-                {% for team in top_teams %}
+                {% for detection in recent_detections %}
                 <tr>
-                    <td><a href="{% url 'team_page' name=team.0 %}">{{ team.0 }}</a></td>
-                    <td>{{ team.1 }}</td>
+                    <td width="30%"> {{ detection.date }}</td>
+                    <td><a href="{% url 'user_page' username=detection.user.name %}">{{ detection.user.display_name
+                        }}</a>
+                    </td>
+                    <td><a href="{% url 'team_page' name=detection.team.name %}">{{ detection.team.name }}</a></td>
+                    <td width="50px" align="center"><img style="display:block; width:30px;height:30px;"
+                                                         src="data:image/png;base64,{{ detection.img }}"
+                                                         class="big_img">
+                    </td>
                 </tr>
-
                 {% endfor %}
-
             </table>
+
         </div>
 
-    </div>
-
-    <div class="panel">
-        <div class="title"><i class="fas fa-chart-bar"></i> Detections</div>
-        <table>
-            <tr>
-                <th><i class="fas fa-sort"></i> time</th>
-                <th><i class="fas fa-sort"></i> name</th>
-                <th><i class="fas fa-sort"></i> team</th>
-                <th><i class="fas fa-sort"></i> img</th>
-            </tr>
-            {% for detection in recent_detections %}
-            <tr>
-                <td width="30%"> {{ detection.date }}</td>
-                <td><a href="{% url 'user_page' username=detection.user.name %}">{{ detection.user.display_name }}</a>
-                </td>
-                <td><a href="{% url 'team_page' name=detection.team.name %}">{{ detection.team.name }}</a></td>
-                <td width="50px" align="center"><img style="display:block; width:30px;height:30px;"
-                                                     src="data:image/png;base64,{{ detection.img }}" class="big_img">
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
 
     </div>
-
-
-</div>
-		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-		<script src="{% static "credoweb/scripts.js" %}"></script>
-</body>
-</html>
+{% endblock %}
