@@ -94,8 +94,7 @@
                 {% for detection in recent_detections %}
                 <tr>
                     <td width="30%"> {{ detection.date }}</td>
-                    <td><a href="{% url 'user_page' username=detection.user.name %}">{{ detection.user.display_name
-                        }}</a>
+                    <td><a href="{% url 'user_page' username=detection.user.name %}">{{ detection.user.display_name }}</a>
                     </td>
                     <td><a href="{% url 'team_page' name=detection.team.name %}">{{ detection.team.name }}</a></td>
                     <td width="50px" align="center"><img style="display:block; width:30px;height:30px;"
