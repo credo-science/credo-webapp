@@ -63,11 +63,13 @@ def handle_registration(request):
         logger.info('Sending registration email to {}'.format(user.email))
         try:
             send_mail(
+                '<html><head></head><body>'
                 'Credo API registration information',
                 'Hello!\n\nThank you for registering in Credo API Portal, '
                 'please confirm your email by visiting the link below:\n\n'
-                'https://api.credo.science/web/confirm_email/{token}\n\n'
-                'best regards,\nCredo Team'.format(token=user.email_confirmation_token),
+                '<a href="https://api.credo.science/web/confirm_email/{token}">'
+                'https://api.credo.science/web/confirm_email/{token}</a>\n\n'
+                'best regards,\nCredo Team</body></html>'.format(token=user.email_confirmation_token),
                 'credoapi@credo.science',
                 [user.email],
             )
@@ -221,5 +223,6 @@ def handle_data_export(request):
         data = {
             'pings': [ExportPingSerializer(p).data for p in pings]
         }
-    logger.info('Exporting data by request from {}, type {}, since {}, limit {}'.format(request.user, vd['data_type'], vd['since'], vd['limit']))
+    logger.info('Exporting data by request from {}, type {}, since {}, limit {}'.format(request.user, vd['data_type'],
+                                                                                        vd['since'], vd['limit']))
     return data
