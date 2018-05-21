@@ -1,0 +1,9 @@
+Hello {{ display_name }}!
+
+Thank you for registering in Credo API Portal.
+Please confirm your email by visiting the link below:
+
+{% url 'confirm_email' token=token %}
+
+best regards,
+Credo Team

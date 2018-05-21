@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 from django.db.utils import IntegrityError
 
 from credocommon.models import User, Team, Detection, Device, Ping
-from credocommon.helpers import generate_token, validate_image
+from credocommon.helpers import generate_token, validate_image, send_registration_email
 
 from credoapiv2.exceptions import CredoAPIException, RegistrationException, LoginException
 from credoapiv2.serializers import RegisterRequestSerializer, LoginRequestSerializer, InfoRequestSerializer, \
@@ -62,19 +62,10 @@ def handle_registration(request):
     if user:
         logger.info('Sending registration email to {}'.format(user.email))
         try:
-            send_mail(
-                '<html><head></head><body>'
-                'Credo API registration information',
-                'Hello!\n\nThank you for registering in Credo API Portal, '
-                'please confirm your email by visiting the link below:\n\n'
-                '<a href="https://api.credo.science/web/confirm_email/{token}">'
-                'https://api.credo.science/web/confirm_email/{token}</a>\n\n'
-                'best regards,\nCredo Team</body></html>'.format(token=user.email_confirmation_token),
-                'credoapi@credo.science',
-                [user.email],
-            )
+            send_registration_email(user.email, user.email_confirmation_token, user.username, user.display_name)
         except Exception as e:
-            logger.exception('Failed to send confirmation email for user {} ({})'.format(user, user.email))
+            logger.exception(e)
+            logger.error('Failed to send confirmation email for user {} ({})'.format(user, user.email))
 
 
 def handle_login(request):
