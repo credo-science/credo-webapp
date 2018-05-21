@@ -9,7 +9,7 @@ Please confirm your email by visiting the link below:
 
 {% autoescape off %}
 <p><a href="https://api.credo.science{% url 'confirm_email' token=token %}">https://api.credo.science{% url 'confirm_email' token=token %}</a></p>
-{% autoescape on %}
+{% endautoescape %}
 
 <h4>best regards,</h4>
 <h3>Credo Team</h3>
