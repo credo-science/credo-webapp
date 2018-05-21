@@ -52,7 +52,7 @@
                     {% for user in top_users %}
 
                     <tr>
-                        <td><a href="#">{{ user.0 }}</a></td>
+                        <td><a href="{% url 'user_page' username=user.0.0 %}">{{ user.0.1 }}</a></td>
                         <td>{{ user.1 }}</td>
                     </tr>
 
