@@ -1,9 +1,14 @@
 Hello {{ display_name }}!
 
+
 Thank you for registering in Credo API Portal.
 Please confirm your email by visiting the link below:
 
-{% url 'confirm_email' token=token %}
+
+{% autoescape off %}
+https://api.credo.science{% url 'confirm_email' token=token %}
+{% autoescape on %}
+
 
 best regards,
 Credo Team

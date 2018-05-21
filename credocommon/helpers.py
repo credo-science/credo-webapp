@@ -33,4 +33,4 @@ def send_registration_email(email, token, username, display_name):
     plain = render_to_string('credocommon/registration_email.txt', context)
     html = render_to_string('credocommon/registration_email.txt', context)
 
-    send_mail('Credo API registration', plain, 'credoapi@credo.science', [email], html_message=html)
+    send_mail('Credo API registration', plain, 'CREDO <credoapi@credo.science>', [email], html_message=html)

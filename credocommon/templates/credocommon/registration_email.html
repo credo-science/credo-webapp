@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <body>
 <h2>Hello {{ display_name }}!</h2>>
 
@@ -8,7 +7,9 @@ Thank you for registering in Credo API Portal.
 Please confirm your email by visiting the link below:
 </p>
 
-<p><a href="{% url 'confirm_email' token=token %}">{% url 'confirm_email' token=token %}</a></p>
+{% autoescape off %}
+<p><a href="https://api.credo.science{% url 'confirm_email' token=token %}">https://api.credo.science{% url 'confirm_email' token=token %}</a></p>
+{% autoescape on %}
 
 <h4>best regards,</h4>
 <h3>Credo Team</h3>
