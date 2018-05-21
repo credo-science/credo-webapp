@@ -138,7 +138,7 @@ Submit detection
 | `latitude` | GPS latitude | Floating point number |
 | `longitude` | GPS longitude | Floating point number |
 | `provider` | Location provider | 20 characters or fewer |
-| `timestamp` | UNIX timestamp of detection time | Integer |
+| `timestamp` | UNIX timestamp of detection time (in milliseconds) | Integer |
 
 **Required fields:** all except `frame_content`
 
@@ -173,13 +173,13 @@ Submit detection
 
 | Field | Description | Constraint |
 | --- | --- | --- |
-| `since` | Timestamp marking the beginning of exported data | Integer |
+| `since` | Timestamp marking the beginning of exported data  (in milliseconds)| Integer |
 | `limit` | Limit number of entities in response, 10k is max | Integer |
 | `data_type` | Type of exported resource, can be 'detection' or 'ping' | String |
 
-**Authorization:** token
+**Authorization:** token (special permissions required)
 
-**Example request:** [ping.json](sample-payloads/requests/ping.json)
+**Example request:** [data_export.json](sample-payloads/requests/data_export.json)
 
 **On success:** HTTP_2xx
 
