@@ -2,11 +2,13 @@
 
 {% load cache %}
 
+{% block title %}<title>Main Page - CREDO API</title>{% endblock %}
+
 {% block content %}
 
 <div class="box">
 
-    <div class="title"> api.credo.science </div>
+    <div class="title">Main page</div>
 
         <div class="information">
         <div class="label">TODAY! Compete for Science</div>
@@ -41,7 +43,7 @@
         {% cache 3600 top_users_data %}
         <div class="panel-users">
             <!-- {{ time }} -->
-            <div class="title"><i class="fas fa-chart-bar"></i> top 5 users</div>
+            <div class="title"><i class="fas fa-chart-bar"></i> Top users</div>
 
             <table width="100%">
                 <tr>
@@ -66,7 +68,7 @@
         {% cache 300 recent_users_data %}
         <div class="panel-users-registerd">
             <!-- {{ time }} -->
-            <div class="title"><i class="fas fa-chart-bar"></i>5 registered users</div>
+            <div class="title"><i class="fas fa-chart-bar"></i> Recently registered users</div>
             <table width="100%">
                 <tr>
                     <th><i class="fas fa-sort"></i> Login</th>
