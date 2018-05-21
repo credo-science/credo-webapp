@@ -41,7 +41,7 @@ def handle_registration(request):
             user.save()
             logger.info('Updating user info and resending activation email to user {}'.format(user))
     except User.DoesNotExist:
-        pass
+        logger.info('Creating new user {} {}'.format(vd['username'], vd['display_name']))
 
     if not user:
         try:
@@ -102,6 +102,7 @@ def handle_login(request):
         'language': user.language,
         'token': user.key
     }
+    logger.info('Logging in user {}'.format(user))
     return data
 
 
