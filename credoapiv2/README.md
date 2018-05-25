@@ -173,7 +173,7 @@ Submit detection
 
 | Field | Description | Constraint |
 | --- | --- | --- |
-| `since` | Timestamp marking the beginning of exported data  (in milliseconds)| Integer |
+| `since` | Timestamp marking the beginning of exported data (using time_received)  (in milliseconds)| Integer |
 | `limit` | Limit number of entities in response, 10k is max | Integer |
 | `data_type` | Type of exported resource, can be 'detection' or 'ping' | String |
 
