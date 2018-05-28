@@ -147,6 +147,15 @@ STATIC_URL = '/static/'
 
 EMAIL_HOST = os.environ.get('DJANGO_EMAIL_HOST', 'localhost')
 
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': (
+        'rest_framework.throttling.ScopedRateThrottle',
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'data_export': '4/hour'
+    }
+}
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

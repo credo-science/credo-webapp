@@ -134,6 +134,7 @@ class DataExportView(APIView):
     """
     authentication_classes = (DRFTokenAuthentication, )
     parser_classes = (JSONParser,)
+    throttle_scope = 'data_export'
 
     def post(self, request):
         if request.user.is_authenticated and request.user.is_staff:
