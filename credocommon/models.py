@@ -77,7 +77,8 @@ class Detection(models.Model):
         return "Detection %s" % self.id
 
     def save(self, *args, **kwargs):
-        self.time_received = int(time.time() * 1000)
+        if not self.time_received:
+            self.time_received = int(time.time() * 1000)
         super(Detection, self).save(*args, **kwargs)
 
 
