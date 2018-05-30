@@ -66,6 +66,7 @@ class ExportPingSerializer(serializers.ModelSerializer):
 class PingRequestSerializer(GenericRequestSerializer):
     timestamp = serializers.IntegerField()
     delta_time = serializers.IntegerField()
+    on_time = serializers.IntegerField()
 
 
 class DataExportRequestSerializer(serializers.Serializer):

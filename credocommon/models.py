@@ -84,9 +84,16 @@ class Detection(models.Model):
 
 class Ping(models.Model):
     timestamp = models.BigIntegerField(db_index=True)
+    time_received = models.BigIntegerField(blank=True)
     delta_time = models.IntegerField(blank=True, null=True)
+    on_time = models.IntegerField(blank=True, null=True, default=0)
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return "Ping %s" % self.id
+
+    def save(self, *args, **kwargs):
+        if not self.time_received:
+            self.time_received = int(time.time() * 1000)
+        super(Ping, self).save(*args, **kwargs)

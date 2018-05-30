@@ -187,6 +187,7 @@ def handle_ping(request):
     Ping.objects.create(
         timestamp=vd['timestamp'],
         delta_time=vd['delta_time'],
+        on_time=vd['on_time'],
         device=Device.objects.get_or_create(
             device_id=vd['device_id'],
             device_type=vd['device_type'],
@@ -202,10 +203,8 @@ def handle_ping(request):
 def handle_data_export(request):
     serializer = DataExportRequestSerializer(data=request.data)
     if not serializer.is_valid():
-        print(str(serializer.errors))
         raise CredoAPIException(str(serializer.errors))
     vd = serializer.validated_data
-    print(vd)
     data = None
     if vd['data_type'] == 'detection':
         detections = Detection.objects.filter(time_received__gt=vd['since']).order_by('time_received')[:vd['limit']]
