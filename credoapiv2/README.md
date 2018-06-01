@@ -169,17 +169,24 @@ Submit detection
 **On failure:** HTTP_4xx/HTTP_5xx (optional message)
 
 ## /api/v2/data_export
-
+Request asynchronous data export.
+Returns URL to file with results that will be available after finishing export.
+Depending on number of events requested processing time may vary.
 
 | Field | Description | Constraint |
 | --- | --- | --- |
-| `since` | Timestamp marking the beginning of exported data  (in milliseconds)| Integer |
-| `limit` | Limit number of entities in response, 10k is max | Integer |
+| `since` | Timestamp marking the beginning of exported data (using time_received)  (in milliseconds)| Integer |
+| `until` | Timestamp marking the end of exported data (using time_received)  (in milliseconds)| Integer |
+| `limit` | Limit number of entities in response, maximum: 500k | Integer |
 | `data_type` | Type of exported resource, can be 'detection' or 'ping' | String |
 
 **Authorization:** token (special permissions required)
 
+**Throttling:** 4 requests / 1 hour / user
+
 **Example request:** [data_export.json](sample-payloads/requests/data_export.json)
+
+**Example response:** [data_export.json](sample-payloads/responses/data_export_success.json)
 
 **On success:** HTTP_2xx
 

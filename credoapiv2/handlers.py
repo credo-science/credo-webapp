@@ -2,9 +2,12 @@
 from __future__ import unicode_literals
 
 import base64
+import os
 
+import boto3
+
+from django.conf import settings
 from django.contrib.auth import authenticate
-from django.core.mail import send_mail
 from django.db.utils import IntegrityError
 
 from credocommon.models import User, Team, Detection, Device, Ping
@@ -12,8 +15,7 @@ from credocommon.helpers import generate_token, validate_image, send_registratio
 
 from credoapiv2.exceptions import CredoAPIException, RegistrationException, LoginException
 from credoapiv2.serializers import RegisterRequestSerializer, LoginRequestSerializer, InfoRequestSerializer, \
-    DetectionRequestSerializer, PingRequestSerializer, DataExportRequestSerializer, ExportDetectionSerializer, \
-    ExportPingSerializer
+    DetectionRequestSerializer, PingRequestSerializer, DataExportRequestSerializer
 
 import logging
 
@@ -187,6 +189,7 @@ def handle_ping(request):
     Ping.objects.create(
         timestamp=vd['timestamp'],
         delta_time=vd['delta_time'],
+        on_time=vd['on_time'],
         device=Device.objects.get_or_create(
             device_id=vd['device_id'],
             device_type=vd['device_type'],
@@ -204,17 +207,30 @@ def handle_data_export(request):
     if not serializer.is_valid():
         raise CredoAPIException(str(serializer.errors))
     vd = serializer.validated_data
-    data = None
-    if vd['data_type'] == 'detection':
-        detections = Detection.objects.filter(timestamp__gt=vd['since']).order_by('timestamp')[:vd['limit']]
-        data = {
-            'detections': [ExportDetectionSerializer(d).data for d in detections]
+
+    job_id = generate_token()[:16]
+
+    s3 = boto3.resource(
+        's3',
+        aws_access_key_id=settings.S3_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.S3_SECRET_KEY,
+        endpoint_url=settings.S3_ENDPOINT_URL
+    )
+
+    url = s3.meta.client.generate_presigned_url(
+        ClientMethod='get_object',
+        ExpiresIn=86400,  # 24h
+        Params={
+            'Bucket': 'credo_test',
+            'Key': 'export_{}.json'.format(job_id)
         }
-    elif vd['data_type'] == 'ping':
-        pings = Ping.objects.filter(timestamp__gt=vd['since']).order_by('timestamp')[:vd['limit']]
-        data = {
-            'pings': [ExportPingSerializer(p).data for p in pings]
-        }
-    logger.info('Exporting data by request from {}, type {}, since {}, limit {}'.format(request.user, vd['data_type'],
-                                                                                        vd['since'], vd['limit']))
-    return data
+    )
+
+    os.system('python manage.py s3_data_export --id {} --since {} --until {} --limit {} --type {}&'
+              .format(job_id, vd['since'], vd['until'], vd['limit'], vd['data_type']))
+
+    logger.info('Exporting data by request from {}, type {}, since {}, until {}, limit {}, id {}'
+                .format(request.user, vd['data_type'], vd['since'], vd['until'], vd['limit'], job_id))
+    return {
+        'url': url
+    }
