@@ -59,7 +59,7 @@ class Command(BaseCommand):
 
         filename = 'export_{}.json'.format(options['id'])
 
-        if options['type'] == 'detetion':
+        if options['type'] == 'detection':
             model = Detection
             plural = 'detections'
 
@@ -67,11 +67,9 @@ class Command(BaseCommand):
             model = Ping
             plural = 'pings'
 
-        data = {
-            plural: model.objects.order_by('time_received')\
-                                 .filter(time_received__gt=options['since'])\
-                                 .filter(time_received__lte=options['until'])[:options['limit']]
-        }
+        data = model.objects.order_by('time_received')\
+                            .filter(time_received__gt=options['since'])\
+                            .filter(time_received__lte=options['until'])[:options['limit']]
 
         s3 = boto3.resource(
             's3',
@@ -81,7 +79,7 @@ class Command(BaseCommand):
         )
 
         with open(filename, 'w') as outfile:
-            for chunk in simplejson.JSONEncoder(iterable_as_array=True).iterencode(gen(data.values())):
+            for chunk in simplejson.JSONEncoder(iterable_as_array=True).iterencode({plural: gen(data.values())}):
                 outfile.write(chunk)
 
         bucket = s3.Bucket(settings.S3_BUCKET)
