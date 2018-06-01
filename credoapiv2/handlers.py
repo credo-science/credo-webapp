@@ -208,7 +208,7 @@ def handle_data_export(request):
         raise CredoAPIException(str(serializer.errors))
     vd = serializer.validated_data
 
-    job_id = generate_token()
+    job_id = generate_token()[:16]
 
     s3 = boto3.resource(
         's3',
