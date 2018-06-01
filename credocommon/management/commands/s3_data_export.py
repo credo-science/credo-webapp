@@ -59,14 +59,19 @@ class Command(BaseCommand):
 
         filename = 'export_{}.json'.format(options['id'])
 
-        models = {
-            'detection': Detection,
-            'ping': Ping
-        }
+        if options['type'] == 'detetion':
+            model = Detection
+            plural = 'detections'
 
-        data = models[options['type']].objects.order_by('time_received')\
-                                      .filter(time_received__gt=options['since'])\
-                                      .filter(time_received__lte=options['until'])[:options['limit']]
+        if options['type'] == 'ping':
+            model = Ping
+            plural = 'pings'
+
+        data = {
+            plural: model.objects.order_by('time_received')\
+                                 .filter(time_received__gt=options['since'])\
+                                 .filter(time_received__lte=options['until'])[:options['limit']]
+        }
 
         s3 = boto3.resource(
             's3',
@@ -85,4 +90,4 @@ class Command(BaseCommand):
 
         os.remove(filename)
 
-        self.stdout.write('Finished data export {]'.format(options['id']))
+        self.stdout.write('Finished data export {}'.format(options['id']))
