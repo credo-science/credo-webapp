@@ -99,6 +99,11 @@ CACHES = {
    }
 }
 
+S3_BUCKET = 'credo'
+S3_ACCESS_KEY_ID = ''
+S3_SECRET_KEY = ''
+S3_ENDPOINT = ''
+
 AUTH_USER_MODEL = 'credocommon.User'
 
 AUTHENTICATION_BACKENDS = (
@@ -146,6 +151,15 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 EMAIL_HOST = os.environ.get('DJANGO_EMAIL_HOST', 'localhost')
+
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': (
+        'rest_framework.throttling.ScopedRateThrottle',
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'data_export': '4/hour'
+    }
+}
 
 LOGGING = {
     'version': 1,

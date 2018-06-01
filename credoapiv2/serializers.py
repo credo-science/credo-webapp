@@ -51,24 +51,14 @@ class DetectionRequestSerializer(GenericRequestSerializer):
     detections = DetectionSerializer(many=True)
 
 
-class ExportDetectionSerializer(serializers.ModelSerializer):
-    class Meta:
-        fields = '__all__'
-        model = Detection
-
-
-class ExportPingSerializer(serializers.ModelSerializer):
-    class Meta:
-        fields = '__all__'
-        model = Ping
-
-
 class PingRequestSerializer(GenericRequestSerializer):
     timestamp = serializers.IntegerField()
     delta_time = serializers.IntegerField()
+    on_time = serializers.IntegerField()
 
 
 class DataExportRequestSerializer(serializers.Serializer):
     since = serializers.IntegerField()
-    limit = serializers.IntegerField(max_value=10000)
+    until = serializers.IntegerField()
+    limit = serializers.IntegerField(max_value=500000)
     data_type = serializers.ChoiceField(choices=('detection', 'ping'))
