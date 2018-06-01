@@ -1,5 +1,6 @@
 {
-  "since": 11,
-  "limit": 1,
-  "data_type": "detection"
+  "since": 1526458050191,
+  "until": 1527840219000,
+  "limit": 50,
+  "data_type": "ping"
 }

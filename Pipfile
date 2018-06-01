@@ -12,6 +12,8 @@ django = "~=1.11"
 markdown = "*"
 coreapi = "*"
 mysqlclient = "*"
+boto3 = "*"
+simplejson = "*"
 Pillow = "*"
 [requires]
 python_version = "2.7"
