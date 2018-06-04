@@ -84,7 +84,7 @@ class Command(BaseCommand):
 
         bucket = s3.Bucket(settings.S3_BUCKET)
 
-        bucket.upload_file(filename, filename)
+        bucket.upload_file(settings.EXPORT_TMP_FOLDER + filename, filename)
 
         os.remove(settings.EXPORT_TMP_FOLDER + filename)
 
