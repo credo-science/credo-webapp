@@ -102,7 +102,7 @@ CACHES = {
 S3_BUCKET = 'credo'
 S3_ACCESS_KEY_ID = ''
 S3_SECRET_KEY = ''
-S3_ENDPOINT = ''
+S3_ENDPOINT_URL = ''
 
 AUTH_USER_MODEL = 'credocommon.User'
 
