@@ -99,6 +99,8 @@ CACHES = {
    }
 }
 
+EXPORT_TMP_FOLDER = 'credo_export/'
+
 S3_BUCKET = 'credo'
 S3_ACCESS_KEY_ID = ''
 S3_SECRET_KEY = ''

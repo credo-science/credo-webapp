@@ -78,7 +78,7 @@ class Command(BaseCommand):
             endpoint_url=settings.S3_ENDPOINT_URL
         )
 
-        with open(filename, 'w') as outfile:
+        with open(settings.EXPORT_TMP_FOLDER + filename, 'w') as outfile:
             for chunk in simplejson.JSONEncoder(iterable_as_array=True).iterencode({plural: gen(data.values())}):
                 outfile.write(chunk)
 
@@ -86,6 +86,6 @@ class Command(BaseCommand):
 
         bucket.upload_file(filename, filename)
 
-        os.remove(filename)
+        os.remove(settings.EXPORT_TMP_FOLDER + filename)
 
         self.stdout.write('Finished data export {}'.format(options['id']))
