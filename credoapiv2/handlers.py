@@ -226,7 +226,7 @@ def handle_data_export(request):
         }
     )
 
-    os.system('python {}manage.py s3_data_export --id {} --since {} --until {} --limit {} --type {}&'
+    os.system('python {}/manage.py s3_data_export --id {} --since {} --until {} --limit {} --type {}&'
               .format(settings.BASE_DIR, job_id, vd['since'], vd['until'], vd['limit'], vd['data_type']))
 
     logger.info('Exporting data by request from {}, type {}, since {}, until {}, limit {}, id {}'
