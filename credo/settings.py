@@ -102,6 +102,7 @@ CACHES = {
 EXPORT_TMP_FOLDER = 'credo_export/'
 
 S3_BUCKET = 'credo'
+S3_EXPIRES_IN = 3600 * 24 * 7  # 7 days
 S3_ACCESS_KEY_ID = ''
 S3_SECRET_KEY = ''
 S3_ENDPOINT_URL = ''

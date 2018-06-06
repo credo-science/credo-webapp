@@ -219,7 +219,7 @@ def handle_data_export(request):
 
     url = s3.meta.client.generate_presigned_url(
         ClientMethod='get_object',
-        ExpiresIn=86400,  # 24h
+        ExpiresIn=settings.S3_EXPIRE_IN,
         Params={
             'Bucket': settings.S3_BUCKET,
             'Key': 'export_{}.json'.format(job_id)
