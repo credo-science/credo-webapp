@@ -221,7 +221,7 @@ def handle_data_export(request):
         ClientMethod='get_object',
         ExpiresIn=86400,  # 24h
         Params={
-            'Bucket': 'credo_test',
+            'Bucket': settings.S3_BUCKET,
             'Key': 'export_{}.json'.format(job_id)
         }
     )
