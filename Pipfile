@@ -15,5 +15,6 @@ mysqlclient = "*"
 boto3 = "*"
 simplejson = "*"
 Pillow = "*"
+redis = "*"
 [requires]
 python_version = "2.7"

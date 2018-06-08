@@ -100,6 +100,8 @@ CACHES = {
 }
 
 EXPORT_TMP_FOLDER = 'credo_export/'
+USE_LOCK_WHILE_EXPORTING_DATA = False
+DATA_EXPORT_LOCK_NAME = 'data_export_lock'
 
 S3_BUCKET = 'credo'
 S3_EXPIRES_IN = 3600 * 24 * 7  # 7 days

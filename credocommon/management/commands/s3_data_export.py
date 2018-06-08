@@ -4,6 +4,7 @@ import base64
 import os
 
 from django.conf import settings
+from django.core.cache import cache
 from django.core.management.base import BaseCommand
 
 from credocommon.models import Detection, Ping
@@ -57,6 +58,12 @@ class Command(BaseCommand):
         import boto3
         import simplejson
 
+        lock = None
+
+        if settings.USE_LOCK_WHILE_EXPORTING_DATA:
+            lock = cache.lock(settings.DATA_EXPORT_LOCK_NAME, timeout=1200, sleep=1)
+            lock.acquire()
+
         filename = 'export_{}.json'.format(options['id'])
 
         if options['type'] == 'detection':
@@ -87,5 +94,8 @@ class Command(BaseCommand):
         bucket.upload_file(settings.EXPORT_TMP_FOLDER + filename, filename)
 
         os.remove(settings.EXPORT_TMP_FOLDER + filename)
+
+        if lock:
+            lock.release()
 
         self.stdout.write('Finished data export {}'.format(options['id']))
