@@ -6,9 +6,13 @@ import time
 
 from django.core.cache import cache
 from django.core.paginator import Paginator
-from django.db.models import Count, Q
+from django.db.models import Count
 
 from credocommon.models import Team, User, Detection
+
+
+def format_date(timestamp):
+    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(timestamp / 1000)) + ".{:03}".format(timestamp % 1000)
 
 
 def get_global_stats():
@@ -21,7 +25,7 @@ def get_global_stats():
 
 def get_recent_detections():
     return [{
-            'date': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(d.timestamp/1000)),
+            'date': format_date(d.timestamp),
             'timestamp': d.timestamp,
             'user': {
                 'name': d.user.username,
@@ -59,7 +63,7 @@ def get_user_detections_page(user, page):
             'has_previous': p.has_previous(),
             'page_number': page,
             'detections': [{
-                'date': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(d.timestamp / 1000)),
+                'date': format_date(d.timestamp),
                 'timestamp': d.timestamp,
                 'img': base64.encodestring(d.frame_content)
             } for d in p.object_list]

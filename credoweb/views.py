@@ -13,7 +13,7 @@ from django.core.cache import cache
 
 from credocommon.models import Team, User, Detection
 from credoweb.helpers import get_global_stats, get_recent_detections, get_top_users, get_recent_users,\
-    get_user_detections_page
+    get_user_detections_page, format_date
 
 
 def index(request):
@@ -38,7 +38,7 @@ def detection_list(request, page=1):
             'has_previous': p.has_previous(),
             'page_number': page,
             'detections': [{
-                'date': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(d.timestamp / 1000)),
+                'date': format_date(d.timestamp),
                 'timestamp': d.timestamp,
                 'user': {
                     'name': d.user.username,
@@ -160,7 +160,7 @@ def contest(request):
         if d.team.name:
             tc[d.team.name] += 1
         recent_detections.append({
-            'date': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(d.timestamp / 1000)),
+            'date': format_date(d.timestamp),
             'user': {
                 'name': d.user.username,
                 'display_name': d.user.display_name,
