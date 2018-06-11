@@ -15,7 +15,7 @@ class Command(BaseCommand):
                 self.stdout.write("Hiding detection %s (image validation failed)" % d.id)
                 d.visible = False
                 d.save()
-            if abs(d.time_received - d.timestamp) > 3600 * 24 * 365 * 5:
+            if abs(d.time_received - d.timestamp) > 3600 * 24 * 365 * 5 * 1000:
                 self.stdout.write("Hiding detection %s (invalid date)" % d.id)
                 d.visible = False
                 d.save()
