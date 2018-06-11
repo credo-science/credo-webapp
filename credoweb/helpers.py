@@ -22,6 +22,7 @@ def get_global_stats():
 def get_recent_detections():
     return [{
             'date': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(d.timestamp/1000)),
+            'timestamp': d.timestamp,
             'user': {
                 'name': d.user.username,
                 'display_name': d.user.display_name,
@@ -59,6 +60,7 @@ def get_user_detections_page(user, page):
             'page_number': page,
             'detections': [{
                 'date': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(d.timestamp / 1000)),
+                'timestamp': d.timestamp,
                 'img': base64.encodestring(d.frame_content)
             } for d in p.object_list]
         }

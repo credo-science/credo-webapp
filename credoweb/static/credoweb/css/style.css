@@ -242,6 +242,28 @@ td {
     image-rendering: pixelated;
 }
 
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    background-color: black;
+    border-radius: 6px;
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    position: absolute;
+    margin-left: 5px;
+    top: -5px;
+    opacity: 0.75;
+    visibility: hidden;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
 
 @media screen and (max-width: 1000px) {
 	.page {

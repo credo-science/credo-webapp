@@ -29,7 +29,7 @@ def index(request):
 
 def detection_list(request, page=1):
     page = int(page)
-    context = cache.get('detection_list{}'.format(page))
+    context = cache.get('detection_list_{}'.format(page))
     if not context:
         p = Paginator(
             Detection.objects.order_by('-timestamp').filter(visible=True).select_related('user', 'team'), 20).page(page)
@@ -39,6 +39,7 @@ def detection_list(request, page=1):
             'page_number': page,
             'detections': [{
                 'date': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(d.timestamp / 1000)),
+                'timestamp': d.timestamp,
                 'user': {
                     'name': d.user.username,
                     'display_name': d.user.display_name,
