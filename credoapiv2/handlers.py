@@ -10,10 +10,11 @@ from django.conf import settings
 from django.contrib.auth import authenticate
 from django.db.utils import IntegrityError
 
+from credocommon.exceptions import RegistrationException
+from credocommon.helpers import generate_token, validate_image, register_user
 from credocommon.models import User, Team, Detection, Device, Ping
-from credocommon.helpers import generate_token, validate_image, send_registration_email
 
-from credoapiv2.exceptions import CredoAPIException, RegistrationException, LoginException
+from credoapiv2.exceptions import CredoAPIException, LoginException
 from credoapiv2.serializers import RegisterRequestSerializer, LoginRequestSerializer, InfoRequestSerializer, \
     DetectionRequestSerializer, PingRequestSerializer, DataExportRequestSerializer
 
@@ -27,47 +28,7 @@ def handle_registration(request):
     if not serializer.is_valid():
         raise CredoAPIException(str(serializer.errors))
     vd = serializer.validated_data
-
-    user = None
-
-    try:
-        u = User.objects.get(email=vd['email'])
-        if not u.is_active:
-            user = u
-            user.team = Team.objects.get_or_create(name=vd['team'])[0]
-            user.display_name = vd['display_name']
-            user.key = generate_token()
-            user.username = vd['username']
-            user.email_confirmation_token = generate_token()
-            user.set_password(vd['password'])
-            user.save()
-            logger.info('Updating user info and resending activation email to user {}'.format(user))
-    except User.DoesNotExist:
-        logger.info('Creating new user {} {}'.format(vd['username'], vd['display_name']))
-
-    if not user:
-        try:
-            user = User.objects.create_user(
-                team=Team.objects.get_or_create(name=vd['team'])[0],
-                display_name=vd['display_name'],
-                key=generate_token(),
-                password=vd['password'],
-                username=vd['username'],
-                email=vd['email'],
-                is_active=False,
-                email_confirmation_token=generate_token(),
-            )
-        except IntegrityError:
-            logger.warning('User registration failed, IntegrityError', vd)
-            raise RegistrationException("User with given username or email already exists.")
-
-    if user:
-        logger.info('Sending registration email to {}'.format(user.email))
-        try:
-            send_registration_email(user.email, user.email_confirmation_token, user.username, user.display_name)
-        except Exception as e:
-            logger.exception(e)
-            logger.error('Failed to send confirmation email for user {} ({})'.format(user, user.email))
+    register_user(vd['email'], vd['password'], vd['username'], vd['display_name'], vd['team'])
 
 
 def handle_login(request):

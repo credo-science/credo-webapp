@@ -11,7 +11,11 @@ from django.shortcuts import render, get_object_or_404
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.cache import cache
 
+from credocommon.exceptions import RegistrationException
+from credocommon.helpers import register_user
 from credocommon.models import Team, User, Detection
+
+from credoweb.forms import RegistrationForm
 from credoweb.helpers import get_global_stats, get_recent_detections, get_top_users, get_recent_users,\
     get_user_detections_page, format_date
 
@@ -139,6 +143,18 @@ def confirm_email(request, token=''):
     u.save()
     context = {}
     return render(request, 'credoweb/confirm_email.html', context)
+
+
+def register(request):
+    form = RegistrationForm(request.POST or None)
+    if form.is_valid():
+        cd = form.cleaned_data
+        try:
+            register_user(cd['email'], cd['password'], cd['username'], cd['display_name'], cd['team'])
+        except RegistrationException as e:
+            return render(request, 'credoweb/register.html', {'form': form, 'message': e.message})
+        return render(request, 'credoweb/register_complete.html')
+    return render(request, 'credoweb/register.html', {'form': form})
 
 
 def contest(request):

@@ -6,8 +6,10 @@ from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework import status
 
+from credocommon.exceptions import RegistrationException
+
 from credoapiv2.authentication import DRFTokenAuthentication
-from credoapiv2.exceptions import CredoAPIException, RegistrationException, LoginException
+from credoapiv2.exceptions import CredoAPIException, LoginException
 from credoapiv2.handlers import handle_registration, handle_login, handle_detection, handle_update_info, handle_ping, handle_data_export
 
 import logging

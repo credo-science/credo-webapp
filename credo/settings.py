@@ -183,7 +183,11 @@ LOGGING = {
         'credoapiv2': {
             'handlers': ['console'],
             'level': 'INFO'
-        }
+        },
+        'credocommon': {
+            'handlers': ['console'],
+            'level': 'INFO'
+        },
     }
 }
 
