@@ -54,7 +54,7 @@ def detection_list(request, page=1):
                 'img': base64.encodestring(d.frame_content)
             } for d in p.object_list],
         }
-        cache.set('detection_list{}'.format(page), context)
+        cache.set('detection_list_{}'.format(page), context)
     return render(request, 'credoweb/detection_list.html', context)
 
 
