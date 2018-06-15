@@ -16,5 +16,6 @@ boto3 = "*"
 simplejson = "*"
 Pillow = "*"
 redis = "*"
+django-rq = "*"
 [requires]
 python_version = "2.7"

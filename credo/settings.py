@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'debug_toolbar',
-    'rest_framework'
+    'rest_framework',
+    'django_rq'
 ]
 
 MIDDLEWARE = [
@@ -98,6 +99,31 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache'
    }
 }
+
+RQ = {
+    'DEFAULT_RESULT_TTL': 3600 * 24 * 7,
+}
+
+RQ_QUEUES = {
+    'default': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 1,
+    },
+    'data_export': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 1,
+        'DEFAULT_TIMEOUT': 3600 * 24,
+    },
+    'low': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 1,
+    }
+}
+
+RQ_SHOW_ADMIN_LINK = True
 
 EXPORT_TMP_FOLDER = 'credo_export/'
 USE_LOCK_WHILE_EXPORTING_DATA = False

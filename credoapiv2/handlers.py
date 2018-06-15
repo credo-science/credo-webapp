@@ -12,6 +12,7 @@ from django.db.utils import IntegrityError
 
 from credocommon.exceptions import RegistrationException
 from credocommon.helpers import generate_token, validate_image, register_user
+from credocommon.jobs import data_export
 from credocommon.models import User, Team, Detection, Device, Ping
 
 from credoapiv2.exceptions import CredoAPIException, LoginException
@@ -187,8 +188,7 @@ def handle_data_export(request):
         }
     )
 
-    os.system('{}/pipenv_run.sh "python manage.py s3_data_export --id {} --since {} --until {} --limit {} --type {}"&'
-              .format(settings.BASE_DIR, job_id, vd['since'], vd['until'], vd['limit'], vd['data_type']))
+    data_export.delay(job_id, vd['since'], vd['until'], vd['limit'], vd['data_type'])
 
     logger.info('Exporting data by request from {}, type {}, since {}, until {}, limit {}, id {}'
                 .format(request.user, vd['data_type'], vd['since'], vd['until'], vd['limit'], job_id))
