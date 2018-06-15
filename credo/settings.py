@@ -191,7 +191,14 @@ LOGGING = {
     }
 }
 
+
+LOCAL_APPS = []
+LOCAL_MIDDLEWARE_PRE = []
+LOCAL_MIDDLEWARE_POST = []
+
 try:
     from local_settings import *
+    INSTALLED_APPS += LOCAL_APPS
+    MIDDLEWARE = LOCAL_MIDDLEWARE_PRE + MIDDLEWARE + LOCAL_MIDDLEWARE_POST
 except ImportError:
     pass
