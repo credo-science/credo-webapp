@@ -164,13 +164,15 @@ def contest(request):
                                     hour=start.hour, minute=start.minute, second=0, microsecond=0)
     start = (time.mktime(time_start.timetuple())) * 1000
     duration = int(request.GET['duration']) * 60 * 1000  # From minutes to milliseconds
+    max_brightness = float(request.GET['max_brightness'])
 
     tc = Counter()
     uc = Counter()
 
     recent_detections = []
 
-    for d in Detection.objects.order_by('-timestamp').filter(visible=True).filter(timestamp__gt=start)\
+    for d in Detection.objects.order_by('-timestamp').filter(visible=True).filter(brightness__lte=max_brightness)\
+            .filter(timestamp__gt=start)\
             .filter(timestamp__lt=(start + duration)).select_related('user', 'team'):
         uc[(d.user.username, d.user.display_name)] += 1
         if d.team.name:

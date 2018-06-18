@@ -11,7 +11,7 @@ from django.contrib.auth import authenticate
 from django.db.utils import IntegrityError
 
 from credocommon.exceptions import RegistrationException
-from credocommon.helpers import generate_token, validate_image, register_user
+from credocommon.helpers import generate_token, validate_image, register_user, rate_brightness
 from credocommon.jobs import data_export
 from credocommon.models import User, Team, Detection, Device, Ping
 
@@ -111,6 +111,10 @@ def handle_detection(request):
         if (not frame_content) or validate_image(frame_content):
             visible = False
 
+        brightness = None
+        if frame_content:
+            brightness = rate_brightness(frame_content)
+
         detections.append(Detection.objects.create(
             accuracy=d['accuracy'],
             altitude=d['altitude'],
@@ -132,7 +136,8 @@ def handle_detection(request):
             )[0],
             user=request.user,
             team=request.user.team,
-            visible=visible
+            visible=visible,
+            brightness=brightness
         ))
     data = {
         'detections': [{

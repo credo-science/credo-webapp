@@ -67,8 +67,9 @@ class Detection(models.Model):
     timestamp = models.BigIntegerField(db_index=True)
     time_received = models.BigIntegerField(blank=False)
     source = models.CharField(max_length=50, blank=False, default='unspecified')
-    visible = models.BooleanField(default=True, db_index=True
-                                  )
+    visible = models.BooleanField(default=True, db_index=True)
+    brightness = models.FloatField(null=True)
+
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
