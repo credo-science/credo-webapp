@@ -17,5 +17,5 @@ def data_export(id, since, until, limit, type):
 @job('low')
 def recalculate_on_time(user_id):
     u = User.objects.get(id=user_id)
-    on_time = Ping.objects.filter(user=u).aggregate(Sum('on_time'))
+    on_time = Ping.objects.filter(user=u).aggregate(Sum('on_time'))['on_time__sum']
     cache.set('on_time_{}'.format(u.id), on_time, timeout=3600 * 24 * 30)
