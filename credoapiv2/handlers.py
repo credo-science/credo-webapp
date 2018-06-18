@@ -12,7 +12,7 @@ from django.db.utils import IntegrityError
 
 from credocommon.exceptions import RegistrationException
 from credocommon.helpers import generate_token, validate_image, register_user, rate_brightness
-from credocommon.jobs import data_export
+from credocommon.jobs import data_export, recalculate_on_time
 from credocommon.models import User, Team, Detection, Device, Ping
 
 from credoapiv2.exceptions import CredoAPIException, LoginException
@@ -166,6 +166,10 @@ def handle_ping(request):
         )[0],
         user=request.user
     )
+
+    if vd['on_time']:
+        recalculate_on_time.delay(request.user.id)
+
     logger.info('Stored ping for user {}'.format(request.user))
 
 
