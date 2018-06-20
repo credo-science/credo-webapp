@@ -17,7 +17,7 @@ from credocommon.models import Team, User, Detection
 
 from credoweb.forms import RegistrationForm
 from credoweb.helpers import get_global_stats, get_recent_detections, get_top_users, get_recent_users,\
-    get_user_detections_page, format_date
+    get_user_detections_page, format_date, get_user_on_time
 
 
 def index(request):
@@ -108,6 +108,7 @@ def user_page(request, username='', page=1):
         'user': {
             'name': u.username,
             'display_name': u.display_name,
+            'on_time': get_user_on_time(u),
             'team': {
                 'name': u.team.name,
             },

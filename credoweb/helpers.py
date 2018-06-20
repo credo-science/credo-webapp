@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import base64
+import datetime
 import time
 
 from django.core.cache import cache
@@ -70,3 +71,13 @@ def get_user_detections_page(user, page):
         }
         cache.set('user_{}_recent_detections_{}'.format(user.id, page), data)
     return data
+
+
+def get_user_on_time(user):
+    data = cache.get('on_time_{}'.format(user.id))
+    if not data:
+        return None
+
+    hours, remainder = divmod(data / 1000, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    return '{}h {}m'.format(hours, minutes)
