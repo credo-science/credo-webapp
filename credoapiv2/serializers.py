@@ -1,8 +1,7 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 from rest_framework import serializers
-
-from credocommon.models import Detection, Ping
 
 
 class GenericRequestSerializer(serializers.Serializer):

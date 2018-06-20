@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 import base64
-import datetime
 import time
 
 from django.core.cache import cache

@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django.core.management.base import BaseCommand
 
 from credocommon.models import Detection
@@ -13,6 +16,7 @@ class Command(BaseCommand):
         for d in detections:
             if d.frame_content:
                 d.brightness = rate_brightness(d.frame_content)
+                d.save()
             if (not d.frame_content) or validate_image(d.frame_content):
                 self.stdout.write("Hiding detection %s (image validation failed)" % d.id)
                 d.visible = False

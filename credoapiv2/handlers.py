@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 import base64
-import os
 
 import boto3
 
@@ -10,7 +9,6 @@ from django.conf import settings
 from django.contrib.auth import authenticate
 from django.db.utils import IntegrityError
 
-from credocommon.exceptions import RegistrationException
 from credocommon.helpers import generate_token, validate_image, register_user, rate_brightness
 from credocommon.jobs import data_export, recalculate_on_time
 from credocommon.models import User, Team, Detection, Device, Ping
