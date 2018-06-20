@@ -14,7 +14,7 @@ def data_export(id, since, until, limit, type):
     call_command('s3_data_export', id=id, since=since, until=until, limit=limit, type=type)
 
 
-@job('low')
+@job('low', result_ttl=3600)
 def recalculate_on_time(user_id):
     u = User.objects.get(id=user_id)
     on_time = Ping.objects.filter(user=u).aggregate(Sum('on_time'))['on_time__sum']
