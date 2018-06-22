@@ -31,6 +31,12 @@ def rate_brightness(image):
     return sum(ImageStat.Stat(img).mean[0:3]) / 3. / 255.
 
 
+def get_max_brightness(image):
+    img = Image.open(io.BytesIO(image)).convert('L')
+    minima, maxima = img.getextrema()
+    return maxima
+
+
 def send_registration_email(email, token, username, display_name):
     context = {
         'token': token,
