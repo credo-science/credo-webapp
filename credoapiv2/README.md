@@ -132,7 +132,7 @@ Submit detection
 | `id` | Detection id | Integer |
 | `accuracy` | Location accuracy | Floating point number |
 | `altitude` | Altitude | Floating point number |
-| `frame_content` | Base64 encoded PNG | 5000 characters or fewer |
+| `frame_content` | Base64 encoded PNG | 10000 characters or fewer |
 | `height` | - | Integer |
 | `width` | - | Integer |
 | `latitude` | GPS latitude | Floating point number |
