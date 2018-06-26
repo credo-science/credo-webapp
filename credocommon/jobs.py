@@ -20,4 +20,5 @@ def data_export(id, since, until, limit, type):
 def recalculate_on_time(user_id):
     u = User.objects.get(id=user_id)
     on_time = Ping.objects.filter(user=u).aggregate(Sum('on_time'))['on_time__sum']
-    get_redis_connection().zadd(cache.make_key('on_time'), on_time, user_id)
+    if on_time:
+        get_redis_connection().zadd(cache.make_key('on_time'), on_time, user_id)

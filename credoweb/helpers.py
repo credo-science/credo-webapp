@@ -79,6 +79,6 @@ def get_user_on_time(user):
     if not data:
         return None
 
-    hours, remainder = divmod(data / 1000, 3600)
+    hours, remainder = divmod(int(data) / 1000, 3600)
     minutes, seconds = divmod(remainder, 60)
     return '{}h {}m'.format(hours, minutes)
