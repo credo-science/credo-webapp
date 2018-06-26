@@ -5,6 +5,7 @@ from django.core.cache import cache
 from django.core.management import call_command
 from django.db.models import Sum
 
+from django_redis import get_redis_connection
 from django_rq import job
 
 from credocommon.models import User, Ping
@@ -19,4 +20,4 @@ def data_export(id, since, until, limit, type):
 def recalculate_on_time(user_id):
     u = User.objects.get(id=user_id)
     on_time = Ping.objects.filter(user=u).aggregate(Sum('on_time'))['on_time__sum']
-    cache.set('on_time_{}'.format(u.id), on_time, timeout=3600 * 24 * 30)
+    get_redis_connection().zadd(cache.make_key('on_time'), on_time, user_id)
