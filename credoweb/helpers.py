@@ -74,11 +74,13 @@ def get_user_detections_page(user, page):
     return data
 
 
-def get_user_on_time(user):
-    data = get_redis_connection(write=False).zscore(cache.make_key('on_time'), user.id)
-    if not data:
-        return None
+def get_user_on_time_and_rank(user):
+    on_time = get_redis_connection(write=False).zscore(cache.make_key('on_time'), user.id)
+    if not on_time:
+        return None, None
 
-    hours, remainder = divmod(int(data) / 1000, 3600)
+    rank = get_redis_connection(write=False).zrevrank(cache.make_key('on_time'), user.id)
+
+    hours, remainder = divmod(int(on_time) / 1000, 3600)
     minutes, seconds = divmod(remainder, 60)
-    return '{}h {}m'.format(hours, minutes)
+    return '{}h {}m'.format(hours, minutes), rank + 1
