@@ -106,12 +106,10 @@ def handle_detection(request):
 
         frame_content = base64.b64decode(d['frame_content'])
         visible = True
-        if (not frame_content) or validate_image(frame_content):
+        if (not frame_content) or (not validate_image(frame_content)):
             visible = False
 
         brightness = None
-        if frame_content:
-            brightness = rate_brightness(frame_content)
 
         detections.append(Detection.objects.create(
             accuracy=d['accuracy'],

@@ -22,18 +22,26 @@ def generate_token():
 
 
 def validate_image(image):
-    brightness = rate_brightness(image)
-    return brightness > 0.15
+    try:
+        img = Image.open(io.BytesIO(image))
+    except IOError:
+        return False
+
+    if get_average_brightness(img) > 0.01:
+        return False
+
+    if get_max_brightness(img) < 120:
+        return False
+
+    return True
 
 
-def rate_brightness(image):
-    img = Image.open(io.BytesIO(image))
+def get_average_brightness(img):
     return sum(ImageStat.Stat(img).mean[0:3]) / 3. / 255.
 
 
-def get_max_brightness(image):
-    img = Image.open(io.BytesIO(image)).convert('L')
-    minima, maxima = img.getextrema()
+def get_max_brightness(img):
+    minima, maxima = img.convert('L').getextrema()
     return maxima
 
 
