@@ -11,7 +11,7 @@ class Command(BaseCommand):
     help = 'Recalculate on time for all users'
 
     def handle(self, *args, **options):
-        count = Detection.objects.latest('id')
+        count = Detection.objects.latest('id').id
 
         self.stdout.write('Relabeling {} detections'.format(count))
 
