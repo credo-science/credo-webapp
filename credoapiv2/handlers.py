@@ -9,7 +9,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate
 from django.db.utils import IntegrityError
 
-from credocommon.helpers import generate_token, validate_image, register_user, rate_brightness
+from credocommon.helpers import generate_token, validate_image, register_user
 from credocommon.jobs import data_export, recalculate_on_time
 from credocommon.models import User, Team, Detection, Device, Ping
 
