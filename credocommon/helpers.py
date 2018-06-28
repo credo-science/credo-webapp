@@ -27,11 +27,11 @@ def validate_image(image):
     except IOError:
         return False
 
-    if get_average_brightness(img) > 0.01:
+    if get_average_brightness(img) > 0.15:
         return False
 
-    if get_max_brightness(img) < 120:
-        return False
+    # if get_max_brightness(img) < 120:
+    #    return False
 
     return True
 
