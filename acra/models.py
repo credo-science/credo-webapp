@@ -11,5 +11,5 @@ class CrashReport(models.Model):
     data = models.CharField(max_length=10000)
 
     def save(self, *args, **kwargs):
-        self.time_received = int(time.time())
+        self.timestamp = int(time.time())
         super(CrashReport, self).save(*args, **kwargs)
