@@ -81,6 +81,9 @@ TEMPLATES = [
     },
 ]
 
+LOGIN_URL = '/web/login/'
+LOGIN_REDIRECT_URL = '/web/'
+
 WSGI_APPLICATION = 'credo.wsgi.application'
 
 

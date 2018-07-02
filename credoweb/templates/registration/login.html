@@ -1,0 +1,21 @@
+{% extends "credoweb/base.html" %}
+
+{% block content %}
+
+<div class="box">
+
+    <div class="panel">
+        <div class="title"><i class="fas fa-chart-bar"></i>Create contest results page</div>
+        <div align="center">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Submit</button>
+            </form>
+            <br/>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

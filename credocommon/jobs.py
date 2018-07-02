@@ -53,8 +53,8 @@ def relabel_detections(start_id, limit):
 
 @job('default')
 def calculate_contest_results(id, name, start, duration, limit, filter_parameters):
-    avbrightness_max = float(filter_parameters['avbrightness_max'])
-    maxbrightness_min = int(filter_parameters['maxbrightness_min'])
+    avbrightness_max = filter_parameters['avbrightness_max']
+    maxbrightness_min = filter_parameters['maxbrightness_min']
 
     tc = Counter()
     uc = Counter()
@@ -99,7 +99,7 @@ def calculate_contest_results(id, name, start, duration, limit, filter_parameter
 
     data = {
         'name': name,
-        'recent_detections': recent_detections[:int(limit)],
+        'recent_detections': recent_detections[:limit],
         'top_users': top_users,
         'top_teams': top_teams
     }

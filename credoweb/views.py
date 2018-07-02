@@ -2,20 +2,21 @@
 from __future__ import unicode_literals
 
 import base64
-from collections import Counter
-from datetime import datetime
 import time
 
-from django.db.models import Count
-from django.shortcuts import render, get_object_or_404
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.cache import cache
+from django.db.models import Count
+from django.http import HttpResponseNotFound
+from django.shortcuts import render, get_object_or_404, redirect
 
 from credocommon.exceptions import RegistrationException
-from credocommon.helpers import register_user, get_max_brightness
+from credocommon.helpers import register_user, generate_token
+from credocommon.jobs import calculate_contest_results
 from credocommon.models import Team, User, Detection
 
-from credoweb.forms import RegistrationForm
+from credoweb.forms import RegistrationForm, ContestCreationForm
 from credoweb.helpers import get_global_stats, get_recent_detections, get_top_users, get_recent_users,\
     get_user_detections_page, format_date, get_user_on_time_and_rank
 
@@ -161,49 +162,38 @@ def register(request):
     return render(request, 'credoweb/register.html', {'form': form})
 
 
-def contest(request):
-    time_start = datetime.now()
-    start = datetime.strptime(request.GET['start'], '%Y-%m-%dT%H:%M')
-    time_start = time_start.replace(year=start.year, month=start.month, day=start.day,
-                                    hour=start.hour, minute=start.minute, second=0, microsecond=0)
-    start = (time.mktime(time_start.timetuple())) * 1000
-    duration = int(request.GET['duration']) * 60 * 1000  # From minutes to milliseconds
-    avbrightness_max = float(request.GET['avbrightness_max'])
-    maxbrightness_min = int(request.GET['maxbrightness_min'])
+@staff_member_required
+def contest_create(request):
+    form = ContestCreationForm(request.POST or None)
+    if form.is_valid():
+        cd = form.cleaned_data
+        contest_id = generate_token()[:8]
 
-    tc = Counter()
-    uc = Counter()
+        filter_parameters = {
+            'avbrightness_max': cd['avbrightness_max'],
+            'maxbrightness_min': cd['maxbrightness_min'],
+        }
 
-    recent_detections = []
+        start_time = cd['start_time']
 
-    for d in Detection.objects.order_by('-timestamp').filter(visible=True).filter(brightness__lte=avbrightness_max)\
-            .filter(timestamp__gt=start)\
-            .filter(timestamp__lt=(start + duration)).select_related('user', 'team'):
-        mb = get_max_brightness(d.frame_content)
-        if mb < maxbrightness_min:
-            continue
-        uc[(d.user.username, d.user.display_name)] += 1
-        if d.team.name:
-            tc[d.team.name] += 1
-        recent_detections.append({
-            'date': format_date(d.timestamp),
-            'user': {
-                'name': d.user.username,
-                'display_name': d.user.display_name,
-            },
-            'team': {
-                'name': d.team.name,
-            },
-            'img': base64.encodestring(d.frame_content)
-        })
+        start_time = start_time.replace(year=start_time.year, month=start_time.month, day=start_time.day,
+                                        hour=start_time.hour, minute=start_time.minute, second=0, microsecond=0)
+        start_timestamp = (time.mktime(start_time.timetuple())) * 1000
 
-    top_users = uc.most_common(5)
+        duration = cd['duration'] * 3600 * 1000  # Hours -> milliseconds
 
-    top_teams = tc.most_common(5)
+        calculate_contest_results\
+            .delay(contest_id, cd['name'], start_timestamp, duration, cd['limit'], filter_parameters)
 
-    context = {
-        'recent_detections': recent_detections[:int(request.GET['limit'])],
-        'top_users': top_users,
-        'top_teams': top_teams
-    }
+        return redirect('contest_view', contest_id=contest_id)
+    return render(request, 'credoweb/register.html', {'form': form})
+
+
+def contest_view(request, contest_id):
+    context = cache.get('contest_{}'.format(contest_id))
+
+    if not context:
+        return HttpResponseNotFound('<h1>Contest results expired or not ready.</h1>')
+
     return render(request, 'credoweb/contest.html', context)
+
