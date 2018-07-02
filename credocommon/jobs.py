@@ -51,7 +51,7 @@ def relabel_detections(start_id, limit):
             d.save()
 
 
-@job('default')
+@job('default', result_ttl=3600*24*30)
 def calculate_contest_results(id, name, start, duration, limit, filter_parameters):
     avbrightness_max = filter_parameters['avbrightness_max']
     maxbrightness_min = filter_parameters['maxbrightness_min']

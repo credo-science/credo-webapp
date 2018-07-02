@@ -186,14 +186,14 @@ def contest_create(request):
             .delay(contest_id, cd['name'], start_timestamp, duration, cd['limit'], filter_parameters)
 
         return redirect('contest_view', contest_id=contest_id)
-    return render(request, 'credoweb/register.html', {'form': form})
+    return render(request, 'credoweb/contest_create.html', {'form': form})
 
 
 def contest_view(request, contest_id):
     context = cache.get('contest_{}'.format(contest_id))
 
     if not context:
-        return HttpResponseNotFound('<h1>Contest results expired or not ready.</h1>')
+        return HttpResponseNotFound('<h1>Contest results expired or not yet ready.</h1>')
 
     return render(request, 'credoweb/contest.html', context)
 
