@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import base64
+from collections import Counter
+import datetime
+import io
+import time
+
 from django.core.cache import cache
 from django.core.management import call_command
 from django.db.models import Sum
@@ -8,8 +14,11 @@ from django.db.models import Sum
 from django_redis import get_redis_connection
 from django_rq import job
 
-from credocommon.helpers import validate_image
+from PIL import Image
+
+from credocommon.helpers import validate_image, get_average_brightness, get_max_brightness
 from credocommon.models import User, Ping, Detection
+from credoweb.helpers import format_date
 
 
 @job('data_export')
@@ -40,3 +49,60 @@ def relabel_detections(start_id, limit):
         if s != d.visible:
             d.visible = s
             d.save()
+
+
+@job('default')
+def calculate_contest_results(id, name, start, duration, limit, filter_parameters):
+    avbrightness_max = float(filter_parameters['avbrightness_max'])
+    maxbrightness_min = int(filter_parameters['maxbrightness_min'])
+
+    tc = Counter()
+    uc = Counter()
+
+    recent_detections = []
+
+    for d in Detection.objects.order_by('-timestamp').filter(visible=True)\
+            .filter(timestamp__gt=start)\
+            .filter(timestamp__lt=(start + duration)).select_related('user', 'team'):
+
+        try:
+            img = Image.open(io.BytesIO(d.frame_content))
+        except IOError:
+            continue
+
+        avb = get_average_brightness(img)
+        mb = get_max_brightness(img)
+
+        if avb > avbrightness_max or mb < maxbrightness_min:
+            continue
+
+        uc[(d.user.username, d.user.display_name)] += 1
+
+        if d.team.name:
+            tc[d.team.name] += 1
+
+        recent_detections.append({
+            'date': format_date(d.timestamp),
+            'user': {
+                'name': d.user.username,
+                'display_name': d.user.display_name,
+            },
+            'team': {
+                'name': d.team.name,
+            },
+            'img': base64.encodestring(d.frame_content)
+        })
+
+    top_users = uc.most_common(5)
+
+    top_teams = tc.most_common(5)
+
+    data = {
+        'name': name,
+        'recent_detections': recent_detections[:int(limit)],
+        'top_users': top_users,
+        'top_teams': top_teams
+    }
+
+    cache.set('contest_{}'.format(id), data, timeout=3600*24*30)
+
