@@ -46,7 +46,7 @@ def get_top_users():
             'name': u.username,
             'display_name': u.display_name,
             'detection_count': int(top[i][1])
-            } for i, u in enumerate(User.objects.filter(id__in=[t[0] for t in top]))]
+            } for i, u in enumerate([User.objects.get(id=id) for id in [t[0] for t in top]])]
 
 
 def get_recent_users():
@@ -86,3 +86,12 @@ def get_user_on_time_and_rank(user):
     hours, remainder = divmod(int(on_time) / 1000, 3600)
     minutes, seconds = divmod(remainder, 60)
     return '{}h {}m'.format(hours, minutes), rank + 1
+
+
+def get_user_detection_count_and_rank(user):
+    r = get_redis_connection(write=False)
+
+    detection_count = int(r.zscore(cache.make_key('detection_count'), user.id))
+    rank = r.zrevrank(cache.make_key('detection_count'), user.id)
+
+    return detection_count, rank + 1

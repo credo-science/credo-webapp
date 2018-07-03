@@ -14,7 +14,7 @@
     <h4 align="center">Team: <a href="{% url 'team_page' name=user.team.name %}">{{ user.team.name }}</a></h4>
     {% endif %}
 
-    <h4 align="center">Number of detections: {{ user.detection_count }}</h4>
+    <h4 align="center">Number of detections: {{ user.detection_count }} ({{ user.detection_count_rank|ordinal }} place)</h4>
 
     {% if user.on_time %}
     <h4 align="center">Time looking for particles: {{ user.on_time }} ({{ user.on_time_rank|ordinal }} place)</h4>

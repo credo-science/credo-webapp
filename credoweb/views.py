@@ -18,7 +18,7 @@ from credocommon.models import Team, User, Detection
 
 from credoweb.forms import RegistrationForm, ContestCreationForm
 from credoweb.helpers import get_global_stats, get_recent_detections, get_top_users, get_recent_users,\
-    get_user_detections_page, format_date, get_user_on_time_and_rank
+    get_user_detections_page, format_date, get_user_on_time_and_rank, get_user_detection_count_and_rank
 
 
 def index(request):
@@ -104,7 +104,7 @@ def user_page(request, username='', page=1):
     page = int(page)
     u = get_object_or_404(User, username=username)
     user_detections_page = get_user_detections_page(u, page)
-    user_detection_count = Detection.objects.filter(visible=True).filter(user=u).count()
+    detection_count, detection_count_rank = get_user_detection_count_and_rank(u)
 
     on_time, on_time_rank = get_user_on_time_and_rank(u)
     context = {
@@ -116,7 +116,8 @@ def user_page(request, username='', page=1):
             'team': {
                 'name': u.team.name,
             },
-            'detection_count': user_detection_count
+            'detection_count': detection_count,
+            'detection_count_rank': detection_count_rank
         },
         'user_detections_page':  user_detections_page,
     }

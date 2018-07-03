@@ -11,9 +11,7 @@ class Command(BaseCommand):
     help = 'Recalculate on time for all users'
 
     def handle(self, *args, **options):
-        users = User.objects.all()
-
-        for u in users:
+        for u in User.objects.all():
             recalculate_user_stats.delay(u.id)
 
         self.stdout.write("Done!")
