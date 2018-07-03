@@ -41,11 +41,11 @@ def get_recent_detections():
 
 def get_top_users():
     top = get_redis_connection(write=False)\
-        .zrevrange(cache.make_key('detection_count'), 0, 9, withscores=True)
+        .zrevrange(cache.make_key('detection_count'), 0, 5, withscores=True)
     return [{
             'name': u.username,
             'display_name': u.display_name,
-            'detection_count': top[i][1]
+            'detection_count': int(top[i][1])
             } for i, u in enumerate(User.objects.filter(id__in=[t[0] for t in top]))]
 
 
@@ -54,8 +54,8 @@ def get_recent_users():
     return [{
             'name': u.username,
             'display_name': u.display_name,
-            'detection_count': r.zscore(cache.make_key('detection_count'), u.id)
-            } for u in User.objects.filter(detection__visible=True).order_by('-id')[:5]]
+            'detection_count': int(r.zscore(cache.make_key('detection_count'), u.id))
+            } for u in User.objects.order_by('-id')[:5]]
 
 
 def get_user_detections_page(user, page):
