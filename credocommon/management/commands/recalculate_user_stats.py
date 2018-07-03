@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.core.management.base import BaseCommand
 
-from credocommon.jobs import recalculate_on_time
+from credocommon.jobs import recalculate_user_stats
 from credocommon.models import User
 
 
@@ -14,6 +14,6 @@ class Command(BaseCommand):
         users = User.objects.all()
 
         for u in users:
-            recalculate_on_time.delay(u.id)
+            recalculate_user_stats.delay(u.id)
 
         self.stdout.write("Done!")

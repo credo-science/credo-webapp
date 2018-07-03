@@ -6,7 +6,6 @@ import time
 
 from django.core.cache import cache
 from django.core.paginator import Paginator
-from django.db.models import Count
 
 from django_redis import get_redis_connection
 
