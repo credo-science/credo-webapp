@@ -54,7 +54,7 @@ def get_recent_users():
     return [{
             'name': u.username,
             'display_name': u.display_name,
-            'detection_count': int(r.zscore(cache.make_key('detection_count'), u.id))
+            'detection_count': get_user_detection_count_and_rank(u)[0]
             } for u in User.objects.order_by('-id')[:5]]
 
 
@@ -91,7 +91,10 @@ def get_user_on_time_and_rank(user):
 def get_user_detection_count_and_rank(user):
     r = get_redis_connection(write=False)
 
-    detection_count = int(r.zscore(cache.make_key('detection_count'), user.id))
+    detection_count = r.zscore(cache.make_key('detection_count'), user.id)
+    if not detection_count:
+        return 0, None
+
     rank = r.zrevrank(cache.make_key('detection_count'), user.id)
 
-    return detection_count, rank + 1
+    return int(detection_count), rank + 1
