@@ -41,7 +41,7 @@ def get_recent_detections():
 
 def get_top_users():
     top = get_redis_connection(write=False)\
-        .zrevrange(cache.make_key('detection_count'), 0, 5, withscores=True)
+        .zrevrange(cache.make_key('detection_count'), 0, 4, withscores=True)
     return [{
             'name': u.username,
             'display_name': u.display_name,
