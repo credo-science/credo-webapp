@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate
 from django.db.utils import IntegrityError
 
 from credocommon.helpers import generate_token, validate_image, register_user
-from credocommon.jobs import data_export, recalculate_on_time
+from credocommon.jobs import data_export, recalculate_user_stats
 from credocommon.models import User, Team, Detection, Device, Ping
 
 from credoapiv2.exceptions import CredoAPIException, LoginException
@@ -140,6 +140,7 @@ def handle_detection(request):
             'id': d.id  # TODO: Should we send more data?
         } for d in detections]
     }
+    recalculate_user_stats.delay(request.user.id)
     logger.info('Stored {} detections for user {}'.format(len(detections), request.user))
     return data
 
@@ -164,7 +165,7 @@ def handle_ping(request):
     )
 
     if vd['on_time']:
-        recalculate_on_time.delay(request.user.id)
+        recalculate_user_stats.delay(request.user.id)
 
     logger.info('Stored ping for user {}'.format(request.user))
 

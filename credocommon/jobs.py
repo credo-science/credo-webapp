@@ -3,9 +3,7 @@ from __future__ import unicode_literals
 
 import base64
 from collections import Counter
-import datetime
 import io
-import time
 
 from django.core.cache import cache
 from django.core.management import call_command
@@ -27,11 +25,17 @@ def data_export(id, since, until, limit, type):
 
 
 @job('low', result_ttl=3600)
-def recalculate_on_time(user_id):
+def recalculate_user_stats(user_id):
     u = User.objects.get(id=user_id)
     on_time = Ping.objects.filter(user=u).aggregate(Sum('on_time'))['on_time__sum']
+    detection_count = Detection.objects.filter(user=u).filter(visible=True).count()
+
+    r = get_redis_connection()
+
     if on_time:
-        get_redis_connection().zadd(cache.make_key('on_time'), on_time, user_id)
+        r.zadd(cache.make_key('on_time'), on_time, user_id)
+
+    r.zadd(cache.make_key('detection_count'), detection_count, user_id)
 
 
 @job('low', result_ttl=3600)
