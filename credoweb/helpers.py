@@ -50,7 +50,6 @@ def get_top_users():
 
 
 def get_recent_users():
-    r = get_redis_connection(write=False)
     return [{
             'name': u.username,
             'display_name': u.display_name,
@@ -76,10 +75,32 @@ def get_user_detections_page(user, page):
     return data
 
 
+def get_user_list_page(page):
+    data = cache.get('user_list_{}'.format(page))
+    if not data:
+        r = get_redis_connection(write=False)
+        top = r.zrevrange(cache.make_key('detection_count'), 20 * (page - 1), 19 + 20 * (page - 1), withscores=True)
+        top = [(int(t[0]), int(t[1])) for t in top if t[1]]  # Remove users with no detections
+        users = {u.id: u for u in User.objects.filter(id__in=[t[0] for t in top])}
+
+        data = {
+            'has_next': len(top) == 20,
+            'has_previous': bool(top),
+            'page_number': page,
+            'users': [{
+                'name': users[t[0]].username,
+                'display_name': users[t[0]].display_name,
+                'detection_count': t[1]
+            } for t in top],
+        }
+        cache.set('user_list_{}'.format(page), data)
+    return data
+
+
 def get_user_on_time_and_rank(user):
     on_time = get_redis_connection(write=False).zscore(cache.make_key('on_time'), user.id)
     if not on_time:
-        return None, None
+        return 0, 'no '
 
     rank = get_redis_connection(write=False).zrevrank(cache.make_key('on_time'), user.id)
 
@@ -93,7 +114,7 @@ def get_user_detection_count_and_rank(user):
 
     detection_count = r.zscore(cache.make_key('detection_count'), user.id)
     if not detection_count:
-        return 0, None
+        return 0, 'no '
 
     rank = r.zrevrank(cache.make_key('detection_count'), user.id)
 

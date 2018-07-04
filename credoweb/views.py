@@ -17,8 +17,9 @@ from credocommon.jobs import calculate_contest_results
 from credocommon.models import Team, User, Detection
 
 from credoweb.forms import RegistrationForm, ContestCreationForm
-from credoweb.helpers import get_global_stats, get_recent_detections, get_top_users, get_recent_users,\
-    get_user_detections_page, format_date, get_user_on_time_and_rank, get_user_detection_count_and_rank
+from credoweb.helpers import get_global_stats, get_recent_detections, get_top_users, get_recent_users, \
+    get_user_detections_page, format_date, get_user_on_time_and_rank, get_user_detection_count_and_rank, \
+    get_user_list_page
 
 
 def index(request):
@@ -60,24 +61,7 @@ def detection_list(request, page=1):
 
 
 def user_list(request, page=1):
-    page = int(page)
-    context = cache.get('user_list_{}'.format(page))
-    if not context:
-        p = Paginator(
-            User.objects.filter(detection__visible=True).annotate(detection_count=Count('detection')).order_by(
-                '-detection_count'), 20).page(page)
-        context = {
-            'has_next': p.has_next(),
-            'has_previous': p.has_previous(),
-            'page_number': page,
-            'users': [{
-                'name': u.username,
-                'display_name': u.display_name,
-                'detection_count': u.detection_count
-            } for u in p.object_list],
-        }
-        cache.set('user_list_{}'.format(page), context)
-    return render(request, 'credoweb/user_list.html', context)
+    return render(request, 'credoweb/user_list.html', get_user_list_page(int(page)))
 
 
 def team_list(request, page=1):
