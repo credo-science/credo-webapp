@@ -17,5 +17,8 @@ simplejson = "*"
 Pillow = "*"
 redis = "*"
 django-rq = "*"
+django-redis = "*"
+django-influxdb-metrics = "*"
+raven = "*"
 [requires]
 python_version = "2.7"
