@@ -3,15 +3,15 @@ from __future__ import unicode_literals
 
 from django.core.management.base import BaseCommand
 
-from credocommon.jobs import recalculate_user_stats
-from credocommon.models import User
+from credocommon.jobs import recalculate_team_stats
+from credocommon.models import Team
 
 
 class Command(BaseCommand):
-    help = 'Recalculate stats for all users'
+    help = 'Recalculate stats for all teams'
 
     def handle(self, *args, **options):
-        for u in User.objects.all():
-            recalculate_user_stats.delay(u.id)
+        for t in Team.objects.all():
+            recalculate_team_stats.delay(t.id)
 
         self.stdout.write("Done!")

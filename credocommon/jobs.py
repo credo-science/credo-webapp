@@ -15,7 +15,7 @@ from django_rq import job
 from PIL import Image
 
 from credocommon.helpers import validate_image, get_average_brightness, get_max_brightness
-from credocommon.models import User, Ping, Detection
+from credocommon.models import User, Team, Ping, Detection
 from credoweb.helpers import format_date
 
 
@@ -36,6 +36,17 @@ def recalculate_user_stats(user_id):
         r.zadd(cache.make_key('on_time'), on_time, user_id)
 
     r.zadd(cache.make_key('detection_count'), detection_count, user_id)
+
+
+@job('low', result_ttl=3600)
+def recalculate_team_stats(team_id):
+    t = Team.objects.get(id=team_id)
+
+    if t.name:
+        detection_count = Detection.objects.filter(team=t).filter(visible=True).count()
+
+        r = get_redis_connection()
+        r.zadd(cache.make_key('team_detection_count'), detection_count, team_id)
 
 
 @job('low', result_ttl=3600)

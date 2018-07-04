@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate
 from django.db.utils import IntegrityError
 
 from credocommon.helpers import generate_token, validate_image, register_user
-from credocommon.jobs import data_export, recalculate_user_stats
+from credocommon.jobs import data_export, recalculate_user_stats, recalculate_team_stats
 from credocommon.models import User, Team, Detection, Device, Ping
 
 from credoapiv2.exceptions import CredoAPIException, LoginException
@@ -141,6 +141,7 @@ def handle_detection(request):
         } for d in detections]
     }
     recalculate_user_stats.delay(request.user.id)
+    recalculate_team_stats.delay(request.user.team.id)
     logger.info('Stored {} detections for user {}'.format(len(detections), request.user))
     return data
 

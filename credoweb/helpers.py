@@ -6,6 +6,7 @@ import time
 
 from django.core.cache import cache
 from django.core.paginator import Paginator
+from django.db.models import Count
 
 from django_redis import get_redis_connection
 
@@ -85,7 +86,7 @@ def get_user_list_page(page):
 
         data = {
             'has_next': len(top) == 20,
-            'has_previous': bool(top),
+            'has_previous': page > 1,
             'page_number': page,
             'users': [{
                 'name': users[t[0]].username,
@@ -94,6 +95,29 @@ def get_user_list_page(page):
             } for t in top],
         }
         cache.set('user_list_{}'.format(page), data)
+    return data
+
+
+def get_team_list_page(page):
+    data = cache.get('team_list_{}'.format(page))
+    if not data:
+        r = get_redis_connection(write=False)
+        top = r.zrevrange(cache.make_key('team_detection_count'), 20 * (page - 1), 19 + 20 * (page - 1), withscores=True)
+        top = [(int(t[0]), int(t[1])) for t in top if t[1]]  # Remove teams with no detections
+        teams = {team.id: team for team in Team.objects.filter(id__in=[t[0] for t in top])
+                                                       .annotate(user_count=Count('user'))}
+
+        data = {
+            'has_next': len(top) == 20,
+            'has_previous': page > 1,
+            'page_number': page,
+            'teams': [{
+                'name': teams[t[0]].name,
+                'user_count': teams[t[0]].user_count,
+                'detection_count': t[1]
+            } for t in top],
+        }
+        cache.set('team_list_{}'.format(page), data)
     return data
 
 
@@ -117,5 +141,17 @@ def get_user_detection_count_and_rank(user):
         return 0, 'no '
 
     rank = r.zrevrank(cache.make_key('detection_count'), user.id)
+
+    return int(detection_count), rank + 1
+
+
+def get_team_detection_count_and_rank(team):
+    r = get_redis_connection(write=False)
+
+    detection_count = r.zscore(cache.make_key('team_detection_count'), team.id)
+    if not detection_count:
+        return 0, 'no '
+
+    rank = r.zrevrank(cache.make_key('detection_count'), team.id)
 
     return int(detection_count), rank + 1

@@ -19,7 +19,7 @@ from credocommon.models import Team, User, Detection
 from credoweb.forms import RegistrationForm, ContestCreationForm
 from credoweb.helpers import get_global_stats, get_recent_detections, get_top_users, get_recent_users, \
     get_user_detections_page, format_date, get_user_on_time_and_rank, get_user_detection_count_and_rank, \
-    get_user_list_page
+    get_user_list_page, get_team_list_page
 
 
 def index(request):
@@ -65,23 +65,7 @@ def user_list(request, page=1):
 
 
 def team_list(request, page=1):
-    page = int(page)
-    context = cache.get('team_list_{}'.format(page))
-    if not context:
-        p = Paginator(Team.objects.filter(detection__visible=True).annotate(detection_count=Count('detection')).exclude(
-            name__isnull=True).exclude(name__exact='').order_by('-detection_count'), 20).page(page)
-        context = {
-            'has_next': p.has_next(),
-            'has_previous': p.has_previous(),
-            'page_number': page,
-            'teams': [{
-                'name': t.name,
-                'user_count': t.user_set.count(),
-                'detection_count': t.detection_count,
-            } for t in p.object_list],
-        }
-        cache.set('team_list_{}'.format(page), context)
-    return render(request, 'credoweb/team_list.html', context)
+    return render(request, 'credoweb/team_list.html', get_team_list_page(int(page)))
 
 
 def user_page(request, username='', page=1):
