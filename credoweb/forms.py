@@ -24,11 +24,11 @@ class RegistrationForm(forms.Form):
 
 
 class ContestCreationForm(forms.Form):
-    name = forms.CharField(min_length=3, max_length=128, label='Contest name')
+    name = forms.CharField(min_length=1, max_length=200, label='Contest name')
     description = forms.CharField(max_length=1000, label='Contest description', widget=forms.Textarea)
     start_time = forms.DateTimeField(input_formats=['%Y-%m-%d %H:%M:%S'], initial=datetime.now())
     duration = forms.IntegerField(min_value=1, max_value=24*7, initial=24, label='Duration (h)')
-    limit = forms.IntegerField(min_value=10, max_value=500, initial=20, label='Limit of recent detections displayed')
+    limit = forms.IntegerField(min_value=0, max_value=1000, initial=20, label='Limit of recent detections displayed')
     blacklist = forms.CharField(max_length=500, required=False, label='Comma separated list of usernames to ignore')
     avbrightness_max = forms.FloatField(min_value=0, max_value=1, initial=0.01,
                                         label='Average brightness', label_suffix=' <')
