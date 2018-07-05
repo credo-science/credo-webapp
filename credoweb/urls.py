@@ -4,6 +4,7 @@ from django.conf.urls import include
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    url(r'faq/$', views.faq, name='faq'),
     url(r'detection_list/$', views.detection_list, name='detection_list'),
     url(r'detection_list/(?P<page>\w+)/$', views.detection_list, name='detection_list'),
     url(r'user/(?P<username>.{1,50})/$', views.user_page, name='user_page'),

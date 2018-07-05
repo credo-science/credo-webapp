@@ -33,6 +33,11 @@ def index(request):
     return render(request, 'credoweb/index.html', context)
 
 
+def faq(request):
+    context = {}
+    return render(request, 'credoweb/faq.html', context)
+
+
 def detection_list(request, page=1):
     page = int(page)
     context = cache.get('detection_list_{}'.format(page))
