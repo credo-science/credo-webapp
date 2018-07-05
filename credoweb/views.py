@@ -38,7 +38,8 @@ def detection_list(request, page=1):
     context = cache.get('detection_list_{}'.format(page))
     if not context:
         p = Paginator(
-            Detection.objects.order_by('-timestamp').filter(visible=True).select_related('user', 'team'), 20).page(page)
+            Detection.objects.order_by('-timestamp').filter(visible=True)
+                             .only('timestamp', 'frame_content', 'user', 'team'), 20).page(page)
         context = {
             'has_next': p.has_next(),
             'has_previous': p.has_previous(),

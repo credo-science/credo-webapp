@@ -37,7 +37,8 @@ def get_recent_detections():
                 'name': d.team.name,
             },
             'img': base64.encodestring(d.frame_content)
-            } for d in Detection.objects.order_by('-timestamp').filter(visible=True).select_related('user', 'team')[:20]]
+            } for d in Detection.objects.order_by('-timestamp').filter(visible=True)
+                                        .only('timestamp', 'frame_content', 'user', 'team')[:20]]
 
 
 def get_top_users():
