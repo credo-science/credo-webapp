@@ -29,7 +29,7 @@ class ContestCreationForm(forms.Form):
     start_time = forms.DateTimeField(input_formats=['%Y-%m-%d %H:%M:%S'], initial=datetime.now())
     duration = forms.IntegerField(min_value=1, max_value=24*7, initial=24, label='Duration (h)')
     limit = forms.IntegerField(min_value=10, max_value=500, initial=20, label='Limit of recent detections displayed')
-    blacklist = forms.CharField(max_length=500, label='Comma separated list of usernames to ignore')
+    blacklist = forms.CharField(max_length=500, required=False, label='Comma separated list of usernames to ignore')
     avbrightness_max = forms.FloatField(min_value=0, max_value=1, initial=0.01,
                                         label='Average brightness', label_suffix=' <')
     maxbrightness_min = forms.IntegerField(min_value=0, max_value=255, initial=120,
