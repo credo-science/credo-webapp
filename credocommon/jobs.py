@@ -26,7 +26,11 @@ def data_export(id, since, until, limit, type):
 
 @job('low', result_ttl=3600)
 def recalculate_user_stats(user_id):
+    if not cache.set('user_stats_recently_recalculated_{}'.format(user_id), 1, timeout=10, nx=True):
+        return 'skipped'
+
     u = User.objects.get(id=user_id)
+
     on_time = Ping.objects.filter(user=u).aggregate(Sum('on_time'))['on_time__sum']
     detection_count = Detection.objects.filter(user=u).filter(visible=True).count()
 
@@ -37,9 +41,14 @@ def recalculate_user_stats(user_id):
 
     r.zadd(cache.make_key('detection_count'), detection_count, user_id)
 
+    return on_time, detection_count
+
 
 @job('low', result_ttl=3600)
 def recalculate_team_stats(team_id):
+    if not cache.set('team_stats_recently_recalculated_{}'.format(team_id), 1, timeout=10, nx=True):
+        return 'skipped'
+
     t = Team.objects.get(id=team_id)
 
     if t.name:
@@ -47,6 +56,10 @@ def recalculate_team_stats(team_id):
 
         r = get_redis_connection()
         r.zadd(cache.make_key('team_detection_count'), detection_count, team_id)
+
+        return detection_count
+
+    return 'ignored'
 
 
 @job('low', result_ttl=3600)
