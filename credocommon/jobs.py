@@ -70,6 +70,8 @@ def recalculate_team_stats(team_id):
 @job('low', result_ttl=3600)
 def relabel_detections(start_id, limit):
     detections = Detection.objects.filter(id__gte=start_id).filter(id_lt=start_id + limit)
+    r = get_redis_connection()
+
     for d in detections:
         s = True
 
@@ -77,6 +79,9 @@ def relabel_detections(start_id, limit):
             s = False
 
         if s and not validate_image(d.frame_content):
+            s = False
+
+        if s and r.zscore(cache.make_key('start_time'), d.user_id) > d.timestamp:
             s = False
 
         if s != d.visible:
