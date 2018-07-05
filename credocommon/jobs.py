@@ -41,7 +41,7 @@ def recalculate_user_stats(user_id):
 
         if not r.zscore(cache.make_key('start_time'), user_id):
             start_time = Ping.objects.filter(user=u).filter(on_time__gt=0)\
-                                     .aggregate(Min('timestamp'))['start_time__min']
+                                     .aggregate(Min('timestamp'))['timestamp__min']
             r.zadd(cache.make_key('start_time'), start_time, user_id)
 
     r.zadd(cache.make_key('detection_count'), detection_count, user_id)
