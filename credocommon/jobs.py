@@ -69,7 +69,7 @@ def recalculate_team_stats(team_id):
 
 @job('low', result_ttl=3600)
 def relabel_detections(start_id, limit):
-    detections = Detection.objects.filter(id__gte=start_id).filter(id_lt=start_id + limit)
+    detections = Detection.objects.filter(id__gte=start_id).filter(id__lt=start_id + limit)
     r = get_redis_connection()
 
     for d in detections:
