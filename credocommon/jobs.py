@@ -81,9 +81,12 @@ def relabel_detections(start_id, limit):
         if s and not validate_image(d.frame_content):
             s = False
 
-        start_time = r.zscore(cache.make_key('start_time'), d.user_id)
-        if s and start_time:
-            s = d.timestamp > start_time
+        if s:
+            start_time = r.zscore(cache.make_key('start_time'), d.user_id)
+            if start_time:
+                s = d.timestamp > start_time
+            else:
+                s = False
 
         if s != d.visible:
             d.visible = s
