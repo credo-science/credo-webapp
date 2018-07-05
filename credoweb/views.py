@@ -152,8 +152,11 @@ def contest_create(request):
 
         duration = cd['duration'] * 3600 * 1000  # Hours -> milliseconds
 
+        id_blacklist = [u.id for u in User.objects.filter(username__in=[n.strip() for n in cd['blacklist'].split(',')])]
+
         calculate_contest_results\
-            .delay(contest_id, cd['name'], start_timestamp, duration, cd['limit'], filter_parameters)
+            .delay(contest_id, cd['name'], cd['description'],
+                   start_timestamp, duration, cd['limit'], id_blacklist, filter_parameters)
 
         return redirect('contest_view', contest_id=contest_id)
     return render(request, 'credoweb/contest_create.html', {'form': form})
@@ -164,6 +167,8 @@ def contest_view(request, contest_id):
 
     if not context:
         return HttpResponseNotFound('<h1>Contest results expired or not yet ready.</h1>')
+
+    context['contest_id'] = contest_id
 
     return render(request, 'credoweb/contest.html', context)
 

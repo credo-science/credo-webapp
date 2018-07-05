@@ -51,7 +51,7 @@ def recalculate_team_stats(team_id):
 
 @job('low', result_ttl=3600)
 def relabel_detections(start_id, limit):
-    detections = Detection.objects.all()[start_id:start_id + limit]
+    detections = Detection.objects.filter(id__gte=start_id).filter(id_lt=start_id + limit)
     for d in detections:
         s = True
 
@@ -67,7 +67,7 @@ def relabel_detections(start_id, limit):
 
 
 @job('default', result_ttl=3600*24*30)
-def calculate_contest_results(id, name, start, duration, limit, filter_parameters):
+def calculate_contest_results(contest_id, name, description, start, duration, limit, id_blacklist, filter_parameters):
     avbrightness_max = filter_parameters['avbrightness_max']
     maxbrightness_min = filter_parameters['maxbrightness_min']
 
@@ -79,6 +79,9 @@ def calculate_contest_results(id, name, start, duration, limit, filter_parameter
     for d in Detection.objects.order_by('-timestamp').filter(visible=True)\
             .filter(timestamp__gt=start)\
             .filter(timestamp__lt=(start + duration)).select_related('user', 'team'):
+
+        if d.user.id in id_blacklist:
+            continue
 
         try:
             img = Image.open(io.BytesIO(d.frame_content))
@@ -114,10 +117,11 @@ def calculate_contest_results(id, name, start, duration, limit, filter_parameter
 
     data = {
         'name': name,
+        'description': description,
         'recent_detections': recent_detections[:limit],
         'top_users': top_users,
         'top_teams': top_teams
     }
 
-    cache.set('contest_{}'.format(id), data, timeout=3600*24*30)
+    cache.set('contest_{}'.format(contest_id), data, timeout=3600*24*30)
 
