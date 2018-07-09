@@ -116,7 +116,7 @@ def handle_detection(request):
             r = get_redis_connection(write=False)
             start_time = r.zscore(cache.make_key('start_time'), request.user.id)
             if start_time:
-                visible = d.timestamp > start_time
+                visible = d['timestamp'] > start_time
             else:
                 visible = False
 
