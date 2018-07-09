@@ -18,11 +18,18 @@ def format_date(timestamp):
 
 
 def get_global_stats():
-    return cache.get_or_set('global_stats', lambda: {
-        'detections_total': Detection.objects.filter(visible=True).count(),
-        'users_total': User.objects.count(),
-        'teams_total': Team.objects.count(),
-    })
+    data = cache.get('global_stats')
+
+    if not data:
+        r = get_redis_connection(write=False)
+        data = {
+            'detections_total': Detection.objects.filter(visible=True).count(),
+            'users_total': r.zcard(cache.make_key('start_time')),
+            'teams_total': Team.objects.count(),
+        }
+        cache.set('global_stats', data)
+
+    return data
 
 
 def get_recent_detections():
