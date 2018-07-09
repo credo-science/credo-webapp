@@ -7,7 +7,10 @@ import boto3
 
 from django.conf import settings
 from django.contrib.auth import authenticate
+from django.core.cache import cache
 from django.db.utils import IntegrityError
+
+from django_redis import get_redis_connection
 
 from credocommon.helpers import generate_token, validate_image, register_user
 from credocommon.jobs import data_export, recalculate_user_stats, recalculate_team_stats
@@ -109,6 +112,14 @@ def handle_detection(request):
         if (not frame_content) or (not validate_image(frame_content)):
             visible = False
 
+        if visible:
+            r = get_redis_connection(write=False)
+            start_time = r.zscore(cache.make_key('start_time'), request.user.id)
+            if start_time:
+                visible = d.timestamp > start_time
+            else:
+                visible = False
+
         brightness = None
 
         detections.append(Detection.objects.create(
@@ -137,7 +148,8 @@ def handle_detection(request):
         ))
     data = {
         'detections': [{
-            'id': d.id  # TODO: Should we send more data?
+            'id': d.id,
+            'visible': d.visible
         } for d in detections]
     }
     recalculate_user_stats.delay(request.user.id)
