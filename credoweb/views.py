@@ -8,7 +8,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.cache import cache
 from django.db.models import Count
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 
 from credocommon.exceptions import RegistrationException
@@ -41,10 +41,15 @@ def faq(request):
 def detection_list(request, page=1):
     page = int(page)
     context = cache.get('detection_list_{}'.format(page))
+
     if not context:
-        p = Paginator(
-            Detection.objects.order_by('-timestamp').filter(visible=True)
-                             .only('timestamp', 'frame_content', 'user', 'team'), 20).page(page)
+        try:
+            p = Paginator(
+                Detection.objects.order_by('-timestamp').filter(visible=True)
+                                 .only('timestamp', 'frame_content', 'user', 'team'), 20).page(page)
+        except EmptyPage:
+            raise Http404('Detection list page not found')
+
         context = {
             'has_next': p.has_next(),
             'has_previous': p.has_previous(),
@@ -77,7 +82,12 @@ def team_list(request, page=1):
 def user_page(request, username='', page=1):
     page = int(page)
     u = get_object_or_404(User, username=username)
-    user_detections_page = get_user_detections_page(u, page)
+
+    try:
+        user_detections_page = get_user_detections_page(u, page)
+    except EmptyPage:
+        raise Http404('User detection page not found')
+
     detection_count, detection_count_rank = get_user_detection_count_and_rank(u)
 
     on_time, on_time_rank = get_user_on_time_and_rank(u)
