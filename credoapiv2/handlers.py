@@ -150,8 +150,7 @@ def handle_detection(request):
         ))
     data = {
         'detections': [{
-            'id': d.id,
-            'visible': d.visible
+            'id': d.id
         } for d in detections]
     }
     recalculate_user_stats.delay(request.user.id)
