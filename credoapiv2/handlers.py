@@ -105,6 +105,7 @@ def handle_detection(request):
         raise CredoAPIException(str(serializer.errors))
     vd = serializer.validated_data
     detections = []
+    r = None
     for d in vd['detections']:
 
         frame_content = base64.b64decode(d['frame_content'])
@@ -113,7 +114,8 @@ def handle_detection(request):
             visible = False
 
         if visible:
-            r = get_redis_connection(write=False)
+            if not r:
+                r = get_redis_connection(write=False)
             start_time = r.zscore(cache.make_key('start_time'), request.user.id)
             if start_time:
                 visible = d['timestamp'] > start_time
