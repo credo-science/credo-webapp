@@ -36,7 +36,7 @@ class UserRegistrationView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             logger.exception(e)
-            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            raise e
 
 
 class UserLoginView(APIView):
@@ -57,7 +57,7 @@ class UserLoginView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             logger.exception(e)
-            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            raise e
 
 
 class UserInfoView(APIView):
@@ -78,7 +78,7 @@ class UserInfoView(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
             except Exception as e:
                 logger.exception(e)
-                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                raise e
         else:
             return Response(data={'message': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -101,7 +101,7 @@ class DetectionView(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
             except Exception as e:
                 logger.exception(e)
-                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                raise e
         else:
             return Response(data={'message': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -124,7 +124,7 @@ class PingView(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
             except Exception as e:
                 logger.exception(e)
-                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                raise e
         else:
             return Response(data={'message': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -147,6 +147,6 @@ class DataExportView(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
             except Exception as e:
                 logger.exception(e)
-                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                raise e
         else:
             return Response(data={'message': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
