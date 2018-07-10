@@ -122,15 +122,14 @@ def handle_detection(request):
             else:
                 visible = False
 
-        brightness = None
-
         detections.append(Detection.objects.create(
             accuracy=d['accuracy'],
             altitude=d['altitude'],
             frame_content=frame_content,
             height=d['height'],
-            width=d['height'],
-            d_id=d['id'],
+            width=d['width'],
+            x=d['x'],
+            y=d['y'],
             latitude=d['latitude'],
             longitude=d['longitude'],
             provider=d['provider'],
@@ -146,7 +145,6 @@ def handle_detection(request):
             user=request.user,
             team=request.user.team,
             visible=visible,
-            brightness=brightness
         ))
     data = {
         'detections': [{

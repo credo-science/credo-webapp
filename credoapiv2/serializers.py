@@ -34,12 +34,13 @@ class InfoRequestSerializer(GenericRequestSerializer):
 
 
 class DetectionSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
     accuracy = serializers.FloatField()
     altitude = serializers.FloatField()
     frame_content = serializers.CharField(max_length=10000, default="", allow_blank=True)
-    height = serializers.IntegerField()
-    width = serializers.IntegerField()
+    height = serializers.IntegerField(required=False, default=None)
+    width = serializers.IntegerField(required=False, default=None)
+    x = serializers.IntegerField(required=False, default=None)
+    y = serializers.IntegerField(required=False, default=None)
     latitude = serializers.FloatField()
     longitude = serializers.FloatField()
     provider = serializers.CharField(max_length=20)

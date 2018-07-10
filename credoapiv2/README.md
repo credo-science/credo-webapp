@@ -152,7 +152,7 @@ Submit detection
 | --- | --- | --- |
 | `delta_time` | Time since last detection / ping / startup (in milliseconds) | Integer |
 | `on_time` | Duration of detector working and registering events (in milliseconds, resets every ping) | Integer |
-| `timestamp` | UNIX timestamp of ping time | Integer |
+| `timestamp` | UNIX timestamp of ping time (in milliseconds) | Integer |
 
 **Authorization:** token
 

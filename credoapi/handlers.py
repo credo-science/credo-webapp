@@ -172,7 +172,6 @@ def handle_detection_frame(frame):
         frame_content=decoded_image,
         height=detection_info.height,
         width=detection_info.width,
-        d_id=detection_info.id,
         latitude=detection_info.latitude,
         longitude=detection_info.longitude,
         provider=detection_info.provider,
