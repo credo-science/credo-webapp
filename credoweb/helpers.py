@@ -36,6 +36,8 @@ def get_recent_detections():
     return [{
             'date': format_date(d.timestamp),
             'timestamp': d.timestamp,
+            'x': d.x,
+            'y': d.y,
             'user': {
                 'name': d.user.username,
                 'display_name': d.user.display_name,
@@ -77,7 +79,9 @@ def get_user_detections_page(user, page):
             'detections': [{
                 'date': format_date(d.timestamp),
                 'timestamp': d.timestamp,
-                'img': base64.encodestring(d.frame_content)
+                'img': base64.encodestring(d.frame_content),
+                'x': d.x,
+                'y': d.y
             } for d in p.object_list]
         }
         cache.set('user_{}_recent_detections_{}'.format(user.id, page), data)

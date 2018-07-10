@@ -128,6 +128,8 @@ def calculate_contest_results(contest_id, name, description, start, duration, li
 
         recent_detections.append({
             'date': format_date(d.timestamp),
+            'x': d.x,
+            'y': d.y,
             'user': {
                 'name': d.user.username,
                 'display_name': d.user.display_name,

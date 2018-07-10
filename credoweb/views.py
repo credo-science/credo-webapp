@@ -45,8 +45,8 @@ def detection_list(request, page=1):
     if not context:
         try:
             p = Paginator(
-                Detection.objects.order_by('-timestamp').filter(visible=True)
-                                 .only('timestamp', 'frame_content', 'user', 'team'), 20).page(page)
+                Detection.objects.order_by('-timestamp').filter(visible=True).select_related('user', 'team')
+                                 .only('timestamp', 'frame_content', 'x', 'y', 'user', 'team'), 20).page(page)
         except EmptyPage:
             raise Http404('Detection list page not found')
 
@@ -57,6 +57,8 @@ def detection_list(request, page=1):
             'detections': [{
                 'date': format_date(d.timestamp),
                 'timestamp': d.timestamp,
+                'x': d.x,
+                'y': d.y,
                 'user': {
                     'name': d.user.username,
                     'display_name': d.user.display_name,

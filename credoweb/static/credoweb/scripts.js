@@ -5,6 +5,7 @@ $(document).ready(function () {
 
         var image = $(this).attr("src");
         $("#new_img").attr("src", image);
+        $("#image_info").text($(this).data("info"));
         $("#image_view").css("display", "block");
     });
 
