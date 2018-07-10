@@ -110,14 +110,6 @@ Get or update user info
 
 **On failure:** HTTP_4xx/HTTP_5xx (optional message)
 
-## /api/v2/start (Not implemented)
-
-**Authorization:** token
-
-**On success:** HTTP_2xx (optional message)
-
-**On failure:** HTTP_4xx/HTTP_5xx (optional message)
-
 ## /api/v2/detection
 Submit detection
 
@@ -129,18 +121,19 @@ Submit detection
 
 | Field | Description | Constraint |
 | --- | --- | --- |
-| `id` | Detection id | Integer |
-| `accuracy` | Location accuracy | Floating point number |
-| `altitude` | Altitude | Floating point number |
-| `frame_content` | Base64 encoded PNG | 10000 characters or fewer |
-| `height` | - | Integer |
-| `width` | - | Integer |
+| `accuracy` | Location accuracy (meters) | Floating point number |
+| `altitude` | Altitude (meters) | Floating point number |
+| `frame_content` | Base64 encoded and cropped PNG image of event | 10000 characters or fewer |
+| `height` | Device sensor height | Integer |
+| `width` | Device sensor width | Integer |
+| `x` | X coordinate of event | Integer |
+| `y` | Y coordinate of event | Integer |
 | `latitude` | GPS latitude | Floating point number |
 | `longitude` | GPS longitude | Floating point number |
 | `provider` | Location provider | 20 characters or fewer |
 | `timestamp` | UNIX timestamp of detection time (in milliseconds) | Integer |
 
-**Required fields:** all except `frame_content`
+**Required fields:** all except `frame_content`, `height`, `width`, `x`, `y`
 
 **Authorization:** token
 
@@ -157,7 +150,8 @@ Submit detection
 
 | Field | Description | Constraint |
 | --- | --- | --- |
-| `delta_time` | Time since last detection / ping / startup | Integer |
+| `delta_time` | Time since last detection / ping / startup (in milliseconds) | Integer |
+| `on_time` | Duration of detector working and registering events (in milliseconds, resets every ping) | Integer |
 | `timestamp` | UNIX timestamp of ping time | Integer |
 
 **Authorization:** token
