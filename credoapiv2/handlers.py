@@ -2,18 +2,21 @@
 from __future__ import unicode_literals
 
 import base64
-import os
 
 import boto3
 
 from django.conf import settings
 from django.contrib.auth import authenticate
+from django.core.cache import cache
 from django.db.utils import IntegrityError
 
-from credocommon.models import User, Team, Detection, Device, Ping
-from credocommon.helpers import generate_token, validate_image, send_registration_email
+from django_redis import get_redis_connection
 
-from credoapiv2.exceptions import CredoAPIException, RegistrationException, LoginException
+from credocommon.helpers import generate_token, validate_image, register_user
+from credocommon.jobs import data_export, recalculate_user_stats, recalculate_team_stats
+from credocommon.models import User, Team, Detection, Device, Ping
+
+from credoapiv2.exceptions import CredoAPIException, LoginException
 from credoapiv2.serializers import RegisterRequestSerializer, LoginRequestSerializer, InfoRequestSerializer, \
     DetectionRequestSerializer, PingRequestSerializer, DataExportRequestSerializer
 
@@ -27,47 +30,7 @@ def handle_registration(request):
     if not serializer.is_valid():
         raise CredoAPIException(str(serializer.errors))
     vd = serializer.validated_data
-
-    user = None
-
-    try:
-        u = User.objects.get(email=vd['email'])
-        if not u.is_active:
-            user = u
-            user.team = Team.objects.get_or_create(name=vd['team'])[0]
-            user.display_name = vd['display_name']
-            user.key = generate_token()
-            user.username = vd['username']
-            user.email_confirmation_token = generate_token()
-            user.set_password(vd['password'])
-            user.save()
-            logger.info('Updating user info and resending activation email to user {}'.format(user))
-    except User.DoesNotExist:
-        logger.info('Creating new user {} {}'.format(vd['username'], vd['display_name']))
-
-    if not user:
-        try:
-            user = User.objects.create_user(
-                team=Team.objects.get_or_create(name=vd['team'])[0],
-                display_name=vd['display_name'],
-                key=generate_token(),
-                password=vd['password'],
-                username=vd['username'],
-                email=vd['email'],
-                is_active=False,
-                email_confirmation_token=generate_token(),
-            )
-        except IntegrityError:
-            logger.warning('User registration failed, IntegrityError', vd)
-            raise RegistrationException("User with given username or email already exists.")
-
-    if user:
-        logger.info('Sending registration email to {}'.format(user.email))
-        try:
-            send_registration_email(user.email, user.email_confirmation_token, user.username, user.display_name)
-        except Exception as e:
-            logger.exception(e)
-            logger.error('Failed to send confirmation email for user {} ({})'.format(user, user.email))
+    register_user(vd['email'], vd['password'], vd['username'], vd['display_name'], vd['team'])
 
 
 def handle_login(request):
@@ -142,20 +105,31 @@ def handle_detection(request):
         raise CredoAPIException(str(serializer.errors))
     vd = serializer.validated_data
     detections = []
+    r = None
     for d in vd['detections']:
 
         frame_content = base64.b64decode(d['frame_content'])
         visible = True
-        if (not frame_content) or validate_image(frame_content):
+        if (not frame_content) or (not validate_image(frame_content)):
             visible = False
+
+        if visible:
+            if not r:
+                r = get_redis_connection(write=False)
+            start_time = r.zscore(cache.make_key('start_time'), request.user.id)
+            if start_time:
+                visible = d['timestamp'] > start_time
+            else:
+                visible = False
 
         detections.append(Detection.objects.create(
             accuracy=d['accuracy'],
             altitude=d['altitude'],
             frame_content=frame_content,
             height=d['height'],
-            width=d['height'],
-            d_id=d['id'],
+            width=d['width'],
+            x=d['x'],
+            y=d['y'],
             latitude=d['latitude'],
             longitude=d['longitude'],
             provider=d['provider'],
@@ -170,13 +144,15 @@ def handle_detection(request):
             )[0],
             user=request.user,
             team=request.user.team,
-            visible=visible
+            visible=visible,
         ))
     data = {
         'detections': [{
-            'id': d.id  # TODO: Should we send more data?
+            'id': d.id
         } for d in detections]
     }
+    recalculate_user_stats.delay(request.user.id)
+    recalculate_team_stats.delay(request.user.team.id)
     logger.info('Stored {} detections for user {}'.format(len(detections), request.user))
     return data
 
@@ -199,6 +175,10 @@ def handle_ping(request):
         )[0],
         user=request.user
     )
+
+    if vd['on_time']:
+        recalculate_user_stats.delay(request.user.id)
+
     logger.info('Stored ping for user {}'.format(request.user))
 
 
@@ -219,15 +199,14 @@ def handle_data_export(request):
 
     url = s3.meta.client.generate_presigned_url(
         ClientMethod='get_object',
-        ExpiresIn=86400,  # 24h
+        ExpiresIn=settings.S3_EXPIRES_IN,
         Params={
-            'Bucket': 'credo_test',
+            'Bucket': settings.S3_BUCKET,
             'Key': 'export_{}.json'.format(job_id)
         }
     )
 
-    os.system('python manage.py s3_data_export --id {} --since {} --until {} --limit {} --type {}&'
-              .format(job_id, vd['since'], vd['until'], vd['limit'], vd['data_type']))
+    data_export.delay(job_id, vd['since'], vd['until'], vd['limit'], vd['data_type'])
 
     logger.info('Exporting data by request from {}, type {}, since {}, until {}, limit {}, id {}'
                 .format(request.user, vd['data_type'], vd['since'], vd['until'], vd['limit'], job_id))

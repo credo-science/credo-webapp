@@ -17,7 +17,7 @@
             </tr>
             {% for detection in detections %}
             <tr>
-                <td width="30%"> {{ detection.date }} </td>
+                <td width="30%"><div class="tooltip">{{ detection.date }}<span class="tooltiptext">{{ detection.timestamp }}</span></div></td>
                 <td><a href="{% url 'user_page' username=detection.user.name %}">{{ detection.user.display_name }}</a>
                 </td>
                 <td><a href="{% url 'team_page' name=detection.team.name %}">{{ detection.team.name }}</a></td>

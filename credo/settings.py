@@ -43,11 +43,13 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.humanize',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'debug_toolbar',
-    'rest_framework'
+    'rest_framework',
+    'django_rq'
 ]
 
 MIDDLEWARE = [
@@ -79,6 +81,9 @@ TEMPLATES = [
     },
 ]
 
+LOGIN_URL = '/web/login/'
+LOGIN_REDIRECT_URL = '/web/'
+
 WSGI_APPLICATION = 'credo.wsgi.application'
 
 
@@ -99,10 +104,40 @@ CACHES = {
    }
 }
 
+RQ = {
+    'DEFAULT_RESULT_TTL': 3600 * 24 * 7,
+}
+
+RQ_QUEUES = {
+    'default': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 1,
+    },
+    'data_export': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 1,
+        'DEFAULT_TIMEOUT': 3600 * 24,
+    },
+    'low': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 1,
+    }
+}
+
+RQ_SHOW_ADMIN_LINK = True
+
+EXPORT_TMP_FOLDER = 'credo_export/'
+USE_LOCK_WHILE_EXPORTING_DATA = False
+DATA_EXPORT_LOCK_NAME = 'data_export_lock'
+
 S3_BUCKET = 'credo'
+S3_EXPIRES_IN = 3600 * 24 * 7  # 7 days
 S3_ACCESS_KEY_ID = ''
 S3_SECRET_KEY = ''
-S3_ENDPOINT = ''
+S3_ENDPOINT_URL = ''
 
 AUTH_USER_MODEL = 'credocommon.User'
 
@@ -157,7 +192,7 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.ScopedRateThrottle',
     ),
     'DEFAULT_THROTTLE_RATES': {
-        'data_export': '4/hour'
+        'data_export': '10/day'
     }
 }
 
@@ -178,11 +213,22 @@ LOGGING = {
         'credoapiv2': {
             'handlers': ['console'],
             'level': 'INFO'
-        }
+        },
+        'credocommon': {
+            'handlers': ['console'],
+            'level': 'INFO'
+        },
     }
 }
 
+
+LOCAL_APPS = []
+LOCAL_MIDDLEWARE_PRE = []
+LOCAL_MIDDLEWARE_POST = []
+
 try:
     from local_settings import *
+    INSTALLED_APPS += LOCAL_APPS
+    MIDDLEWARE = LOCAL_MIDDLEWARE_PRE + MIDDLEWARE + LOCAL_MIDDLEWARE_POST
 except ImportError:
     pass

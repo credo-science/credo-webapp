@@ -1,0 +1,26 @@
+{% extends "credoweb/base.html" %}
+
+{% block content %}
+
+<div class="box">
+
+    <div class="panel">
+        <div class="title">Frequently asked questions</div>
+        <div align="left" style="padding: 25px;">
+            <h3>1. I don't see some of my detections. Are you filtering them?</h3>
+            <p>
+                Yes, we hide detections from old versions of the app and ones that are too bright because they may be artifacts.
+                However, we still keep all of them and use them while analyzing data for science purposes.
+            </p>
+            <h3>2. I want to access the full data set. What should I do?</h3>
+            <p>
+                You should contact CREDO Science Coordinator (<a href="mailto:credodetector@credo.science">credodetector@credo.science</a>) and describe why do you want access and what are you going to do with the data.
+                Remember to include your username and send the message from email address you used during registration. <br>
+                Documentation about data export is available <a href="https://github.com/credo-science/credo-webapp/tree/develop/credoapiv2#apiv2data_export">on GitHub</a>
+            </p>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

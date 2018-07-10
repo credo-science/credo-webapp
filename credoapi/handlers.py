@@ -161,7 +161,7 @@ def handle_detection_frame(frame):
 
     if detection_info.frame_content:
         decoded_image = base64.decodestring(detection_info.frame_content)
-        if validate_image(decoded_image):
+        if not validate_image(decoded_image):
             visible = False
         else:
             visible = True
@@ -172,7 +172,6 @@ def handle_detection_frame(frame):
         frame_content=decoded_image,
         height=detection_info.height,
         width=detection_info.width,
-        d_id=detection_info.id,
         latitude=detection_info.latitude,
         longitude=detection_info.longitude,
         provider=detection_info.provider,
