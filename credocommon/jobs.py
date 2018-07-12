@@ -64,6 +64,9 @@ def recalculate_team_stats(team_id):
 
         return detection_count
 
+    else:
+        cache.set('team_stats_recently_recalculated_{}'.format(team_id), 1, timeout=3600 * 24 * 7)
+
     return 'ignored'
 
 
