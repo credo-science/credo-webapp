@@ -122,6 +122,11 @@ def handle_detection(request):
             else:
                 visible = False
 
+        if visible and vd['x'] is not None:
+            r = get_redis_connection()
+            if r.zadd(cache.make_key('pixels_{}'.format(request.user.id)), '{} {}'.format(vd['x'], vd['y'])):
+                visible = False
+
         detections.append(Detection.objects.create(
             accuracy=d['accuracy'],
             altitude=d['altitude'],
