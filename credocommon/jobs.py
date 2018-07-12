@@ -175,6 +175,6 @@ def hide_user_hot_pixel_detections(user_id):
     r.delete(cache.make_key('pixels_{}'.format(u.id)))
 
     if pixels:
-        r.sadd(cache.make_key('pixels_{}'.format(u.id), *['{} {}'.format(c[0], c[1]) for c in pixels]))
+        r.sadd(cache.make_key('pixels_{}'.format(u.id)), *['{} {}'.format(c[0], c[1]) for c in pixels])
 
     return len(pixels)
