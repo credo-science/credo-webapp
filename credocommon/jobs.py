@@ -166,13 +166,15 @@ def hide_user_hot_pixel_detections(user_id):
     pixels = set()
 
     for d in Detection.objects.filter(user=u, visible=True, x__isnull=False).values('x', 'y'):
-        if (d.x, d.y) not in pixels:
-            pixels.add((d.x, d.y))
+        if (d['x'], d['y']) not in pixels:
+            pixels.add((d['x'], d['y']))
         else:
             d.visible = False
             d.save()
 
     r.delete(cache.make_key('pixels_{}'.format(u.id)))
-    r.zadd(cache.make_key('pixels_{}'.format(u.id), *['{} {}'.format(c[0], c[1]) for c in pixels]))
+
+    if pixels:
+        r.zadd(cache.make_key('pixels_{}'.format(u.id), *['{} {}'.format(c[0], c[1]) for c in pixels]))
 
     return len(pixels)
