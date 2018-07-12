@@ -11,5 +11,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         call_command('recalculate_user_stats')  # We want to have start_time data before we relabel detections
         call_command('relabel_detections')
+        call_command('hide_all_user_hot_pixel_detections')
         call_command('recalculate_user_stats')
         call_command('recalculate_team_stats')
