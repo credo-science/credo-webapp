@@ -124,7 +124,7 @@ def handle_detection(request):
 
         if visible and d['x'] is not None:
             r = get_redis_connection()
-            if r.zadd(cache.make_key('pixels_{}'.format(request.user.id)), '{} {}'.format(vd['x'], vd['y'])):
+            if r.zadd(cache.make_key('pixels_{}'.format(request.user.id)), '{} {}'.format(d['x'], d['y'])):
                 visible = False
 
         detections.append(Detection.objects.create(
