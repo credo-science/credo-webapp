@@ -11,6 +11,8 @@ class Command(BaseCommand):
     help = 'Recalculate stats for all users'
 
     def handle(self, *args, **options):
+        self.stdout.write("Creating jobs to  recalculate user statistics...")
+
         for u in User.objects.all():
             recalculate_user_stats.delay(u.id)
 
