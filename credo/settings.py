@@ -129,6 +129,11 @@ RQ_QUEUES = {
         'HOST': 'localhost',
         'PORT': 6379,
         'DB': 1,
+    },
+    'migration': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 1,
     }
 }
 
