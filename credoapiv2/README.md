@@ -176,7 +176,7 @@ Depending on number of events requested processing time may vary.
 
 **Authorization:** token (special permissions required)
 
-**Throttling:** 4 requests / 1 hour / user
+**Throttling:** 10 requests / 1 day / user
 
 **Example request:** [data_export.json](sample-payloads/requests/data_export.json)
 
