@@ -26,7 +26,7 @@ def data_export(id, since, until, limit, type):
     call_command('s3_data_export', id=id, since=since, until=until, limit=limit, type=type)
 
 
-@job('mapping_export')
+@job('data_export')
 def mapping_export(job_id, mapping_type):
     import boto3
     import simplejson
