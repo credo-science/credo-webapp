@@ -13,12 +13,12 @@ from django.db.utils import IntegrityError
 from django_redis import get_redis_connection
 
 from credocommon.helpers import generate_token, validate_image, register_user
-from credocommon.jobs import data_export, recalculate_user_stats, recalculate_team_stats
+from credocommon.jobs import data_export, recalculate_user_stats, recalculate_team_stats, mapping_export
 from credocommon.models import User, Team, Detection, Device, Ping
 
 from credoapiv2.exceptions import CredoAPIException, LoginException
 from credoapiv2.serializers import RegisterRequestSerializer, LoginRequestSerializer, InfoRequestSerializer, \
-    DetectionRequestSerializer, PingRequestSerializer, DataExportRequestSerializer
+    DetectionRequestSerializer, PingRequestSerializer, DataExportRequestSerializer, MappingExportRequestSerializer
 
 import logging
 
@@ -215,6 +215,39 @@ def handle_data_export(request):
 
     logger.info('Exporting data by request from {}, type {}, since {}, until {}, limit {}, id {}'
                 .format(request.user, vd['data_type'], vd['since'], vd['until'], vd['limit'], job_id))
+    return {
+        'url': url
+    }
+
+
+def handle_mapping_export(request):
+    serializer = MappingExportRequestSerializer(data=request.data)
+    if not serializer.is_valid():
+        raise CredoAPIException(str(serializer.errors))
+    vd = serializer.validated_data
+
+    job_id = generate_token()[:16]
+
+    s3 = boto3.resource(
+        's3',
+        aws_access_key_id=settings.S3_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.S3_SECRET_KEY,
+        endpoint_url=settings.S3_ENDPOINT_URL
+    )
+
+    url = s3.meta.client.generate_presigned_url(
+        ClientMethod='get_object',
+        ExpiresIn=settings.S3_EXPIRES_IN,
+        Params={
+            'Bucket': settings.S3_BUCKET,
+            'Key': 'mapping_export_{}.json'.format(job_id)
+        }
+    )
+
+    mapping_export.delay(job_id, vd['mapping_type'])
+
+    logger.info('Exporting mapping by request from {}, type {}, id {}'.format(request.user, vd['mapping_type'], job_id))
+
     return {
         'url': url
     }

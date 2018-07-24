@@ -4,7 +4,9 @@ from __future__ import unicode_literals
 import base64
 from collections import Counter
 import io
+import os
 
+from django.conf import settings
 from django.core.cache import cache
 from django.core.management import call_command
 from django.db.models import Sum, Min
@@ -15,13 +17,47 @@ from django_rq import job
 from PIL import Image
 
 from credocommon.helpers import validate_image, get_average_brightness, get_max_brightness
-from credocommon.models import User, Team, Ping, Detection
+from credocommon.models import User, Team, Ping, Detection, Device
 from credoweb.helpers import format_date
 
 
 @job('data_export')
 def data_export(id, since, until, limit, type):
     call_command('s3_data_export', id=id, since=since, until=until, limit=limit, type=type)
+
+
+@job('mapping_export')
+def mapping_export(job_id, mapping_type):
+    import boto3
+    import simplejson
+
+    filename = 'mapping_export_{}.json'.format(id)
+
+    if type == 'devices':
+        data = {'devices': Device.objects.values('id', 'user_id', 'device_type', 'device_model', 'system_version')}
+    elif type == 'users':
+        data = {'users': User.objects.values('id', 'username')}
+
+    length = len(data)
+
+    s3 = boto3.resource(
+        's3',
+        aws_access_key_id=settings.S3_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.S3_SECRET_KEY,
+        endpoint_url=settings.S3_ENDPOINT_URL
+    )
+
+    with open(settings.EXPORT_TMP_FOLDER + filename, 'w') as outfile:
+        for chunk in simplejson.JSONEncoder(iterable_as_array=True).iterencode(data):
+            outfile.write(chunk)
+
+    bucket = s3.Bucket(settings.S3_BUCKET)
+
+    bucket.upload_file(settings.EXPORT_TMP_FOLDER + filename, filename)
+
+    os.remove(settings.EXPORT_TMP_FOLDER + filename)
+
+    return length
 
 
 @job('low', result_ttl=3600)
