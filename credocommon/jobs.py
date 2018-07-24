@@ -31,11 +31,11 @@ def mapping_export(job_id, mapping_type):
     import boto3
     import simplejson
 
-    filename = 'mapping_export_{}.json'.format(id)
+    filename = 'mapping_export_{}.json'.format(job_id)
 
-    if type == 'devices':
+    if mapping_type == 'devices':
         data = {'devices': Device.objects.values('id', 'user_id', 'device_type', 'device_model', 'system_version')}
-    elif type == 'users':
+    elif mapping_type == 'users':
         data = {'users': User.objects.values('id', 'username')}
 
     length = len(data)
