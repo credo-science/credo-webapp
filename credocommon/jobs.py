@@ -33,9 +33,9 @@ def mapping_export(job_id, mapping_type):
 
     filename = 'mapping_export_{}.json'.format(job_id)
 
-    if mapping_type == 'devices':
+    if mapping_type == 'device':
         data = {'devices': Device.objects.values('id', 'user_id', 'device_type', 'device_model', 'system_version')}
-    elif mapping_type == 'users':
+    elif mapping_type == 'user':
         data = {'users': User.objects.values('id', 'username')}
 
     length = len(data)
