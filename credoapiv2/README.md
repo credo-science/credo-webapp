@@ -171,12 +171,12 @@ Depending on number of events requested processing time may vary.
 | --- | --- | --- |
 | `since` | Timestamp marking the beginning of exported data (using time_received)  (in milliseconds)| Integer |
 | `until` | Timestamp marking the end of exported data (using time_received)  (in milliseconds)| Integer |
-| `limit` | Limit number of entities in response, maximum: 500k | Integer |
+| `limit` | Limit number of entities in response, maximum: 500k (100k is recommended) | Integer |
 | `data_type` | Type of exported resource, can be 'detection' or 'ping' | String |
 
 **Authorization:** token (special permissions required)
 
-**Throttling:** 10 requests / 1 day / user (pool: data export)
+**Throttling:** 50 requests / day / user (pool: data export)
 
 **Example request:** [data_export.json](sample-payloads/requests/data_export.json)
 
@@ -196,7 +196,7 @@ Returns URL to file with results that will be available after finishing export.
 
 **Authorization:** token (special permissions required)
 
-**Throttling:** 10 requests / 1 day / user (pool: data export)
+**Throttling:** 50 requests / day / user (pool: data export)
 
 **Example request:** [mapping_export.json](sample-payloads/requests/mapping_export.json)
 
