@@ -13,7 +13,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         count = Detection.objects.latest('id').id
 
-        self.stdout.write('Relabeling {} detections'.format(count))
+        self.stdout.write('Creating jobs to relabel {} detections'.format(count))
 
         for i in range(0, count, 1000):
             relabel_detections.delay(i, 1000)

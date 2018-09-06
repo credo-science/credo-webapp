@@ -99,9 +99,14 @@ DATABASES = {
 }
 
 CACHES = {
-   'default': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache'
-   }
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+        "KEY_PREFIX": "credo-webapp"
+    }
 }
 
 RQ = {
@@ -124,14 +129,17 @@ RQ_QUEUES = {
         'HOST': 'localhost',
         'PORT': 6379,
         'DB': 1,
+    },
+    'migration': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 1,
     }
 }
 
 RQ_SHOW_ADMIN_LINK = True
 
 EXPORT_TMP_FOLDER = 'credo_export/'
-USE_LOCK_WHILE_EXPORTING_DATA = False
-DATA_EXPORT_LOCK_NAME = 'data_export_lock'
 
 S3_BUCKET = 'credo'
 S3_EXPIRES_IN = 3600 * 24 * 7  # 7 days
@@ -192,7 +200,7 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.ScopedRateThrottle',
     ),
     'DEFAULT_THROTTLE_RATES': {
-        'data_export': '10/day'
+        'data_export': '50/day'
     }
 }
 

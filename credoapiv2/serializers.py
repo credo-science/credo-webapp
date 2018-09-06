@@ -62,3 +62,7 @@ class DataExportRequestSerializer(serializers.Serializer):
     until = serializers.IntegerField()
     limit = serializers.IntegerField(max_value=500000)
     data_type = serializers.ChoiceField(choices=('detection', 'ping'))
+
+
+class MappingExportRequestSerializer(serializers.Serializer):
+    mapping_type = serializers.ChoiceField(choices=('device', 'user'))

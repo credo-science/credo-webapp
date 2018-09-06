@@ -10,7 +10,8 @@ from credocommon.exceptions import RegistrationException
 
 from credoapiv2.authentication import DRFTokenAuthentication
 from credoapiv2.exceptions import CredoAPIException, LoginException
-from credoapiv2.handlers import handle_registration, handle_login, handle_detection, handle_update_info, handle_ping, handle_data_export
+from credoapiv2.handlers import handle_registration, handle_login, handle_detection, handle_update_info, handle_ping, \
+    handle_data_export, handle_mapping_export
 
 import logging
 
@@ -144,6 +145,29 @@ class DataExportView(APIView):
                 return Response(data=handle_data_export(request), status=status.HTTP_200_OK)
             except CredoAPIException as e:
                 return Response(data={'message': 'Data export failed. Reason: ' + e.message},
+                                status=status.HTTP_400_BAD_REQUEST)
+            except Exception as e:
+                logger.exception(e)
+                raise e
+        else:
+            return Response(data={'message': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class MappingExportView(APIView):
+    """
+    post:
+    Export mapping
+    """
+    authentication_classes = (DRFTokenAuthentication, )
+    parser_classes = (JSONParser,)
+    throttle_scope = 'data_export'
+
+    def post(self, request):
+        if request.user.is_authenticated and request.user.is_staff:
+            try:
+                return Response(data=handle_mapping_export(request), status=status.HTTP_200_OK)
+            except CredoAPIException as e:
+                return Response(data={'message': 'Mapping export failed. Reason: ' + e.message},
                                 status=status.HTTP_400_BAD_REQUEST)
             except Exception as e:
                 logger.exception(e)

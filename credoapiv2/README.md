@@ -171,16 +171,36 @@ Depending on number of events requested processing time may vary.
 | --- | --- | --- |
 | `since` | Timestamp marking the beginning of exported data (using time_received)  (in milliseconds)| Integer |
 | `until` | Timestamp marking the end of exported data (using time_received)  (in milliseconds)| Integer |
-| `limit` | Limit number of entities in response, maximum: 500k | Integer |
+| `limit` | Limit number of entities in response, maximum: 500k (100k is recommended) | Integer |
 | `data_type` | Type of exported resource, can be 'detection' or 'ping' | String |
 
 **Authorization:** token (special permissions required)
 
-**Throttling:** 4 requests / 1 hour / user
+**Throttling:** 50 requests / day / user (pool: data export)
 
 **Example request:** [data_export.json](sample-payloads/requests/data_export.json)
 
-**Example response:** [data_export.json](sample-payloads/responses/data_export_success.json)
+**Example response:** [data_export_success.json](sample-payloads/responses/data_export_success.json)
+
+**On success:** HTTP_2xx
+
+**On failure:** HTTP_4xx/HTTP_5xx (optional message)
+
+## /api/v2/mapping_export
+Request asynchronous mapping export. (user_id <-> username or device_id <-> device data)
+Returns URL to file with results that will be available after finishing export.
+
+| Field | Description | Constraint |
+| --- | --- | --- |
+| `mapping_type` | Type of exported mapping, can be 'device' or 'user' | String |
+
+**Authorization:** token (special permissions required)
+
+**Throttling:** 50 requests / day / user (pool: data export)
+
+**Example request:** [mapping_export.json](sample-payloads/requests/mapping_export.json)
+
+**Example response:** [mapping_export_success.json](sample-payloads/responses/mapping_export_success.json)
 
 **On success:** HTTP_2xx
 

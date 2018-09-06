@@ -6,10 +6,13 @@ Implementation of credo storage API.
 
  * Python 2.7 installation
  * Pipenv (any recent version)
+ * Redis
 
 ## Running a local instance
 
 To run a local instance:
+
+Configure and start Redis server
 
 ```bash
 pipenv install

@@ -30,7 +30,7 @@
             {% for detection in user_detections_page.detections %}
             <tr>
                 <td width="30%"><div class="tooltip">{{ detection.date }}<span class="tooltiptext">{{ detection.timestamp }}</span></div></td>
-                <td width="50px" align="center"><img style="display:block; width:30px;height:30px;"
+                <td width="50px" align="center"><img style="display:block; width:30px;height:30px;" data-info="x: {{ detection.x }} y: {{ detection.y }}"
                                                      src="data:image/png;base64,{{ detection.img }}" class="big_img">
                 </td>
             </tr>

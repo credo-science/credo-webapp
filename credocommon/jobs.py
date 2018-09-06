@@ -4,7 +4,9 @@ from __future__ import unicode_literals
 import base64
 from collections import Counter
 import io
+import os
 
+from django.conf import settings
 from django.core.cache import cache
 from django.core.management import call_command
 from django.db.models import Sum, Min
@@ -15,7 +17,7 @@ from django_rq import job
 from PIL import Image
 
 from credocommon.helpers import validate_image, get_average_brightness, get_max_brightness
-from credocommon.models import User, Team, Ping, Detection
+from credocommon.models import User, Team, Ping, Detection, Device
 from credoweb.helpers import format_date
 
 
@@ -24,9 +26,43 @@ def data_export(id, since, until, limit, type):
     call_command('s3_data_export', id=id, since=since, until=until, limit=limit, type=type)
 
 
+@job('data_export')
+def mapping_export(job_id, mapping_type):
+    import boto3
+    import simplejson
+
+    filename = 'mapping_export_{}.json'.format(job_id)
+
+    if mapping_type == 'device':
+        data = {'devices': Device.objects.values('id', 'user_id', 'device_type', 'device_model', 'system_version')}
+    elif mapping_type == 'user':
+        data = {'users': User.objects.values('id', 'username')}
+
+    length = len(data)
+
+    s3 = boto3.resource(
+        's3',
+        aws_access_key_id=settings.S3_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.S3_SECRET_KEY,
+        endpoint_url=settings.S3_ENDPOINT_URL
+    )
+
+    with open(settings.EXPORT_TMP_FOLDER + filename, 'w') as outfile:
+        for chunk in simplejson.JSONEncoder(iterable_as_array=True).iterencode(data):
+            outfile.write(chunk)
+
+    bucket = s3.Bucket(settings.S3_BUCKET)
+
+    bucket.upload_file(settings.EXPORT_TMP_FOLDER + filename, filename)
+
+    os.remove(settings.EXPORT_TMP_FOLDER + filename)
+
+    return length
+
+
 @job('low', result_ttl=3600)
 def recalculate_user_stats(user_id):
-    if not cache.set('user_stats_recently_recalculated_{}'.format(user_id), 1, timeout=10, nx=True):
+    if not cache.set('user_stats_recently_recalculated_{}'.format(user_id), 1, timeout=300, nx=True):
         return 'skipped'
 
     u = User.objects.get(id=user_id)
@@ -51,7 +87,7 @@ def recalculate_user_stats(user_id):
 
 @job('low', result_ttl=3600)
 def recalculate_team_stats(team_id):
-    if not cache.set('team_stats_recently_recalculated_{}'.format(team_id), 1, timeout=10, nx=True):
+    if not cache.set('team_stats_recently_recalculated_{}'.format(team_id), 1, timeout=300, nx=True):
         return 'skipped'
 
     t = Team.objects.get(id=team_id)
@@ -63,6 +99,9 @@ def recalculate_team_stats(team_id):
         r.zadd(cache.make_key('team_detection_count'), detection_count, team_id)
 
         return detection_count
+
+    else:
+        cache.set('team_stats_recently_recalculated_{}'.format(team_id), 1, timeout=3600 * 24 * 7)
 
     return 'ignored'
 
@@ -128,6 +167,8 @@ def calculate_contest_results(contest_id, name, description, start, duration, li
 
         recent_detections.append({
             'date': format_date(d.timestamp),
+            'x': d.x,
+            'y': d.y,
             'user': {
                 'name': d.user.username,
                 'display_name': d.user.display_name,
@@ -152,3 +193,24 @@ def calculate_contest_results(contest_id, name, description, start, duration, li
 
     cache.set('contest_{}'.format(contest_id), data, timeout=3600*24*30)
 
+
+@job('low', result_ttl=3600)
+def hide_user_hot_pixel_detections(user_id):
+    u = User.objects.get(id=user_id)
+    r = get_redis_connection()
+
+    pixels = set()
+
+    for d in Detection.objects.filter(user=u, visible=True, x__isnull=False).only('x', 'y', 'visible'):
+        if (d.x, d.y) not in pixels:
+            pixels.add((d.x, d.y))
+        else:
+            d.visible = False
+            d.save()
+
+    r.delete(cache.make_key('pixels_{}'.format(u.id)))
+
+    if pixels:
+        r.sadd(cache.make_key('pixels_{}'.format(u.id)), *['{} {}'.format(c[0], c[1]) for c in pixels])
+
+    return len(pixels)

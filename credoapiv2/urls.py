@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^detection$', views.DetectionView.as_view()),
     url(r'^ping$', views.PingView.as_view()),
     url(r'^data_export$', views.DataExportView.as_view()),
+    url(r'^mapping_export$', views.MappingExportView.as_view()),
 ]
