@@ -200,7 +200,8 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.ScopedRateThrottle',
     ),
     'DEFAULT_THROTTLE_RATES': {
-        'data_export': '50/day'
+        'data_export': '50/day',
+        'api_v2_login': '100/minute'
     }
 }
 
