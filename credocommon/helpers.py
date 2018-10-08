@@ -101,3 +101,4 @@ def register_user(email, password, username, display_name, team):
         except Exception as e:
             logger.exception(e)
             logger.error('Failed to send confirmation email for user {} ({})'.format(user, user.email))
+            raise e
