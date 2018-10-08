@@ -39,7 +39,11 @@ def faq(request):
 
 
 def detection_list(request, page=1):
-    page = int(page)
+    try:
+        page = int(page)
+    except ValueError:
+        raise Http404('Page index must be a number')
+
     context = cache.get('detection_list_{}'.format(page))
 
     if not context:
@@ -74,15 +78,26 @@ def detection_list(request, page=1):
 
 
 def user_list(request, page=1):
-    return render(request, 'credoweb/user_list.html', get_user_list_page(int(page)))
+    try:
+        page = int(page)
+    except ValueError:
+        raise Http404('Page index must be a number')
+    return render(request, 'credoweb/user_list.html', get_user_list_page(page))
 
 
 def team_list(request, page=1):
-    return render(request, 'credoweb/team_list.html', get_team_list_page(int(page)))
+    try:
+        page = int(page)
+    except ValueError:
+        raise Http404('Page index must be a number')
+    return render(request, 'credoweb/team_list.html', get_team_list_page(page))
 
 
 def user_page(request, username='', page=1):
-    page = int(page)
+    try:
+        page = int(page)
+    except ValueError:
+        raise Http404('Page index must be a number')
     u = get_object_or_404(User, username=username)
 
     try:
