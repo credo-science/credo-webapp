@@ -66,14 +66,18 @@ def register_user(email, password, username, display_name, team):
     try:
         u = User.objects.get(email=email)
         if not u.is_active:
-            user = u
-            user.team = Team.objects.get_or_create(name=team)[0]
-            user.display_name = display_name
-            user.key = generate_token()
-            user.username = username
-            user.email_confirmation_token = generate_token()
-            user.set_password(password)
-            user.save()
+            try:
+                user = u
+                user.team = Team.objects.get_or_create(name=team)[0]
+                user.display_name = display_name
+                user.key = generate_token()
+                user.username = username
+                user.email_confirmation_token = generate_token()
+                user.set_password(password)
+                user.save()
+            except IntegrityError:
+                logger.warning('User registration failed, IntegrityError')
+                raise RegistrationException("User with given username or email already exists.")
             logger.info('Updating user info and resending activation email to user {}'.format(user))
     except User.DoesNotExist:
         logger.info('Creating new user {} {}'.format(username, display_name))
