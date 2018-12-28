@@ -65,4 +65,4 @@ class DataExportRequestSerializer(serializers.Serializer):
 
 
 class MappingExportRequestSerializer(serializers.Serializer):
-    mapping_type = serializers.ChoiceField(choices=('device', 'user'))
+    mapping_type = serializers.ChoiceField(choices=('device', 'user', 'team'))

@@ -37,6 +37,8 @@ def mapping_export(job_id, mapping_type):
         data = {'devices': Device.objects.values('id', 'user_id', 'device_type', 'device_model', 'system_version')}
     elif mapping_type == 'user':
         data = {'users': User.objects.values('id', 'username', 'display_name')}
+    elif mapping_type == 'team':
+        data = {'teams': Team.objects.values('id', 'name')}
 
     length = len(data)
 
