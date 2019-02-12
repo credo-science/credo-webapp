@@ -7,7 +7,6 @@ import time
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.cache import cache
-from django.db.models import Count
 from django.http import HttpResponseNotFound, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -134,7 +133,7 @@ def user_page(request, username='', page=1):
 @ratelimit(group='data', key='ip', rate='360/h', block=True)
 def team_page(request, name=''):
     t = get_object_or_404(Team, name=name)
-    team_users = t.user_set.filter(detection__visible=True).annotate(detection_count=Count('detection'))
+    team_users = User.objects.filter(team=t)
     team_user_count = team_users.count()
     context = {
         'team': {
@@ -144,7 +143,7 @@ def team_page(request, name=''):
         'team_users': [{
             'name': u.username,
             'display_name': u.display_name,
-            'detection_count': u.detection_count
+            'detection_count': get_user_detection_count_and_rank(u)[0]
         } for u in team_users]
 
     }
