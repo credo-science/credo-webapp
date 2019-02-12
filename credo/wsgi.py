@@ -9,8 +9,13 @@ https://docs.djangoproject.com/en/1.11/howto/deployment/wsgi/
 
 import os
 
+from django.conf import settings
+from django.contrib.staticfiles.handlers import StaticFilesHandler
 from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "credo.settings")
 
-application = get_wsgi_application()
+if settings.DEBUG:
+    application = StaticFilesHandler(get_wsgi_application())
+else:
+    application = get_wsgi_application()

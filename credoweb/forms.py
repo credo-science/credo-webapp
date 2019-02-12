@@ -18,7 +18,7 @@ class RegistrationForm(forms.Form):
         cleaned_data = super(RegistrationForm, self).clean()
 
         if not (cleaned_data.get('password') == cleaned_data.get('confirm_password')):
-            self.add_error('password_confirm', 'Passwords do not match')
+            self.add_error('confirm_password', 'Passwords do not match')
         if not cleaned_data.get('accept_rules'):
             self.add_error('accept_rules', 'Please accept the rules')
 

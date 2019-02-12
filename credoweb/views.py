@@ -7,7 +7,6 @@ import time
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.cache import cache
-from django.db.models import Count
 from django.http import HttpResponseNotFound, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -20,6 +19,8 @@ from credoweb.forms import RegistrationForm, ContestCreationForm
 from credoweb.helpers import get_global_stats, get_recent_detections, get_top_users, get_recent_users, \
     get_user_detections_page, format_date, get_user_on_time_and_rank, get_user_detection_count_and_rank, \
     get_user_list_page, get_team_list_page
+
+from ratelimit.decorators import ratelimit
 
 
 def index(request):
@@ -38,8 +39,13 @@ def faq(request):
     return render(request, 'credoweb/faq.html', context)
 
 
+@ratelimit(group='data', key='ip', rate='360/h', block=True)
 def detection_list(request, page=1):
-    page = int(page)
+    try:
+        page = int(page)
+    except ValueError:
+        raise Http404('Page index must be a number')
+
     context = cache.get('detection_list_{}'.format(page))
 
     if not context:
@@ -73,16 +79,30 @@ def detection_list(request, page=1):
     return render(request, 'credoweb/detection_list.html', context)
 
 
+@ratelimit(group='data', key='ip', rate='360/h', block=True)
 def user_list(request, page=1):
-    return render(request, 'credoweb/user_list.html', get_user_list_page(int(page)))
+    try:
+        page = int(page)
+    except ValueError:
+        raise Http404('Page index must be a number')
+    return render(request, 'credoweb/user_list.html', get_user_list_page(page))
 
 
+@ratelimit(group='data', key='ip', rate='360/h', block=True)
 def team_list(request, page=1):
-    return render(request, 'credoweb/team_list.html', get_team_list_page(int(page)))
+    try:
+        page = int(page)
+    except ValueError:
+        raise Http404('Page index must be a number')
+    return render(request, 'credoweb/team_list.html', get_team_list_page(page))
 
 
+@ratelimit(group='data', key='ip', rate='360/h', block=True)
 def user_page(request, username='', page=1):
-    page = int(page)
+    try:
+        page = int(page)
+    except ValueError:
+        raise Http404('Page index must be a number')
     u = get_object_or_404(User, username=username)
 
     try:
@@ -110,9 +130,10 @@ def user_page(request, username='', page=1):
     return render(request, 'credoweb/user.html', context)
 
 
+@ratelimit(group='data', key='ip', rate='360/h', block=True)
 def team_page(request, name=''):
     t = get_object_or_404(Team, name=name)
-    team_users = t.user_set.filter(detection__visible=True).annotate(detection_count=Count('detection'))
+    team_users = User.objects.filter(team=t)
     team_user_count = team_users.count()
     context = {
         'team': {
@@ -122,7 +143,7 @@ def team_page(request, name=''):
         'team_users': [{
             'name': u.username,
             'display_name': u.display_name,
-            'detection_count': u.detection_count
+            'detection_count': get_user_detection_count_and_rank(u)[0]
         } for u in team_users]
 
     }
@@ -137,6 +158,7 @@ def confirm_email(request, token=''):
     return render(request, 'credoweb/confirm_email.html', context)
 
 
+@ratelimit(group='user', key='ip', rate='120/h', block=True)
 def register(request):
     form = RegistrationForm(request.POST or None)
     if form.is_valid():
