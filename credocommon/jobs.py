@@ -75,14 +75,14 @@ def recalculate_user_stats(user_id):
     r = get_redis_connection()
 
     if on_time:
-        r.zadd(cache.make_key('on_time'), on_time, user_id)
+        r.zadd(cache.make_key('on_time'), {user_id: on_time})
 
         if not r.zscore(cache.make_key('start_time'), user_id):
             start_time = Ping.objects.filter(user=u).filter(on_time__gt=0)\
                                      .aggregate(Min('timestamp'))['timestamp__min']
-            r.zadd(cache.make_key('start_time'), start_time, user_id)
+            r.zadd(cache.make_key('start_time'), {user_id: start_time})
 
-    r.zadd(cache.make_key('detection_count'), detection_count, user_id)
+    r.zadd(cache.make_key('detection_count'), {user_id: detection_count})
 
     return on_time, detection_count
 
@@ -98,7 +98,7 @@ def recalculate_team_stats(team_id):
         detection_count = Detection.objects.filter(team=t).filter(visible=True).count()
 
         r = get_redis_connection()
-        r.zadd(cache.make_key('team_detection_count'), detection_count, team_id)
+        r.zadd(cache.make_key('team_detection_count'), {team_id: detection_count})
 
         return detection_count
 

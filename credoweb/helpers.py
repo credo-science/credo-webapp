@@ -34,38 +34,38 @@ def get_global_stats():
 
 def get_recent_detections():
     return [{
-            'date': format_date(d.timestamp),
-            'timestamp': d.timestamp,
-            'x': d.x,
-            'y': d.y,
-            'user': {
-                'name': d.user.username,
-                'display_name': d.user.display_name,
-            },
-            'team': {
-                'name': d.team.name,
-            },
-            'img': base64.encodestring(d.frame_content)
-            } for d in Detection.objects.order_by('-timestamp').filter(visible=True)
-                                        .only('timestamp', 'frame_content', 'user', 'team')[:20]]
+        'date': format_date(d.timestamp),
+        'timestamp': d.timestamp,
+        'x': d.x,
+        'y': d.y,
+        'user': {
+            'name': d.user.username,
+            'display_name': d.user.display_name,
+        },
+        'team': {
+            'name': d.team.name,
+        },
+        'img': base64.encodebytes(d.frame_content).decode()
+    } for d in Detection.objects.order_by('-timestamp').filter(visible=True)
+                   .only('timestamp', 'frame_content', 'user', 'team')[:20]]
 
 
 def get_top_users():
-    top = get_redis_connection(write=False)\
+    top = get_redis_connection(write=False) \
         .zrevrange(cache.make_key('detection_count'), 0, 4, withscores=True)
     return [{
-            'name': u.username,
-            'display_name': u.display_name,
-            'detection_count': int(top[i][1])
-            } for i, u in enumerate([User.objects.get(id=id) for id in [t[0] for t in top]])]
+        'name': u.username,
+        'display_name': u.display_name,
+        'detection_count': int(top[i][1])
+    } for i, u in enumerate([User.objects.get(id=id) for id in [t[0] for t in top]])]
 
 
 def get_recent_users():
     return [{
-            'name': u.username,
-            'display_name': u.display_name,
-            'detection_count': get_user_detection_count_and_rank(u)[0]
-            } for u in User.objects.order_by('-id')[:5]]
+        'name': u.username,
+        'display_name': u.display_name,
+        'detection_count': get_user_detection_count_and_rank(u)[0]
+    } for u in User.objects.order_by('-id')[:5]]
 
 
 def get_user_detections_page(user, page):
@@ -79,7 +79,7 @@ def get_user_detections_page(user, page):
             'detections': [{
                 'date': format_date(d.timestamp),
                 'timestamp': d.timestamp,
-                'img': base64.encodestring(d.frame_content),
+                'img': base64.encodebytes(d.frame_content).decode(),
                 'x': d.x,
                 'y': d.y
             } for d in p.object_list]
@@ -114,10 +114,11 @@ def get_team_list_page(page):
     data = cache.get('team_list_{}'.format(page))
     if not data:
         r = get_redis_connection(write=False)
-        top = r.zrevrange(cache.make_key('team_detection_count'), 20 * (page - 1), 19 + 20 * (page - 1), withscores=True)
+        top = r.zrevrange(cache.make_key('team_detection_count'), 20 * (page - 1), 19 + 20 * (page - 1),
+                          withscores=True)
         top = [(int(t[0]), int(t[1])) for t in top if t[1]]  # Remove teams with no detections
         teams = {team.id: team for team in Team.objects.filter(id__in=[t[0] for t in top])
-                                                       .annotate(user_count=Count('user'))}
+            .annotate(user_count=Count('user'))}
 
         data = {
             'has_next': len(top) == 20,
@@ -142,7 +143,7 @@ def get_user_on_time_and_rank(user):
 
     hours, remainder = divmod(int(on_time) / 1000, 3600)
     minutes, seconds = divmod(remainder, 60)
-    return '{}h {}m'.format(hours, minutes), rank + 1
+    return '{}h {}m'.format(int(hours), int(minutes)), rank + 1
 
 
 def get_user_detection_count_and_rank(user):

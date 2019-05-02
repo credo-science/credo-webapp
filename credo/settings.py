@@ -35,7 +35,6 @@ INTERNAL_IPS = ('127.0.0.1', )
 # Application definition
 
 INSTALLED_APPS = [
-    'credoapi.apps.CredoapiConfig',
     'credoapiv2.apps.Credoapiv2Config',
     'credocommon.apps.CredocommonConfig',
     'credoweb.apps.CredowebConfig',
@@ -105,7 +104,8 @@ CACHES = {
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
-        "KEY_PREFIX": "credo-webapp"
+        "KEY_PREFIX": "credo-webapp",
+        "VERSION": 2,
     }
 }
 
@@ -150,7 +150,7 @@ S3_ENDPOINT_URL = ''
 AUTH_USER_MODEL = 'credocommon.User'
 
 AUTHENTICATION_BACKENDS = (
-    'credoapi.backends.TokenBackend',
+    'credoapiv2.backends.TokenBackend',
     'credocommon.backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
@@ -188,10 +188,8 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
-
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join('/app/static/')
 
 EMAIL_HOST = os.environ.get('DJANGO_EMAIL_HOST', 'localhost')
 
@@ -215,10 +213,6 @@ LOGGING = {
         }
     },
     'loggers': {
-        'credoapi': {
-            'handlers': ['console'],
-            'level': 'INFO'
-        },
         'credoapiv2': {
             'handlers': ['console'],
             'level': 'INFO'

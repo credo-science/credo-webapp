@@ -72,7 +72,7 @@ def detection_list(request, page=1):
                 'team': {
                     'name': d.team.name,
                 },
-                'img': base64.encodestring(d.frame_content)
+                'img': base64.encodebytes(d.frame_content).decode()
             } for d in p.object_list],
         }
         cache.set('detection_list_{}'.format(page), context)
