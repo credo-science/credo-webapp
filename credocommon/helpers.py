@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 def generate_token():
-    return base64.b16encode(os.urandom(32)).lower()
+    return base64.b16encode(os.urandom(32)).lower().decode()
 
 
 def validate_image(image):
