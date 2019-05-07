@@ -11,6 +11,7 @@ gevent==1.4.0
 gunicorn==19.9.0
 mysqlclient==1.4.2.post1
 Pillow==6.0.0
+raven==6.10.0
 redis==3.2.1
 requests==2.21.0
 sentry-sdk==0.7.14
