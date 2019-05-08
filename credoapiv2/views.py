@@ -30,7 +30,7 @@ class UserRegistrationView(APIView):
             handle_registration(request)
             return Response(status=status.HTTP_200_OK, data={'message': 'Please check your email for activation link.'})
         except RegistrationException as e:
-            return Response(data={'message': 'Registration failed. Reason: ' + e},
+            return Response(data={'message': 'Registration failed. Reason: ' + str(e)},
                             status=status.HTTP_400_BAD_REQUEST)
         except CredoAPIException as e:
             return Response(data={'message':  e},
@@ -52,7 +52,7 @@ class UserLoginView(APIView):
         try:
             return Response(data=handle_login(request), status=status.HTTP_200_OK)
         except LoginException as e:
-            return Response(data={'message': 'Login failed. Reason: ' + e},
+            return Response(data={'message': 'Login failed. Reason: ' + str(e)},
                             status=status.HTTP_400_BAD_REQUEST)
         except CredoAPIException as e:
             return Response(data={'message':  e},
@@ -76,7 +76,7 @@ class UserInfoView(APIView):
                 data = handle_update_info(request)
                 return Response(data=data, status=status.HTTP_200_OK)
             except CredoAPIException as e:
-                return Response(data={'message': 'Updating user info failed. Reason: ' + e},
+                return Response(data={'message': 'Updating user info failed. Reason: ' + str(e)},
                                 status=status.HTTP_400_BAD_REQUEST)
             except Exception as e:
                 logger.exception(e)
@@ -99,7 +99,7 @@ class DetectionView(APIView):
                 data = handle_detection(request)
                 return Response(data=data, status=status.HTTP_200_OK)
             except CredoAPIException as e:
-                return Response(data={'message': 'Submitting detection failed. Reason: ' + e},
+                return Response(data={'message': 'Submitting detection failed. Reason: ' + str(e)},
                                 status=status.HTTP_400_BAD_REQUEST)
             except Exception as e:
                 logger.exception(e)
@@ -122,7 +122,7 @@ class PingView(APIView):
                 handle_ping(request)
                 return Response(status=status.HTTP_200_OK)
             except CredoAPIException as e:
-                return Response(data={'message': 'Ping failed. Reason: ' + e},
+                return Response(data={'message': 'Ping failed. Reason: ' + str(e)},
                                 status=status.HTTP_400_BAD_REQUEST)
             except Exception as e:
                 logger.exception(e)
@@ -145,7 +145,7 @@ class DataExportView(APIView):
             try:
                 return Response(data=handle_data_export(request), status=status.HTTP_200_OK)
             except CredoAPIException as e:
-                return Response(data={'message': 'Data export failed. Reason: ' + e},
+                return Response(data={'message': 'Data export failed. Reason: ' + str(e)},
                                 status=status.HTTP_400_BAD_REQUEST)
             except Exception as e:
                 logger.exception(e)
@@ -168,7 +168,7 @@ class MappingExportView(APIView):
             try:
                 return Response(data=handle_mapping_export(request), status=status.HTTP_200_OK)
             except CredoAPIException as e:
-                return Response(data={'message': 'Mapping export failed. Reason: ' + e},
+                return Response(data={'message': 'Mapping export failed. Reason: ' + str(e)},
                                 status=status.HTTP_400_BAD_REQUEST)
             except Exception as e:
                 logger.exception(e)
