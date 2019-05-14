@@ -46,7 +46,6 @@ class UserLoginView(APIView):
     Login user
     """
     parser_classes = (JSONParser,)
-    throttle_scope = 'api_v2_login'
 
     def post(self, request, format=None):
         try:
