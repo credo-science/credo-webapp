@@ -33,7 +33,7 @@ class UserRegistrationView(APIView):
             return Response(data={'message': 'Registration failed. Reason: ' + str(e)},
                             status=status.HTTP_400_BAD_REQUEST)
         except CredoAPIException as e:
-            return Response(data={'message':  e},
+            return Response(data={'message':  str(e)},
                             status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             logger.exception(e)
