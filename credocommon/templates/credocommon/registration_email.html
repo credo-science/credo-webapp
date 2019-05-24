@@ -11,7 +11,11 @@ Please confirm your email by visiting the link below:
 <p><a href="https://api.credo.science{% url 'confirm_email' token=token %}">https://api.credo.science{% url 'confirm_email' token=token %}</a></p>
 {% endautoescape %}
 
-<h4>best regards,</h4>
-<h3>Credo Team</h3>
+<p>
+    Your username: <b>{{ username }}</b>
+</p>
+
+<p>best regards,</p>
+<p><b>Credo Team</b></p>
 </body>
 </html>

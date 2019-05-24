@@ -9,6 +9,7 @@ Please confirm your email by visiting the link below:
 https://api.credo.science{% url 'confirm_email' token=token %}
 {% endautoescape %}
 
+Your username: {{ username }}
 
 best regards,
 Credo Team
