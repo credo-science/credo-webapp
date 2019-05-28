@@ -5,4 +5,4 @@ from django.apps import AppConfig
 
 
 class Credoapiv2Config(AppConfig):
-    name = 'credoapiv2'
+    name = "credoapiv2"

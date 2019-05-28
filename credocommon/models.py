@@ -70,6 +70,8 @@ class Detection(models.Model):
     source = models.CharField(max_length=50, blank=False, default='unspecified')
     visible = models.BooleanField(default=True, db_index=True)
 
+    metadata = models.TextField(null=True, blank=True)
+
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
@@ -88,6 +90,9 @@ class Ping(models.Model):
     time_received = models.BigIntegerField(blank=True)
     delta_time = models.IntegerField(blank=True, null=True)
     on_time = models.IntegerField(blank=True, null=True, default=0)
+
+    metadata = models.TextField(null=True, blank=True)
+
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 

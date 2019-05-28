@@ -176,6 +176,7 @@ def handle_detection(request):
                 longitude=d["longitude"],
                 provider=d["provider"],
                 timestamp=d["timestamp"],
+                metadata=d["metadata"],
                 source="api_v2",
                 device=Device.objects.get_or_create(
                     device_id=vd["device_id"],
@@ -212,6 +213,7 @@ def handle_ping(request):
         timestamp=vd["timestamp"],
         delta_time=vd["delta_time"],
         on_time=vd["on_time"],
+        metadata=vd["metadata"],
         device=Device.objects.get_or_create(
             device_id=vd["device_id"],
             device_type=vd["device_type"],

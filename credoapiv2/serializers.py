@@ -36,7 +36,9 @@ class InfoRequestSerializer(GenericRequestSerializer):
 class DetectionSerializer(serializers.Serializer):
     accuracy = serializers.FloatField()
     altitude = serializers.FloatField()
-    frame_content = serializers.CharField(max_length=10000, default="", allow_blank=True)
+    frame_content = serializers.CharField(
+        max_length=10000, default="", allow_blank=True
+    )
     height = serializers.IntegerField(required=False, default=None)
     width = serializers.IntegerField(required=False, default=None)
     x = serializers.IntegerField(required=False, default=None)
@@ -45,6 +47,7 @@ class DetectionSerializer(serializers.Serializer):
     longitude = serializers.FloatField()
     provider = serializers.CharField(max_length=20)
     timestamp = serializers.IntegerField()
+    metadata = serializers.CharField(max_length=10000, default="", allow_blank=True)
 
 
 class DetectionRequestSerializer(GenericRequestSerializer):
@@ -55,14 +58,15 @@ class PingRequestSerializer(GenericRequestSerializer):
     timestamp = serializers.IntegerField()
     delta_time = serializers.IntegerField()
     on_time = serializers.IntegerField()
+    metadata = serializers.CharField(max_length=10000, default="", allow_blank=True)
 
 
 class DataExportRequestSerializer(serializers.Serializer):
     since = serializers.IntegerField()
     until = serializers.IntegerField()
     limit = serializers.IntegerField(max_value=500000)
-    data_type = serializers.ChoiceField(choices=('detection', 'ping'))
+    data_type = serializers.ChoiceField(choices=("detection", "ping"))
 
 
 class MappingExportRequestSerializer(serializers.Serializer):
-    mapping_type = serializers.ChoiceField(choices=('device', 'user', 'team'))
+    mapping_type = serializers.ChoiceField(choices=("device", "user", "team"))
