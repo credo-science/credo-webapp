@@ -6,7 +6,8 @@
 			"latitude": 52.00000000,
 			"longitude": 21.00000000,
 			"provider": "gps",
-			"timestamp": 1519857467609
+			"timestamp": 1519857467609,
+			"metadata": "{\"accelerometer\": {\"x\": 1.61803, \"y\": 3.14159, \"z\": 2.71828}}"
 		},
 		{
 			"accuracy": 15.0,

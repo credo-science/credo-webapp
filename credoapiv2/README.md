@@ -132,8 +132,9 @@ Submit detection
 | `longitude` | GPS longitude | Floating point number |
 | `provider` | Location provider | 20 characters or fewer |
 | `timestamp` | UNIX timestamp of detection time (in milliseconds) | Integer |
+| `metadata` | Additional metadata (JSON object serialized to string) | 10000 characters or fewer |
 
-**Required fields:** all except `frame_content`, `height`, `width`, `x`, `y`
+**Required fields:** all except `frame_content`, `height`, `width`, `x`, `y`, `metadata`
 
 **Authorization:** token
 
@@ -153,6 +154,7 @@ Submit detection
 | `delta_time` | Time since last detection / ping / startup (in milliseconds) | Integer |
 | `on_time` | Duration of detector working and registering events (in milliseconds, resets every ping) | Integer |
 | `timestamp` | UNIX timestamp of ping time (in milliseconds) | Integer |
+| `metadata` | Additional metadata (JSON object serialized to string) | 10000 characters or fewer |
 
 **Authorization:** token
 
