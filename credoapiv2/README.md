@@ -1,3 +1,5 @@
+# This documentation is aimed at app and tool developers. there is already a collection of tools for exporting and working with CREDO data available at [https://github.com/credo-science/credo-api-tools](https://github.com/credo-science/credo-api-tools)
+
 ### Example of interacting with API using curl
 ```bash
 curl -X POST 127.0.0.1:8000/api/v2/detection -d @detection.json -H "Authorization: Token aaaa01" -H "Content-Type: application/json"
