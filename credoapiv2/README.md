@@ -112,6 +112,19 @@ Get or update user info
 
 **On failure:** HTTP_4xx/HTTP_5xx (optional message)
 
+## /api/v2/user/id
+Get unique user ID
+
+**Method:** GET
+
+**Authorization:** token
+
+**Example response:** [id_success.json](sample-payloads/responses/id_success.json)
+
+**On success:** HTTP_2xx
+
+**On failure:** HTTP_4xx/HTTP_5xx (optional message)
+
 ## /api/v2/detection
 Submit detection
 

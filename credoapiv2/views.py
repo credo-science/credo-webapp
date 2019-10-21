@@ -13,6 +13,7 @@ from credoapiv2.exceptions import CredoAPIException, LoginException
 from credoapiv2.handlers import (
     handle_registration,
     handle_login,
+    handle_user_id,
     handle_detection,
     handle_update_info,
     handle_ping,
@@ -96,6 +97,34 @@ class UserInfoView(APIView):
             except CredoAPIException as e:
                 return Response(
                     data={"message": "Updating user info failed. Reason: " + str(e)},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            except Exception as e:
+                logger.exception(e)
+                raise e
+        else:
+            return Response(
+                data={"message": "Invalid token"}, status=status.HTTP_401_UNAUTHORIZED
+            )
+
+
+class UserIdView(APIView):
+    """
+    get:
+    Get unique user ID
+    """
+
+    authentication_classes = (DRFTokenAuthentication,)
+    parser_classes = (JSONParser,)
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            try:
+                data = handle_user_id(request)
+                return Response(data=data, status=status.HTTP_200_OK)
+            except CredoAPIException as e:
+                return Response(
+                    data={"message": "Getting user ID failed. Reason: " + str(e)},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             except Exception as e:

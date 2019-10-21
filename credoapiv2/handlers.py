@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import base64
+import hashlib
 
 import boto3
 
@@ -123,6 +124,15 @@ def handle_update_info(request):
         "email": user.email,
         "team": user.team.name,
         "language": user.language,
+    }
+    return data
+
+
+def handle_user_id(request):
+    data = {
+        "id": hashlib.sha3_256(
+            "credo_user-{}".format(request.user.id).encode()
+        ).hexdigest()
     }
     return data
 
