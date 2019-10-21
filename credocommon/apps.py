@@ -5,4 +5,4 @@ from django.apps import AppConfig
 
 
 class CredocommonConfig(AppConfig):
-    name = 'credocommon'
+    name = "credocommon"

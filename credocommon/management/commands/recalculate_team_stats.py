@@ -8,7 +8,7 @@ from credocommon.models import Team
 
 
 class Command(BaseCommand):
-    help = 'Recalculate stats for all teams'
+    help = "Recalculate stats for all teams"
 
     def handle(self, *args, **options):
         self.stdout.write("Creating jobs to recalculate team statistics...")

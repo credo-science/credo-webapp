@@ -136,18 +136,18 @@ gg==
 
 
 class Command(BaseCommand):
-    help = 'Add sample data to db'
+    help = "Add sample data to db"
 
     @staticmethod
     def generate_random_string(n):
-        return ''.join(choice(string.ascii_lowercase + string.digits) for _ in range(n))
+        return "".join(choice(string.ascii_lowercase + string.digits) for _ in range(n))
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--force',
-            action='store_true',
-            dest='force',
-            help='Force adding of sample data'
+            "--force",
+            action="store_true",
+            dest="force",
+            help="Force adding of sample data",
         )
 
     def generate_sample_data(self):
@@ -160,36 +160,40 @@ class Command(BaseCommand):
         detection_count = 1000
         ping_count = 100
 
-        if not User.objects.filter(username='admin'):
+        if not User.objects.filter(username="admin"):
             User.objects.create_superuser(
-                email='admin@email.com',
-                username='admin',
-                display_name='Admin',
-                password='adminpassword',
-                key='adminkey1234',
-                team=Team.objects.get_or_create(name='')[0]
+                email="admin@email.com",
+                username="admin",
+                display_name="Admin",
+                password="adminpassword",
+                key="adminkey1234",
+                team=Team.objects.get_or_create(name="")[0],
             )
 
         for i in range(team_count):
-            teams += [Team.objects.create(name='team%02d' % i)]
+            teams += [Team.objects.create(name="team%02d" % i)]
 
         for i in range(user_count):
-            users += [User.objects.create_user(
-                email='user%02d@email.com' % i,
-                username='user%02d' % i,
-                display_name='User%02d' % i,
-                password='password%02d' % i,
-                key='aaaa%02d' % i,
-                team=choice(teams)
-            )]
+            users += [
+                User.objects.create_user(
+                    email="user%02d@email.com" % i,
+                    username="user%02d" % i,
+                    display_name="User%02d" % i,
+                    password="password%02d" % i,
+                    key="aaaa%02d" % i,
+                    team=choice(teams),
+                )
+            ]
 
         for i in range(user_count):
-            devices += [Device.objects.create(
-                device_id=(self.generate_random_string(8)),
-                device_model='galaxy s%d' % i,
-                system_version='23-6.0',
-                user=users[i]
-            )]
+            devices += [
+                Device.objects.create(
+                    device_id=(self.generate_random_string(8)),
+                    device_model="galaxy s%d" % i,
+                    system_version="23-6.0",
+                    user=users[i],
+                )
+            ]
 
         for i in range(detection_count):
             Detection.objects.create(
@@ -202,13 +206,13 @@ class Command(BaseCommand):
                 y=10,
                 latitude=15.0 + random() * 10,
                 longitude=45.0 + random() * 10,
-                provider='gps',
+                provider="gps",
                 timestamp=int(time() * 1000 - 5000 + random() * 10000),
-                source='sample_data_generator',
+                source="sample_data_generator",
                 device=choice(devices),
                 user=choice(users),
                 team=choice(teams),
-                visible=choice([True, False])
+                visible=choice([True, False]),
             )
 
         for i in range(ping_count):
@@ -216,14 +220,16 @@ class Command(BaseCommand):
                 timestamp=int(time() * 1000 - 5000 + random() * 10000),
                 delta_time=int(random() * 100),
                 user=choice(users),
-                device=choice(devices)
+                device=choice(devices),
             )
 
     def handle(self, *args, **options):
         user_count = User.objects.count()
 
-        if user_count != 0 and not options['force']:
-            self.stdout.write('DB already contains data! Use --force to override this check.')
+        if user_count != 0 and not options["force"]:
+            self.stdout.write(
+                "DB already contains data! Use --force to override this check."
+            )
             return
 
         self.stdout.write("Generating sample data...")

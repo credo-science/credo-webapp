@@ -8,7 +8,7 @@ from credocommon.models import User
 
 
 class Command(BaseCommand):
-    help = 'Recalculate stats for all users'
+    help = "Recalculate stats for all users"
 
     def handle(self, *args, **options):
         self.stdout.write("Creating jobs to recalculate user statistics...")

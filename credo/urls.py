@@ -21,15 +21,16 @@ from django.views.generic import RedirectView
 from rest_framework.documentation import include_docs_urls
 
 urlpatterns = [
-    url(r'^$', RedirectView.as_view(url='web/')),
-    url(r'^admin/', admin.site.urls),
-    url(r'^web/', include('credoweb.urls')),
-    url(r'^api/v2/', include('credoapiv2.urls')),
-    url(r'^acra/', include('acra.urls')),
-    url(r'^django-rq/', include('django_rq.urls')),
-    url(r'^docs/', include_docs_urls(title='CREDO API documentation'))
+    url(r"^$", RedirectView.as_view(url="web/")),
+    url(r"^admin/", admin.site.urls),
+    url(r"^web/", include("credoweb.urls")),
+    url(r"^api/v2/", include("credoapiv2.urls")),
+    url(r"^acra/", include("acra.urls")),
+    url(r"^django-rq/", include("django_rq.urls")),
+    url(r"^docs/", include_docs_urls(title="CREDO API documentation")),
 ]
 
 if settings.DEBUG:
     import debug_toolbar
-    urlpatterns = [url(r'__debug__/', include(debug_toolbar.urls))] + urlpatterns
+
+    urlpatterns = [url(r"__debug__/", include(debug_toolbar.urls))] + urlpatterns

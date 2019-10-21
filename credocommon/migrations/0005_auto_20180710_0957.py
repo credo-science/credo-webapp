@@ -7,37 +7,21 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('credocommon', '0004_detection_brightness'),
-    ]
+    dependencies = [("credocommon", "0004_detection_brightness")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='detection',
-            name='brightness',
-        ),
-        migrations.RemoveField(
-            model_name='detection',
-            name='d_id',
+        migrations.RemoveField(model_name="detection", name="brightness"),
+        migrations.RemoveField(model_name="detection", name="d_id"),
+        migrations.AddField(
+            model_name="detection", name="x", field=models.IntegerField(null=True)
         ),
         migrations.AddField(
-            model_name='detection',
-            name='x',
-            field=models.IntegerField(null=True),
-        ),
-        migrations.AddField(
-            model_name='detection',
-            name='y',
-            field=models.IntegerField(null=True),
+            model_name="detection", name="y", field=models.IntegerField(null=True)
         ),
         migrations.AlterField(
-            model_name='detection',
-            name='height',
-            field=models.IntegerField(null=True),
+            model_name="detection", name="height", field=models.IntegerField(null=True)
         ),
         migrations.AlterField(
-            model_name='detection',
-            name='width',
-            field=models.IntegerField(null=True),
+            model_name="detection", name="width", field=models.IntegerField(null=True)
         ),
     ]

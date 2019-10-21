@@ -7,14 +7,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('credocommon', '0001_initial'),
-    ]
+    dependencies = [("credocommon", "0001_initial")]
 
     operations = [
         migrations.AlterField(
-            model_name='detection',
-            name='visible',
+            model_name="detection",
+            name="visible",
             field=models.BooleanField(db_index=True, default=True),
-        ),
+        )
     ]

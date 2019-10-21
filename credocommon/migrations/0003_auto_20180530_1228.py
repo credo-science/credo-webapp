@@ -7,19 +7,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('credocommon', '0002_auto_20180515_1754'),
-    ]
+    dependencies = [("credocommon", "0002_auto_20180515_1754")]
 
     operations = [
         migrations.AddField(
-            model_name='ping',
-            name='on_time',
+            model_name="ping",
+            name="on_time",
             field=models.IntegerField(blank=True, default=0, null=True),
         ),
         migrations.AddField(
-            model_name='ping',
-            name='time_received',
+            model_name="ping",
+            name="time_received",
             field=models.BigIntegerField(blank=True, default=1527676072000),
             preserve_default=False,
         ),

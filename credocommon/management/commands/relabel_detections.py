@@ -8,12 +8,12 @@ from credocommon.models import Detection
 
 
 class Command(BaseCommand):
-    help = 'Recalculate on time for all users'
+    help = "Recalculate on time for all users"
 
     def handle(self, *args, **options):
-        count = Detection.objects.latest('id').id
+        count = Detection.objects.latest("id").id
 
-        self.stdout.write('Creating jobs to relabel {} detections'.format(count))
+        self.stdout.write("Creating jobs to relabel {} detections".format(count))
 
         for i in range(0, count, 1000):
             relabel_detections.delay(i, 1000)

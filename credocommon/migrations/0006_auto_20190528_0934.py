@@ -6,29 +6,36 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('credocommon', '0005_auto_20180710_0957'),
-    ]
+    dependencies = [("credocommon", "0005_auto_20180710_0957")]
 
     operations = [
         migrations.AddField(
-            model_name='detection',
-            name='metadata',
+            model_name="detection",
+            name="metadata",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='ping',
-            name='metadata',
+            model_name="ping",
+            name="metadata",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='last_name',
-            field=models.CharField(blank=True, max_length=150, verbose_name='last name'),
+            model_name="user",
+            name="last_name",
+            field=models.CharField(
+                blank=True, max_length=150, verbose_name="last name"
+            ),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='username',
-            field=models.CharField(error_messages={'unique': 'A user with that username already exists.'}, help_text='Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.', max_length=150, unique=True, validators=[django.contrib.auth.validators.UnicodeUsernameValidator()], verbose_name='username'),
+            model_name="user",
+            name="username",
+            field=models.CharField(
+                error_messages={"unique": "A user with that username already exists."},
+                help_text="Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+                max_length=150,
+                unique=True,
+                validators=[django.contrib.auth.validators.UnicodeUsernameValidator()],
+                verbose_name="username",
+            ),
         ),
     ]

@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+
 """
 Django settings for credo project.
 
@@ -22,71 +23,73 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 's&8vuuw2%e2ael_rx8a9(ucl5$mx(r80+j+!m!j@y6m2+*s4zb')
+SECRET_KEY = os.environ.get(
+    "DJANGO_SECRET_KEY", "s&8vuuw2%e2ael_rx8a9(ucl5$mx(r80+j+!m!j@y6m2+*s4zb"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
-INTERNAL_IPS = ('127.0.0.1', )
+INTERNAL_IPS = ("127.0.0.1",)
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'credoapiv2.apps.Credoapiv2Config',
-    'credocommon.apps.CredocommonConfig',
-    'credoweb.apps.CredowebConfig',
-    'acra.apps.AcraConfig',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.humanize',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'debug_toolbar',
-    'rest_framework',
-    'django_rq'
+    "credoapiv2.apps.Credoapiv2Config",
+    "credocommon.apps.CredocommonConfig",
+    "credoweb.apps.CredowebConfig",
+    "acra.apps.AcraConfig",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.humanize",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "debug_toolbar",
+    "rest_framework",
+    "django_rq",
 ]
 
 MIDDLEWARE = [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-ROOT_URLCONF = 'credo.urls'
+ROOT_URLCONF = "credo.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ]
         },
-    },
+    }
 ]
 
-LOGIN_URL = '/web/login/'
-LOGIN_REDIRECT_URL = '/web/'
+LOGIN_URL = "/web/login/"
+LOGIN_REDIRECT_URL = "/web/"
 
-WSGI_APPLICATION = 'credo.wsgi.application'
+WSGI_APPLICATION = "credo.wsgi.application"
 
 
 # Database
@@ -94,9 +97,9 @@ WSGI_APPLICATION = 'credo.wsgi.application'
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
 
@@ -104,58 +107,42 @@ CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        },
+        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
         "KEY_PREFIX": "credo-webapp",
         "VERSION": 2,
     }
 }
 
-RQ = {
-    'DEFAULT_RESULT_TTL': 3600 * 24 * 7,
-}
+RQ = {"DEFAULT_RESULT_TTL": 3600 * 24 * 7}
 
 RQ_QUEUES = {
-    'default': {
-        'HOST': 'localhost',
-        'PORT': 6379,
-        'DB': 1,
+    "default": {"HOST": "localhost", "PORT": 6379, "DB": 1},
+    "data_export": {
+        "HOST": "localhost",
+        "PORT": 6379,
+        "DB": 1,
+        "DEFAULT_TIMEOUT": 3600 * 24,
     },
-    'data_export': {
-        'HOST': 'localhost',
-        'PORT': 6379,
-        'DB': 1,
-        'DEFAULT_TIMEOUT': 3600 * 24,
-    },
-    'low': {
-        'HOST': 'localhost',
-        'PORT': 6379,
-        'DB': 1,
-    },
-    'migration': {
-        'HOST': 'localhost',
-        'PORT': 6379,
-        'DB': 1,
-    }
+    "low": {"HOST": "localhost", "PORT": 6379, "DB": 1},
+    "migration": {"HOST": "localhost", "PORT": 6379, "DB": 1},
 }
 
 RQ_SHOW_ADMIN_LINK = True
 
-EXPORT_TMP_FOLDER = 'credo_export/'
+EXPORT_TMP_FOLDER = "credo_export/"
 
-S3_BUCKET = 'credo'
+S3_BUCKET = "credo"
 S3_EXPIRES_IN = 3600 * 24 * 7  # 7 days
-S3_ACCESS_KEY_ID = ''
-S3_SECRET_KEY = ''
-S3_ENDPOINT_URL = ''
+S3_ACCESS_KEY_ID = ""
+S3_SECRET_KEY = ""
+S3_ENDPOINT_URL = ""
 
-AUTH_USER_MODEL = 'credocommon.User'
+AUTH_USER_MODEL = "credocommon.User"
 
 AUTHENTICATION_BACKENDS = (
-    'credoapiv2.backends.TokenBackend',
-    'credocommon.backends.EmailBackend',
-    'django.contrib.auth.backends.ModelBackend',
+    "credoapiv2.backends.TokenBackend",
+    "credocommon.backends.EmailBackend",
+    "django.contrib.auth.backends.ModelBackend",
 )
 
 # Password validation
@@ -163,26 +150,20 @@ AUTHENTICATION_BACKENDS = (
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
     },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'Europe/Warsaw'
+TIME_ZONE = "Europe/Warsaw"
 
 USE_I18N = True
 
@@ -191,39 +172,24 @@ USE_L10N = True
 USE_TZ = True
 
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join('/app/static/')
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join("/app/static/")
 
-EMAIL_HOST = os.environ.get('DJANGO_EMAIL_HOST', 'localhost')
+EMAIL_HOST = os.environ.get("DJANGO_EMAIL_HOST", "localhost")
 
 REST_FRAMEWORK = {
-    'DEFAULT_THROTTLE_CLASSES': (
-        'rest_framework.throttling.ScopedRateThrottle',
-    ),
-    'DEFAULT_THROTTLE_RATES': {
-        'data_export': '200/day',
-    }
+    "DEFAULT_THROTTLE_CLASSES": ("rest_framework.throttling.ScopedRateThrottle",),
+    "DEFAULT_THROTTLE_RATES": {"data_export": "200/day"},
 }
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-        }
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"level": "INFO", "class": "logging.StreamHandler"}},
+    "loggers": {
+        "credoapiv2": {"handlers": ["console"], "level": "INFO"},
+        "credocommon": {"handlers": ["console"], "level": "INFO"},
     },
-    'loggers': {
-        'credoapiv2': {
-            'handlers': ['console'],
-            'level': 'INFO'
-        },
-        'credocommon': {
-            'handlers': ['console'],
-            'level': 'INFO'
-        },
-    }
 }
 
 
@@ -233,6 +199,7 @@ LOCAL_MIDDLEWARE_POST = []
 
 try:
     from local_settings import *
+
     INSTALLED_APPS += LOCAL_APPS
     MIDDLEWARE = LOCAL_MIDDLEWARE_PRE + MIDDLEWARE + LOCAL_MIDDLEWARE_POST
 except ImportError:

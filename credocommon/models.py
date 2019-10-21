@@ -11,7 +11,7 @@ from credocommon.helpers import generate_token
 
 # Create your models here.
 def get_default_team():
-    return Team.objects.get_or_create(name='')[0]
+    return Team.objects.get_or_create(name="")[0]
 
 
 class Team(models.Model):
@@ -24,10 +24,12 @@ class Team(models.Model):
 class User(AbstractUser):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     display_name = models.CharField(max_length=50)
-    key = models.CharField(max_length=255, db_index=True, unique=True, blank=False, default=generate_token)
+    key = models.CharField(
+        max_length=255, db_index=True, unique=True, blank=False, default=generate_token
+    )
     email = models.EmailField(unique=True, blank=False)
     email_confirmation_token = models.CharField(max_length=255, blank=True)
-    language = models.CharField(max_length=10, default='en')  # ISO 639-1
+    language = models.CharField(max_length=10, default="en")  # ISO 639-1
 
     def __str__(self):
         return "User %s (%s)" % (self.display_name, self.email)
@@ -45,7 +47,7 @@ class User(AbstractUser):
 
 class Device(models.Model):
     device_id = models.CharField(max_length=255)
-    device_type = models.CharField(max_length=255, default='phone_android')
+    device_type = models.CharField(max_length=255, default="phone_android")
     device_model = models.CharField(max_length=255)
     system_version = models.CharField(max_length=255)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -67,7 +69,7 @@ class Detection(models.Model):
     provider = models.CharField(max_length=24)
     timestamp = models.BigIntegerField(db_index=True)
     time_received = models.BigIntegerField(blank=False)
-    source = models.CharField(max_length=50, blank=False, default='unspecified')
+    source = models.CharField(max_length=50, blank=False, default="unspecified")
     visible = models.BooleanField(default=True, db_index=True)
 
     metadata = models.TextField(null=True, blank=True)

@@ -7,14 +7,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('credocommon', '0003_auto_20180530_1228'),
-    ]
+    dependencies = [("credocommon", "0003_auto_20180530_1228")]
 
     operations = [
         migrations.AddField(
-            model_name='detection',
-            name='brightness',
+            model_name="detection",
+            name="brightness",
             field=models.FloatField(null=True),
-        ),
+        )
     ]

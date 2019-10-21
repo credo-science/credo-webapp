@@ -37,24 +37,26 @@ def validate_image(image):
 
 
 def get_average_brightness(img):
-    return sum(ImageStat.Stat(img).mean[0:3]) / 3. / 255.
+    return sum(ImageStat.Stat(img).mean[0:3]) / 3.0 / 255.0
 
 
 def get_max_brightness(img):
-    minima, maxima = img.convert('L').getextrema()
+    minima, maxima = img.convert("L").getextrema()
     return maxima
 
 
 def send_registration_email(email, token, username, display_name):
-    context = {
-        'token': token,
-        'username': username,
-        'display_name': display_name
-    }
-    plain = render_to_string('credocommon/registration_email.txt', context)
-    html = render_to_string('credocommon/registration_email.html', context)
+    context = {"token": token, "username": username, "display_name": display_name}
+    plain = render_to_string("credocommon/registration_email.txt", context)
+    html = render_to_string("credocommon/registration_email.html", context)
 
-    send_mail('Credo API registration', plain, 'CREDO <credoapi@credo.science>', [email], html_message=html)
+    send_mail(
+        "Credo API registration",
+        plain,
+        "CREDO <credoapi@credo.science>",
+        [email],
+        html_message=html,
+    )
 
 
 def register_user(email, password, username, display_name, team):
@@ -76,11 +78,17 @@ def register_user(email, password, username, display_name, team):
                 user.set_password(password)
                 user.save()
             except IntegrityError:
-                logger.warning('User registration failed, IntegrityError')
-                raise RegistrationException("User with given username or email already exists.")
-            logger.info('Updating user info and resending activation email to user {}'.format(user))
+                logger.warning("User registration failed, IntegrityError")
+                raise RegistrationException(
+                    "User with given username or email already exists."
+                )
+            logger.info(
+                "Updating user info and resending activation email to user {}".format(
+                    user
+                )
+            )
     except User.DoesNotExist:
-        logger.info('Creating new user {} {}'.format(username, display_name))
+        logger.info("Creating new user {} {}".format(username, display_name))
 
     if not user:
         try:
@@ -95,14 +103,25 @@ def register_user(email, password, username, display_name, team):
                 email_confirmation_token=generate_token(),
             )
         except IntegrityError:
-            logger.warning('User registration failed, IntegrityError')
-            raise RegistrationException("User with given username or email already exists.")
+            logger.warning("User registration failed, IntegrityError")
+            raise RegistrationException(
+                "User with given username or email already exists."
+            )
 
     if user:
-        logger.info('Sending registration email to {}'.format(user.email))
+        logger.info("Sending registration email to {}".format(user.email))
         try:
-            send_registration_email(user.email, user.email_confirmation_token, user.username, user.display_name)
+            send_registration_email(
+                user.email,
+                user.email_confirmation_token,
+                user.username,
+                user.display_name,
+            )
         except Exception as e:
             logger.exception(e)
-            logger.error('Failed to send confirmation email for user {} ({})'.format(user, user.email))
+            logger.error(
+                "Failed to send confirmation email for user {} ({})".format(
+                    user, user.email
+                )
+            )
             raise e
