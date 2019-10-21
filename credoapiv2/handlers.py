@@ -147,62 +147,63 @@ def handle_detection(request):
         raise CredoAPIException(str(serializer.errors))
     vd = serializer.validated_data
 
-    detections = []
-    r = None
-    for d in vd["detections"]:
+    with cache.lock("lock_user-{}".format(request.user.id)):
+        detections = []
+        r = None
+        for d in vd["detections"]:
 
-        frame_content = base64.b64decode(d["frame_content"])
-        visible = True
-        if (not frame_content) or (not validate_image(frame_content)):
-            visible = False
-
-        if visible:
-            if not r:
-                r = get_redis_connection(write=False)
-            start_time = r.zscore(cache.make_key("start_time"), request.user.id)
-            if start_time:
-                visible = d["timestamp"] > start_time
-            else:
+            frame_content = base64.b64decode(d["frame_content"])
+            visible = True
+            if (not frame_content) or (not validate_image(frame_content)):
                 visible = False
 
-        if visible and d["x"] is not None:
-            r = get_redis_connection()
-            if not r.sadd(
-                cache.make_key("pixels_{}".format(request.user.id)),
-                "{} {}".format(d["x"], d["y"]),
-            ):
-                visible = False
+            if visible:
+                if not r:
+                    r = get_redis_connection(write=False)
+                start_time = r.zscore(cache.make_key("start_time"), request.user.id)
+                if start_time:
+                    visible = d["timestamp"] > start_time
+                else:
+                    visible = False
 
-        detections.append(
-            Detection.objects.create(
-                accuracy=d["accuracy"],
-                altitude=d["altitude"],
-                frame_content=frame_content,
-                height=d["height"],
-                width=d["width"],
-                x=d["x"],
-                y=d["y"],
-                latitude=d["latitude"],
-                longitude=d["longitude"],
-                provider=d["provider"],
-                timestamp=d["timestamp"],
-                metadata=d["metadata"],
-                source="api_v2",
-                device=Device.objects.get_or_create(
-                    device_id=vd["device_id"],
-                    device_type=vd["device_type"],
-                    device_model=vd["device_model"],
-                    system_version=vd["system_version"],
+            if visible and d["x"] is not None:
+                r = get_redis_connection()
+                if not r.sadd(
+                    cache.make_key("pixels_{}".format(request.user.id)),
+                    "{} {}".format(d["x"], d["y"]),
+                ):
+                    visible = False
+
+            detections.append(
+                Detection.objects.create(
+                    accuracy=d["accuracy"],
+                    altitude=d["altitude"],
+                    frame_content=frame_content,
+                    height=d["height"],
+                    width=d["width"],
+                    x=d["x"],
+                    y=d["y"],
+                    latitude=d["latitude"],
+                    longitude=d["longitude"],
+                    provider=d["provider"],
+                    timestamp=d["timestamp"],
+                    metadata=d["metadata"],
+                    source="api_v2",
+                    device=Device.objects.get_or_create(
+                        device_id=vd["device_id"],
+                        device_type=vd["device_type"],
+                        device_model=vd["device_model"],
+                        system_version=vd["system_version"],
+                        user=request.user,
+                    )[0],
                     user=request.user,
-                )[0],
-                user=request.user,
-                team=request.user.team,
-                visible=visible,
+                    team=request.user.team,
+                    visible=visible,
+                )
             )
-        )
-    data = {"detections": [{"id": d.id} for d in detections]}
-    recalculate_user_stats.delay(request.user.id)
-    recalculate_team_stats.delay(request.user.team.id)
+        data = {"detections": [{"id": d.id} for d in detections]}
+        recalculate_user_stats.delay(request.user.id)
+        recalculate_team_stats.delay(request.user.team.id)
     logger.info(
         "Stored {} detections for user {}".format(len(detections), request.user)
     )
@@ -219,23 +220,24 @@ def handle_ping(request):
         raise CredoAPIException(str(serializer.errors))
 
     vd = serializer.validated_data
-    Ping.objects.create(
-        timestamp=vd["timestamp"],
-        delta_time=vd["delta_time"],
-        on_time=vd["on_time"],
-        metadata=vd["metadata"],
-        device=Device.objects.get_or_create(
-            device_id=vd["device_id"],
-            device_type=vd["device_type"],
-            device_model=vd["device_model"],
-            system_version=vd["system_version"],
+    with cache.lock("lock_user-{}".format(request.user.id)):
+        Ping.objects.create(
+            timestamp=vd["timestamp"],
+            delta_time=vd["delta_time"],
+            on_time=vd["on_time"],
+            metadata=vd["metadata"],
+            device=Device.objects.get_or_create(
+                device_id=vd["device_id"],
+                device_type=vd["device_type"],
+                device_model=vd["device_model"],
+                system_version=vd["system_version"],
+                user=request.user,
+            )[0],
             user=request.user,
-        )[0],
-        user=request.user,
-    )
+        )
 
-    if vd["on_time"]:
-        recalculate_user_stats.delay(request.user.id)
+        if vd["on_time"]:
+            recalculate_user_stats.delay(request.user.id)
 
     logger.info("Stored ping for user {}".format(request.user))
 
