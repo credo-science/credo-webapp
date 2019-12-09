@@ -146,9 +146,9 @@ def handle_detection(request):
     if not serializer.is_valid():
         raise CredoAPIException(str(serializer.errors))
     vd = serializer.validated_data
-
-    with cache.lock("lock_user-{}".format(request.user.id)):
-        detections = []
+    detections = []
+    with cache.lock("lock_user-{}".format(request.user.id), timeout=5):
+        logger.info("acquired lock for user {}".format(request.user.id))
         r = None
         for d in vd["detections"]:
 
@@ -201,9 +201,9 @@ def handle_detection(request):
                     visible=visible,
                 )
             )
-        data = {"detections": [{"id": d.id} for d in detections]}
-        recalculate_user_stats.delay(request.user.id)
-        recalculate_team_stats.delay(request.user.team.id)
+    data = {"detections": [{"id": d.id} for d in detections]}
+    recalculate_user_stats.delay(request.user.id)
+    recalculate_team_stats.delay(request.user.team.id)
     logger.info(
         "Stored {} detections for user {}".format(len(detections), request.user)
     )
@@ -220,7 +220,8 @@ def handle_ping(request):
         raise CredoAPIException(str(serializer.errors))
 
     vd = serializer.validated_data
-    with cache.lock("lock_user-{}".format(request.user.id)):
+    with cache.lock("lock_user-{}".format(request.user.id), timeout=5):
+        logger.info("acquired lock for user {}".format(request.user.id))
         Ping.objects.create(
             timestamp=vd["timestamp"],
             delta_time=vd["delta_time"],
