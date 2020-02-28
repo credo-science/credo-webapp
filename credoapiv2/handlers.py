@@ -205,7 +205,7 @@ def handle_detection(request):
                     )
                 )
     except LockNotOwnedError:
-        logger.error("could not release lock for user {}".format(request.user.id))
+        logger.info("could not release lock for user {}".format(request.user.id))
     data = {"detections": [{"id": d.id} for d in detections]}
     recalculate_user_stats.delay(request.user.id)
     recalculate_team_stats.delay(request.user.team.id)
@@ -247,7 +247,7 @@ def handle_ping(request):
             if vd["on_time"]:
                 recalculate_user_stats.delay(request.user.id)
     except LockNotOwnedError:
-        logger.error("could not release lock for user {}".format(request.user.id))
+        logger.info("could not release lock for user {}".format(request.user.id))
     logger.info("Stored ping for user {}".format(request.user))
 
 
