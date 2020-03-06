@@ -193,7 +193,7 @@ Depending on number of events requested processing time may vary.
 
 **Authorization:** token (special permissions required)
 
-**Throttling:** 50 requests / day / user (pool: data export)
+**Throttling:** 400 requests / day / user (one every 5 minutes should be safe)
 
 **Example request:** [data_export.json](sample-payloads/requests/data_export.json)
 
@@ -213,7 +213,7 @@ Returns URL to file with results that will be available after finishing export.
 
 **Authorization:** token (special permissions required)
 
-**Throttling:** 50 requests / day / user (pool: data export)
+**Throttling:** 30 requests / day / user
 
 **Example request:** [mapping_export.json](sample-payloads/requests/mapping_export.json)
 

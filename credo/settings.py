@@ -179,7 +179,7 @@ EMAIL_HOST = os.environ.get("DJANGO_EMAIL_HOST", "localhost")
 
 REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_CLASSES": ("rest_framework.throttling.ScopedRateThrottle",),
-    "DEFAULT_THROTTLE_RATES": {"data_export": "200/day"},
+    "DEFAULT_THROTTLE_RATES": {"data_export": "400/day", "mapping_export": "30/day"},
 }
 
 LOGGING = {
