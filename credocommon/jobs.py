@@ -22,7 +22,7 @@ from credocommon.helpers import (
     get_max_brightness,
 )
 from credocommon.models import User, Team, Ping, Detection, Device
-from credoweb.helpers import format_date
+from credoweb.helpers import format_date, get_user_detections_page
 
 
 @job("data_export")
@@ -98,6 +98,8 @@ def recalculate_user_stats(user_id):
             r.zadd(cache.make_key("start_time"), {user_id: start_time})
 
     r.zadd(cache.make_key("detection_count"), {user_id: detection_count})
+
+    _ = get_user_detections_page(u, 1, preload=True)
 
     return on_time, detection_count
 

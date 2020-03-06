@@ -76,9 +76,10 @@ def get_recent_users():
     ]
 
 
-def get_user_detections_page(user, page):
+def get_user_detections_page(user, page, preload=False):
+    timeout = 10 * 60 if not preload else 48 * 60 * 60
     data = cache.get("user_{}_recent_detections_{}".format(user.id, page))
-    if not data:
+    if (not data) and (not preload):
         p = Paginator(
             Detection.objects.filter(user=user)
             .order_by("-timestamp")
@@ -100,7 +101,7 @@ def get_user_detections_page(user, page):
                 for d in p.object_list
             ],
         }
-        cache.set("user_{}_recent_detections_{}".format(user.id, page), data)
+        cache.set("user_{}_recent_detections_{}".format(user.id, page), data, timeout)
     return data
 
 
