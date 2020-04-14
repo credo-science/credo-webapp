@@ -89,6 +89,22 @@ Login user
 
 **On failure:** HTTP_4xx/HTTP_5xx (optional message)
 
+## /api/v2/user/oauth_login (proposed, not yet implemented)
+OAuth callback endpoint for logging in user. If field `new_account` in response is set to true, application should present a screen asking user to choose their display username and team.
+
+| Field | Description | Constraint |
+| --- | --- | --- |
+| `authorization_code` | Authorization code received from provider | 128 characters or fewer. |
+| `provider` | OAuth provider | Currently only `scistarter` |
+
+**Example request:** [oauth_login.json](sample-payloads/requests/oauth_login.json)
+
+**Example response:** [oauth_login_success.json](sample-payloads/responses/oauth_login_success.json)
+
+**On success:** HTTP_2xx (optional message)
+
+**On failure:** HTTP_4xx/HTTP_5xx (optional message)
+
 ## /api/v2/user/info
 Get or update user info
 
