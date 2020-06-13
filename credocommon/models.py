@@ -6,7 +6,7 @@ import time
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from credocommon.helpers import generate_token
+import credocommon.helpers
 
 
 # Create your models here.
@@ -25,7 +25,11 @@ class User(AbstractUser):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     display_name = models.CharField(max_length=50)
     key = models.CharField(
-        max_length=255, db_index=True, unique=True, blank=False, default=generate_token
+        max_length=255,
+        db_index=True,
+        unique=True,
+        blank=False,
+        default=credocommon.helpers.generate_token,
     )
     email = models.EmailField(unique=True, blank=False)
     email_confirmation_token = models.CharField(max_length=255, blank=True)
