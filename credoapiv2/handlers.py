@@ -108,7 +108,7 @@ def handle_oauth_login(request):
     vd = serializer.validated_data
 
     try:
-        oat = get_token(vd["authorization_code"], vd["provider"])
+        oat, _ = get_token(vd["authorization_code"], vd["provider"])
     except requests.exceptions.RequestException as e:
         raise CredoAPIException(str(e))
 

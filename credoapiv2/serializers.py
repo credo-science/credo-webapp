@@ -29,7 +29,7 @@ class LoginRequestSerializer(GenericRequestSerializer):
 
 class OAuthLoginRequestSerializer(GenericRequestSerializer):
     authorization_code = serializers.CharField(max_length=128)
-    provider = serializers.ChoiceField(choices="scistarter")
+    provider = serializers.ChoiceField(choices=("scistarter", ))
 
 
 class InfoRequestSerializer(GenericRequestSerializer):
