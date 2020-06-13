@@ -27,6 +27,11 @@ class LoginRequestSerializer(GenericRequestSerializer):
     password = serializers.CharField(max_length=128)
 
 
+class OAuthLoginRequestSerializer(GenericRequestSerializer):
+    authorization_code = serializers.CharField(max_length=128)
+    provider = serializers.ChoiceField(choices="scistarter")
+
+
 class InfoRequestSerializer(GenericRequestSerializer):
     display_name = serializers.CharField(max_length=50, required=False)
     team = serializers.CharField(max_length=50, allow_blank=True, required=False)
