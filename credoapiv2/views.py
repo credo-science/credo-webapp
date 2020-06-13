@@ -13,6 +13,7 @@ from credoapiv2.exceptions import CredoAPIException, LoginException
 from credoapiv2.handlers import (
     handle_registration,
     handle_login,
+    handle_oauth_login,
     handle_user_id,
     handle_detection,
     handle_update_info,
@@ -69,6 +70,31 @@ class UserLoginView(APIView):
         except LoginException as e:
             return Response(
                 data={"message": "Login failed. Reason: " + str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except CredoAPIException as e:
+            return Response(
+                data={"message": str(e)}, status=status.HTTP_400_BAD_REQUEST
+            )
+        except Exception as e:
+            logger.exception(e)
+            raise e
+
+
+class UserOAuthLoginView(APIView):
+    """
+    post:
+    Login user with OAuth provider
+    """
+
+    parser_classes = (JSONParser,)
+
+    def post(self, request, format=None):
+        try:
+            return Response(data=handle_oauth_login(request), status=status.HTTP_200_OK)
+        except LoginException as e:
+            return Response(
+                data={"message": "OAuth login failed. Reason: " + str(e)},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         except CredoAPIException as e:
