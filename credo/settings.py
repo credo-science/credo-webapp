@@ -116,15 +116,15 @@ CACHES = {
 RQ = {"DEFAULT_RESULT_TTL": 3600 * 24 * 7}
 
 RQ_QUEUES = {
-    "default": {"HOST": "localhost", "PORT": 6379, "DB": 1},
+    "default": {"HOST": "localhost", "PORT": 6379, "DB": 1, "DEFAULT_TIMEOUT": 3600},
     "data_export": {
         "HOST": "localhost",
         "PORT": 6379,
         "DB": 1,
         "DEFAULT_TIMEOUT": 3600 * 24,
     },
-    "low": {"HOST": "localhost", "PORT": 6379, "DB": 1},
-    "migration": {"HOST": "localhost", "PORT": 6379, "DB": 1},
+    "low": {"HOST": "localhost", "PORT": 6379, "DB": 1, "DEFAULT_TIMEOUT": 3600},
+    "migration": {"HOST": "localhost", "PORT": 6379, "DB": 1, "DEFAULT_TIMEOUT": 3600},
 }
 
 RQ_SHOW_ADMIN_LINK = True
