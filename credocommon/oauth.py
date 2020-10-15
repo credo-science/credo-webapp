@@ -51,7 +51,9 @@ def get_userinfo(token, provider):
     userinfo_endpoint = settings.OAUTH_PROVIDERS[provider]["userinfo_endpoint"]
 
     r = requests.get(
-        userinfo_endpoint, headers={"Authorization": "Bearer " + token}, timeout=5,
+        userinfo_endpoint,
+        headers={"Authorization": "Bearer " + token},
+        timeout=5,
     )
     r.raise_for_status()
 
