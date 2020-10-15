@@ -8,7 +8,7 @@ COPY local_settings.py credo/
 RUN pip install -r requirements.txt
 RUN python3 manage.py collectstatic --noinput
 
-CMD ["gunicorn", "--access-logfile", "-", "--workers", "4","--timeout", "60",\
+CMD ["gunicorn", "--access-logfile", "-", "--workers", "4","--timeout", "120",\
      "--max-requests", "1000", "--max-requests-jitter", "100", "--worker-class", "gevent",\
      "--bind", "0.0.0.0:8080", "credo.wsgi:application", "--log-level", "debug"]
 
