@@ -157,6 +157,18 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
+OAUTH_PROVIDERS = {}
+# {
+#    "scistarter": {
+#        "discovery_endpoint": "https://scistarter.org/.well-known/openid-configuration",
+#        "token_endpoint": "https://scistarter.org/token",
+#        "userinfo_endpoint": "https://scistarter.org/userinfo",
+#        "redirect_uri": "science.credo.mobiledetector.scheme:/oauth2redirect",
+#        "client_id": "",
+#        "client_secret": "",
+#    }
+# }
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
@@ -189,6 +201,7 @@ LOGGING = {
     "loggers": {
         "credoapiv2": {"handlers": ["console"], "level": "INFO"},
         "credocommon": {"handlers": ["console"], "level": "INFO"},
+        "credoweb": {"handlers": ["console"], "level": "INFO"},
     },
 }
 

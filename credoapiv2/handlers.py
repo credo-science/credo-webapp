@@ -3,6 +3,7 @@ import base64
 import hashlib
 
 import boto3
+import requests
 
 from redis.exceptions import LockNotOwnedError
 
@@ -13,7 +14,12 @@ from django.db.utils import IntegrityError
 from django_redis import get_redis_connection
 from rest_framework.exceptions import ParseError
 
-from credocommon.helpers import generate_token, validate_image, register_user
+from credocommon.helpers import (
+    generate_token,
+    validate_image,
+    register_user,
+    register_oauth_user,
+)
 from credocommon.jobs import (
     data_export,
     recalculate_user_stats,
@@ -22,10 +28,13 @@ from credocommon.jobs import (
 )
 from credocommon.models import User, Team, Detection, Device, Ping
 
+from credocommon.oauth import get_token, get_userinfo
+
 from credoapiv2.exceptions import CredoAPIException, LoginException
 from credoapiv2.serializers import (
     RegisterRequestSerializer,
     LoginRequestSerializer,
+    OAuthLoginRequestSerializer,
     InfoRequestSerializer,
     DetectionRequestSerializer,
     PingRequestSerializer,
@@ -85,6 +94,47 @@ def handle_login(request):
         "token": user.key,
     }
     logger.info("Logging in user {}".format(user))
+    return data
+
+
+def handle_oauth_login(request):
+    try:
+        serializer = OAuthLoginRequestSerializer(data=request.data)
+    except ParseError:
+        raise CredoAPIException("Could not parse request body as a valid JSON object")
+
+    if not serializer.is_valid():
+        raise CredoAPIException(str(serializer.errors))
+    vd = serializer.validated_data
+
+    try:
+        oat, _ = get_token(vd["authorization_code"], vd["provider"])
+    except requests.exceptions.RequestException as e:
+        raise CredoAPIException(str(e))
+
+    try:
+        email, username, display_name = get_userinfo(oat, vd["provider"])
+    except requests.exceptions.RequestException as e:
+        raise CredoAPIException(str(e))
+
+    new_account = False
+
+    try:
+        user = User.objects.get(email=email)
+        if not user.is_active:
+            logger.info("Enabling user account because of valid OAuth login")
+            user.is_active = True
+            user.save()
+    except User.DoesNotExist:
+        user = register_oauth_user(email, username, display_name, vd["provider"])
+        new_account = True
+
+    data = {
+        "new_account": new_account,
+        "token": user.key,
+    }
+
+    logger.info("OAuth login for user {}".format(user))
     return data
 
 

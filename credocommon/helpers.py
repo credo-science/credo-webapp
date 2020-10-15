@@ -11,6 +11,8 @@ from django.core.mail import send_mail
 from django.db import IntegrityError
 from django.template.loader import render_to_string
 
+from credocommon.exceptions import RegistrationException
+import credocommon.models
 
 import logging
 
@@ -60,17 +62,14 @@ def send_registration_email(email, token, username, display_name):
 
 
 def register_user(email, password, username, display_name, team):
-    from credocommon.exceptions import RegistrationException
-    from credocommon.models import User, Team
-
     user = None
 
     try:
-        u = User.objects.get(email=email)
+        u = credocommon.models.User.objects.get(email=email)
         if not u.is_active:
             try:
                 user = u
-                user.team = Team.objects.get_or_create(name=team)[0]
+                user.team = credocommon.models.Team.objects.get_or_create(name=team)[0]
                 user.display_name = display_name
                 user.key = generate_token()
                 user.username = username
@@ -87,13 +86,13 @@ def register_user(email, password, username, display_name, team):
                     user
                 )
             )
-    except User.DoesNotExist:
+    except credocommon.models.User.DoesNotExist:
         logger.info("Creating new user {} {}".format(username, display_name))
 
     if not user:
         try:
-            user = User.objects.create_user(
-                team=Team.objects.get_or_create(name=team)[0],
+            user = credocommon.models.User.objects.create_user(
+                team=credocommon.models.Team.objects.get_or_create(name=team)[0],
                 display_name=display_name,
                 key=generate_token(),
                 password=password,
@@ -125,3 +124,34 @@ def register_user(email, password, username, display_name, team):
                 )
             )
             raise e
+
+
+def register_oauth_user(email, username, display_name, provider):
+    logger.info(
+        "Registering OAuth user: email={}, username={}, display_name={}, provider={}".format(
+            email, username, display_name, provider
+        )
+    )
+    try:
+        user = credocommon.models.User.objects.create_user(
+            team=credocommon.models.Team.objects.get_or_create(name="")[0],
+            display_name=display_name,
+            key=generate_token(),
+            password=generate_token(),
+            username=username,
+            email=email,
+            is_active=True,
+        )
+    except IntegrityError:
+        logger.info("Username taken, creating random one")
+        user = credocommon.models.User.objects.create_user(
+            team=credocommon.models.Team.objects.get_or_create(name="")[0],
+            display_name=display_name,
+            key=generate_token(),
+            password=generate_token(),
+            username=provider + "_" + generate_token()[:8],
+            email=email,
+            is_active=True,
+        )
+
+    return user
