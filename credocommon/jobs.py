@@ -72,7 +72,7 @@ def mapping_export(job_id, mapping_type):
     return length
 
 
-@job("low", result_ttl=3600)
+@job("low", timeout=600, result_ttl=1200)
 def recalculate_user_stats(user_id):
     if not cache.set(
         "user_stats_recently_recalculated_{}".format(user_id), 1, timeout=300, nx=True
@@ -104,7 +104,7 @@ def recalculate_user_stats(user_id):
     return on_time, detection_count
 
 
-@job("low", result_ttl=3600)
+@job("low", timeout=600, result_ttl=1200)
 def recalculate_team_stats(team_id):
     if not cache.set(
         "team_stats_recently_recalculated_{}".format(team_id), 1, timeout=300, nx=True
@@ -131,7 +131,7 @@ def recalculate_team_stats(team_id):
     return "ignored"
 
 
-@job("low", result_ttl=3600)
+@job("low", timeout=600, result_ttl=1200)
 def relabel_detections(start_id, limit):
     detections = Detection.objects.filter(id__gte=start_id).filter(
         id__lt=start_id + limit
