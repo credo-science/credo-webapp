@@ -72,10 +72,10 @@ def mapping_export(job_id, mapping_type):
     return length
 
 
-@job("low", timeout=600, result_ttl=1200)
+@job("low", timeout=900, result_ttl=1200)
 def recalculate_user_stats(user_id):
     if not cache.set(
-        "user_stats_recently_recalculated_{}".format(user_id), 1, timeout=300, nx=True
+        "user_stats_recently_recalculated_{}".format(user_id), 1, timeout=900, nx=True
     ):
         return "skipped"
 
