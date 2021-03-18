@@ -168,7 +168,7 @@ def confirm_email(request, token=""):
     return render(request, "credoweb/confirm_email.html", context)
 
 
-@ratelimit(group="user", key="ip", rate="120/h", block=True)
+@ratelimit(key="ip", rate="10/h", block=True)
 def register(request):
     form = RegistrationForm(request.POST or None)
     if form.is_valid():
@@ -187,65 +187,3 @@ def register(request):
             )
         return render(request, "credoweb/register_complete.html")
     return render(request, "credoweb/register.html", {"form": form})
-
-
-@staff_member_required
-def contest_create(request):
-    form = ContestCreationForm(request.POST or None)
-    if form.is_valid():
-        cd = form.cleaned_data
-        contest_id = generate_token()[:8]
-
-        filter_parameters = {
-            "avbrightness_max": cd["avbrightness_max"],
-            "maxbrightness_min": cd["maxbrightness_min"],
-        }
-
-        start_time = cd["start_time"]
-
-        start_time = start_time.replace(
-            year=start_time.year,
-            month=start_time.month,
-            day=start_time.day,
-            hour=start_time.hour,
-            minute=start_time.minute,
-            second=0,
-            microsecond=0,
-        )
-        start_timestamp = (time.mktime(start_time.timetuple())) * 1000
-
-        duration = cd["duration"] * 3600 * 1000  # Hours -> milliseconds
-
-        id_blacklist = [
-            u.id
-            for u in User.objects.filter(
-                username__in=[n.strip() for n in cd["blacklist"].split(",")]
-            )
-        ]
-
-        calculate_contest_results.delay(
-            contest_id,
-            cd["name"],
-            cd["description"],
-            start_timestamp,
-            duration,
-            cd["limit"],
-            id_blacklist,
-            filter_parameters,
-        )
-
-        return redirect("contest_view", contest_id=contest_id)
-    return render(request, "credoweb/contest_create.html", {"form": form})
-
-
-def contest_view(request, contest_id):
-    context = cache.get("contest_{}".format(contest_id))
-
-    if not context:
-        return HttpResponseNotFound(
-            "<h1>Contest results expired or not yet ready.</h1>"
-        )
-
-    context["contest_id"] = contest_id
-
-    return render(request, "credoweb/contest.html", context)

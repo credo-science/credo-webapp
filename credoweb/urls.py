@@ -24,11 +24,5 @@ urlpatterns = [
         views.confirm_email,
         name="confirm_email",
     ),
-    url(r"contest/$", views.contest_create, name="contest_create"),
-    url(
-        r"contest/(?P<contest_id>[a-z0-9]{8})/$",
-        views.contest_view,
-        name="contest_view",
-    ),
     url("^", include("django.contrib.auth.urls")),
 ]
