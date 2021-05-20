@@ -42,7 +42,7 @@ class DetectionSerializer(serializers.Serializer):
     accuracy = serializers.FloatField()
     altitude = serializers.FloatField()
     frame_content = serializers.CharField(
-        max_length=10000, default="", allow_blank=True
+        max_length=40000, default="", allow_blank=True
     )
     height = serializers.IntegerField(required=False, default=None)
     width = serializers.IntegerField(required=False, default=None)
