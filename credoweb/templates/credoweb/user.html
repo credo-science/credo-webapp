@@ -37,11 +37,11 @@
             {% endfor %}
         </table>
         {% if user_detections_page.has_previous %}
-        <a style="float: left" href="{% url 'user_page_paginated' username=user.name page=user_detections_page.page_number|add:-1 %}"><i class="fas fa-angle-double-left"></i>Previous</a>
+        <a style="float: left" href="{% url 'user_page_paginated' username=user.name page=user_detections_page.page_number|add:-1 %}"><i class="fas fa-angle-double-left"></i> Previous</a>
         {% endif %}
 
         {% if user_detections_page.has_next %}
-            <a style="float: right" href="{% url 'user_page_paginated' username=user.name page=user_detections_page.page_number|add:1 %}">Next<i class="fas fa-angle-double-right"></i></a>
+            <a style="float: right" href="{% url 'user_page_paginated' username=user.name page=user_detections_page.page_number|add:1 %}">Next <i class="fas fa-angle-double-right"></i></a>
         {% endif %}
     </div>
 
