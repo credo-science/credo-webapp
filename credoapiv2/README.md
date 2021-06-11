@@ -1,6 +1,6 @@
-# This documentation is aimed at app and tool developers. there is already a collection of tools for exporting and working with CREDO data available at [https://github.com/credo-science/credo-api-tools](https://github.com/credo-science/credo-api-tools)
+# This documentation is aimed at app and tool developers. There is already a collection of tools for exporting and working with CREDO data available at [https://github.com/credo-science/credo-api-tools](https://github.com/credo-science/credo-api-tools)
 
-### Example of interacting with API using curl
+### Example of interacting with API using cURL
 ```bash
 curl -X POST 127.0.0.1:8000/api/v2/detection -d @detection.json -H "Authorization: Token aaaa01" -H "Content-Type: application/json"
 ```
@@ -58,7 +58,7 @@ Register user
 | `display_name` | User display name | 50 characters or fewer |
 | `password` | User password | 128 characters or fewer |
 | `team` | Name of the team to join | 50 characters or fewer, empty string indicates no team |
-| `language` | User language code (ISO 639-1) | 10 characters or fewer |
+| `language` | User language code ([ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)) | 10 characters or fewer |
 
 **Authorization:** none
 
@@ -112,7 +112,7 @@ Get or update user info
 | --- | --- | --- |
 | `display_name` | User display name | 50 characters or fewer |
 | `team` | Name of the team to join | 50 characters or fewer, empty string indicates no team |
-| `language` | User language code (ISO 639-1) | 10 characters or fewer |
+| `language` | User language code ([ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)) | 10 characters or fewer |
 
 **Required fields:** none
 
@@ -220,7 +220,7 @@ Depending on number of events requested processing time may vary.
 **On failure:** HTTP_4xx/HTTP_5xx (optional message)
 
 ## /api/v2/mapping_export
-Request asynchronous mapping export. (user_id <-> username or device_id <-> device data)
+Request asynchronous mapping export (user_id <-> username or device_id <-> device data).
 Returns URL to file with results that will be available after finishing export.
 
 | Field | Description | Constraint |
