@@ -72,10 +72,10 @@ def mapping_export(job_id, mapping_type):
     return length
 
 
-@job("low", timeout=1200, result_ttl=1200)
+@job("low", timeout=2400, result_ttl=2400)
 def recalculate_user_stats(user_id):
     if not cache.set(
-        "user_stats_recently_recalculated_{}".format(user_id), 1, timeout=1200, nx=True
+            "user_stats_recently_recalculated_{}".format(user_id), 1, timeout=2400, nx=True
     ):
         return "skipped"
 
@@ -92,8 +92,8 @@ def recalculate_user_stats(user_id):
         if not r.zscore(cache.make_key("start_time"), user_id):
             start_time = (
                 Ping.objects.filter(user=u)
-                .filter(on_time__gt=0)
-                .aggregate(Min("timestamp"))["timestamp__min"]
+                    .filter(on_time__gt=0)
+                    .aggregate(Min("timestamp"))["timestamp__min"]
             )
             r.zadd(cache.make_key("start_time"), {user_id: start_time})
 
@@ -104,10 +104,10 @@ def recalculate_user_stats(user_id):
     return on_time, detection_count
 
 
-@job("low", timeout=1200, result_ttl=1200)
+@job("low", timeout=2400, result_ttl=2400)
 def recalculate_team_stats(team_id):
     if not cache.set(
-        "team_stats_recently_recalculated_{}".format(team_id), 1, timeout=1200, nx=True
+            "team_stats_recently_recalculated_{}".format(team_id), 1, timeout=2400, nx=True
     ):
         return "skipped"
 
@@ -131,7 +131,7 @@ def recalculate_team_stats(team_id):
     return "ignored"
 
 
-@job("low", timeout=1200, result_ttl=1200)
+@job("low", timeout=2400, result_ttl=2400)
 def relabel_detections(start_id, limit):
     detections = Detection.objects.filter(id__gte=start_id).filter(
         id__lt=start_id + limit
@@ -161,14 +161,14 @@ def relabel_detections(start_id, limit):
 
 @job("default", result_ttl=3600 * 24 * 30)
 def calculate_contest_results(
-    contest_id,
-    name,
-    description,
-    start,
-    duration,
-    limit,
-    id_blacklist,
-    filter_parameters,
+        contest_id,
+        name,
+        description,
+        start,
+        duration,
+        limit,
+        id_blacklist,
+        filter_parameters,
 ):
     avbrightness_max = filter_parameters["avbrightness_max"]
     maxbrightness_min = filter_parameters["maxbrightness_min"]
@@ -179,11 +179,11 @@ def calculate_contest_results(
     recent_detections = []
 
     for d in (
-        Detection.objects.order_by("-timestamp")
-        .filter(visible=True)
-        .filter(timestamp__gt=start)
-        .filter(timestamp__lt=(start + duration))
-        .select_related("user", "team")
+            Detection.objects.order_by("-timestamp")
+                    .filter(visible=True)
+                    .filter(timestamp__gt=start)
+                    .filter(timestamp__lt=(start + duration))
+                    .select_related("user", "team")
     ):
 
         if d.user.id in id_blacklist:
@@ -239,7 +239,7 @@ def hide_user_hot_pixel_detections(user_id):
     pixels = set()
 
     for d in Detection.objects.filter(user=u, visible=True, x__isnull=False).only(
-        "x", "y", "visible"
+            "x", "y", "visible"
     ):
         if (d.x, d.y) not in pixels:
             pixels.add((d.x, d.y))
