@@ -14,17 +14,17 @@ class GenericRequestSerializer(serializers.Serializer):
 
 class RegisterRequestSerializer(GenericRequestSerializer):
     email = serializers.EmailField()
-    username = serializers.CharField(max_length=50)
-    display_name = serializers.CharField(max_length=50)
-    password = serializers.CharField(max_length=128)
+    username = serializers.CharField(min_length=3, max_length=50)
+    display_name = serializers.CharField(min_length=3, max_length=50)
+    password = serializers.CharField(min_length=3, max_length=128)
     team = serializers.CharField(max_length=50, allow_blank=True)
     language = serializers.CharField(max_length=10)
 
 
 class LoginRequestSerializer(GenericRequestSerializer):
     email = serializers.EmailField(required=False)
-    username = serializers.CharField(max_length=50, required=False)
-    password = serializers.CharField(max_length=128)
+    username = serializers.CharField(min_length=3, max_length=50, required=False)
+    password = serializers.CharField(min_length=3, max_length=128)
 
 
 class OAuthLoginRequestSerializer(GenericRequestSerializer):
