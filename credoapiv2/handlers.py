@@ -26,7 +26,7 @@ from credocommon.jobs import (
     recalculate_team_stats,
     mapping_export,
 )
-from credocommon.models import User, Team, Detection, Device, Ping
+from credocommon.models import get_default_team, User, Team, Detection, Device, Ping
 
 from credocommon.oauth import get_token, get_userinfo
 
@@ -176,6 +176,30 @@ def handle_update_info(request):
         "team": user.team.name,
         "language": user.language,
     }
+    return data
+
+
+def handle_user_delete_account(request):
+    u = request.user
+
+    rnd_name = "deleted_" + generate_token()[:16]
+    u.username = rnd_name
+    u.display_name = rnd_name
+    u.email = rnd_name + "@notvalid.credo.science"
+
+    u.team = get_default_team()
+
+    u.key = generate_token()
+    u.generate_token()
+    u.email_confirmation_token = generate_token()
+    u.set_password(generate_token())
+
+    u.is_active = False
+    u.is_staff = False
+
+    u.save()
+
+    data = {"success": True}
     return data
 
 

@@ -20,6 +20,7 @@ from credoapiv2.handlers import (
     handle_ping,
     handle_data_export,
     handle_mapping_export,
+    handle_user_delete_account,
 )
 
 import logging
@@ -151,6 +152,34 @@ class UserIdView(APIView):
             except CredoAPIException as e:
                 return Response(
                     data={"message": "Getting user ID failed. Reason: " + str(e)},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            except Exception as e:
+                logger.exception(e)
+                raise e
+        else:
+            return Response(
+                data={"message": "Invalid token"}, status=status.HTTP_401_UNAUTHORIZED
+            )
+
+
+class UserDeleteAccount(APIView):
+    """
+    post:
+    Delete user account
+    """
+
+    authentication_classes = (DRFTokenAuthentication,)
+    parser_classes = (JSONParser,)
+
+    def post(self, request):
+        if request.user.is_authenticated:
+            try:
+                handle_user_delete_account(request)
+                return Response(status=status.HTTP_200_OK)
+            except CredoAPIException as e:
+                return Response(
+                    data={"message": "Deleting user account failed. Reason: " + str(e)},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             except Exception as e:
