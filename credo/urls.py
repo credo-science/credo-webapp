@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
+from django.urls import re_path, include
 from django.conf import settings
 from django.contrib import admin
 from django.views.generic import RedirectView
@@ -21,16 +21,16 @@ from django.views.generic import RedirectView
 from rest_framework.documentation import include_docs_urls
 
 urlpatterns = [
-    url(r"^$", RedirectView.as_view(url="web/")),
-    url(r"^admin/", admin.site.urls),
-    url(r"^web/", include("credoweb.urls")),
-    url(r"^api/v2/", include("credoapiv2.urls")),
-    url(r"^acra/", include("acra.urls")),
-    url(r"^django-rq/", include("django_rq.urls")),
-    url(r"^docs/", include_docs_urls(title="CREDO API documentation")),
+    re_path(r"^$", RedirectView.as_view(url="web/")),
+    re_path(r"^admin/", admin.site.urls),
+    re_path(r"^web/", include("credoweb.urls")),
+    re_path(r"^api/v2/", include("credoapiv2.urls")),
+    re_path(r"^acra/", include("acra.urls")),
+    re_path(r"^django-rq/", include("django_rq.urls")),
+    re_path(r"^docs/", include_docs_urls(title="CREDO API documentation")),
 ]
 
 if settings.DEBUG:
     import debug_toolbar
 
-    urlpatterns = [url(r"__debug__/", include(debug_toolbar.urls))] + urlpatterns
+    urlpatterns = [re_path(r"__debug__/", include(debug_toolbar.urls))] + urlpatterns

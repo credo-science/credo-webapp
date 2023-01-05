@@ -1,5 +1,5 @@
-from django.conf.urls import url
+from django.urls import re_path
 
 from acra import views
 
-urlpatterns = [url(r"^report$", views.report)]
+urlpatterns = [re_path(r"^report$", views.report)]
