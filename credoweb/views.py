@@ -29,7 +29,7 @@ from credoweb.helpers import (
     get_team_list_page,
 )
 
-from ratelimit.decorators import ratelimit
+from django_ratelimit.decorators import ratelimit
 
 
 def index(request):
