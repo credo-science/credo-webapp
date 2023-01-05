@@ -89,7 +89,7 @@ Login user
 
 **On failure:** HTTP_4xx/HTTP_5xx (optional message)
 
-## /api/v2/user/oauth_login (proposed, not yet implemented)
+## /api/v2/user/oauth_login
 OAuth callback endpoint for logging in user. If field `new_account` in response is set to true, application should present a screen asking user to choose their display username and team.
 
 | Field | Description | Constraint |
@@ -136,6 +136,17 @@ Get unique user ID
 **Authorization:** token
 
 **Example response:** [id_success.json](sample-payloads/responses/id_success.json)
+
+**On success:** HTTP_2xx
+
+**On failure:** HTTP_4xx/HTTP_5xx (optional message)
+
+## /api/v2/user/delete_account
+Delete user account
+
+**Method:** POST
+
+**Authorization:** token
 
 **On success:** HTTP_2xx
 

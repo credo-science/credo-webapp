@@ -190,7 +190,6 @@ def handle_user_delete_account(request):
     u.team = get_default_team()
 
     u.key = generate_token()
-    u.generate_token()
     u.email_confirmation_token = generate_token()
     u.set_password(generate_token())
 
