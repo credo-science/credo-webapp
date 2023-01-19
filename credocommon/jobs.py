@@ -75,7 +75,7 @@ def mapping_export(job_id, mapping_type):
 @job("low", timeout=2400, result_ttl=2400)
 def recalculate_user_stats(user_id):
     if not cache.set(
-            "user_stats_recently_recalculated_{}".format(user_id), 1, timeout=2400, nx=True
+            "user_stats_recently_recalculated_{}".format(user_id), 1, timeout=3600*8, nx=True
     ):
         return "skipped"
 
@@ -107,7 +107,7 @@ def recalculate_user_stats(user_id):
 @job("low", timeout=2400, result_ttl=2400)
 def recalculate_team_stats(team_id):
     if not cache.set(
-            "team_stats_recently_recalculated_{}".format(team_id), 1, timeout=2400, nx=True
+            "team_stats_recently_recalculated_{}".format(team_id), 1, timeout=3600*8, nx=True
     ):
         return "skipped"
 
