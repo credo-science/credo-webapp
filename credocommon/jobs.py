@@ -72,7 +72,7 @@ def mapping_export(job_id, mapping_type):
     return length
 
 
-@job("low", timeout=2400, result_ttl=2400)
+@job("low", timeout=3600, result_ttl=2400)
 def recalculate_user_stats(user_id):
     if not cache.set(
             "user_stats_recently_recalculated_{}".format(user_id), 1, timeout=3600*8, nx=True
@@ -104,7 +104,7 @@ def recalculate_user_stats(user_id):
     return on_time, detection_count
 
 
-@job("low", timeout=2400, result_ttl=2400)
+@job("low", timeout=3600, result_ttl=2400)
 def recalculate_team_stats(team_id):
     if not cache.set(
             "team_stats_recently_recalculated_{}".format(team_id), 1, timeout=3600*8, nx=True
