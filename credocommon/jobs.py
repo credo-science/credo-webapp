@@ -99,7 +99,7 @@ def recalculate_user_stats(user_id):
 
     r.zadd(cache.make_key("detection_count"), {user_id: detection_count})
 
-    _ = get_user_detections_page(u, 1, preload=True)
+    # _ = get_user_detections_page(u, 1, preload=True)
 
     return on_time, detection_count
 
