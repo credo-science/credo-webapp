@@ -29,7 +29,7 @@ urlpatterns = [
     re_path(r"^acra/", include("acra.urls")),
     re_path(r"^django-rq/", include("django_rq.urls")),
     re_path(r"^docs/", include_docs_urls(title="CREDO API documentation")),
-    re_path(r"^robots.txt",TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
+    re_path(r"^robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
 ]
 
 if settings.DEBUG:
