@@ -17,6 +17,7 @@ from django.urls import re_path, include
 from django.conf import settings
 from django.contrib import admin
 from django.views.generic import RedirectView
+from django.views.generic.base import TemplateView
 
 from rest_framework.documentation import include_docs_urls
 
@@ -28,6 +29,7 @@ urlpatterns = [
     re_path(r"^acra/", include("acra.urls")),
     re_path(r"^django-rq/", include("django_rq.urls")),
     re_path(r"^docs/", include_docs_urls(title="CREDO API documentation")),
+    re_path(r"^robots.txt",TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
 ]
 
 if settings.DEBUG:
