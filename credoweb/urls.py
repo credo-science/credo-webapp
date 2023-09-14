@@ -4,6 +4,7 @@ from credoweb import views
 urlpatterns = [
     re_path(r"^$", views.index, name="index"),
     re_path(r"faq/$", views.faq, name="faq"),
+    re_path(r"rules/$", views.rules, name="rules"),
     re_path(r"detection_list/$", views.detection_list, name="detection_list"),
     re_path(r"detection_list/(?P<page>\w+)/$", views.detection_list, name="detection_list"),
     re_path(r"user/(?P<username>.{1,50})/$", views.user_page, name="user_page"),

@@ -47,6 +47,9 @@ def faq(request):
     context = {}
     return render(request, "credoweb/faq.html", context)
 
+def rules(request):
+    context = {}
+    return render(request, "credoweb/rules.html", context)
 
 @ratelimit(group="data", key="ip", rate="360/h", block=True)
 def detection_list(request, page=1):
